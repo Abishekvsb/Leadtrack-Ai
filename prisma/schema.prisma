@@ -1,0 +1,268 @@
+// Prisma Schema for LeadTrack AI
+// Defaults to SQLite for seamless zero-config local run
+// For PostgreSQL, change provider to "postgresql" and update DATABASE_URL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          String         @default("COUNSELOR") // ADMIN, MANAGER, COUNSELOR
+  phone         String?
+  avatar        String?
+  institutionId String?
+  institution   Institution?   @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  status        String         @default("ACTIVE") // ACTIVE, INACTIVE
+  leads         Lead[]         @relation("AssignedLeads")
+  activities    LeadActivity[]
+  notes         Note[]
+  followUps     FollowUp[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+model Institution {
+  id           String    @id @default(cuid())
+  name         String
+  code         String?
+  logo         String?
+  website      String?
+  address      String?
+  city         String?
+  state        String?
+  phone        String?
+  email        String?
+  workingHours String?   @default("09:00 - 18:00 (Mon - Sat)")
+  settings     String?   @default("{}") // JSON string configuration
+  users        User[]
+  courses      Course[]
+  leads        Lead[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Course {
+  id            String       @id @default(cuid())
+  institutionId String?
+  institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  name          String
+  code          String
+  department    String // Engineering, Management, Medicine, Arts & Science, Law
+  degree        String // B.Tech, MBA, MBBS, BCA, B.Sc, BBA, M.Tech
+  duration      String // "4 Years", "2 Years", "3 Years"
+  fee           Float // Annual / total fee in INR
+  seats         Int // Seat intake capacity
+  isActive      Boolean      @default(true)
+  leads         Lead[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([code])
+}
+
+model Lead {
+  id                    String          @id @default(cuid())
+  studentName           String
+  email                 String
+  phone                 String
+  parentName            String?
+  parentPhone           String?
+  city                  String
+  state                 String?
+  courseId              String?
+  course                Course?         @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  leadSource            String          @default("Website") // Website, Instagram, Facebook, Google Ads, Walk-in, Referral, Education Fair, WhatsApp
+  status                String          @default("NEW") // NEW, CONTACTED, INTERESTED, CAMPUS_VISIT, APPLICATION_SUBMITTED, ADMITTED, LOST
+  score                 Int             @default(50) // 0 to 100
+  scoreCategory         String          @default("WARM") // HOT, WARM, COLD
+  scoreBreakdown        String          @default("{}") // JSON
+  engagementLevel       String          @default("MEDIUM") // LOW, MEDIUM, HIGH
+  nextBestAction        String?         @default("Call student to introduce campus and course curriculum")
+  conversionProbability Int             @default(50) // 0 to 100
+  message               String?
+  assignedToId          String?
+  assignedTo            User?           @relation("AssignedLeads", fields: [assignedToId], references: [id], onDelete: SetNull)
+  institutionId         String?
+  institution           Institution?    @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  followUpDue           DateTime?
+  lostReason            String?
+  notesCount            Int             @default(0)
+  activities            LeadActivity[]
+  notes                 Note[]
+  followUps             FollowUp[]
+  documents             Document[]
+  automationLogs        AutomationLog[]
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([scoreCategory])
+  @@index([createdAt])
+}
+
+model LeadActivity {
+  id          String   @id @default(cuid())
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type        String // STATUS_CHANGE, NOTE_ADDED, CALL_LOGGED, EMAIL_SENT, FOLLOW_UP_SCHEDULED, SCORE_UPDATED, SYSTEM_AUTOMATION, DOCUMENT_UPLOADED
+  title       String
+  description String?
+  metadata    String?  @default("{}") // JSON
+  createdAt   DateTime @default(now())
+
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  content   String
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([leadId])
+}
+
+model FollowUp {
+  id           String    @id @default(cuid())
+  leadId       String
+  lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  assignedToId String?
+  assignedTo   User?     @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  scheduledAt  DateTime
+  type         String    @default("CALL") // CALL, EMAIL, MEETING, CAMPUS_TOUR, WHATSAPP
+  priority     String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status       String    @default("PENDING") // PENDING, COMPLETED, CANCELLED, RESCHEDULED
+  notes        String?
+  completedAt  DateTime?
+  outcome      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([leadId])
+  @@index([assignedToId])
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+model Automation {
+  id              String          @id @default(cuid())
+  name            String
+  description     String?
+  triggerEvent    String // LEAD_CREATED, NO_RESPONSE_X_DAYS, SCORE_ABOVE, STATUS_CHANGED
+  conditionConfig String          @default("{}") // JSON
+  actionType      String // SEND_EMAIL, SEND_WHATSAPP, NOTIFY_COUNSELOR, UPDATE_STATUS, ASSIGN_LEAD
+  actionConfig    String          @default("{}") // JSON
+  isActive        Boolean         @default(true)
+  executionCount  Int             @default(0)
+  lastRunAt       DateTime?
+  logs            AutomationLog[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model AutomationLog {
+  id           String     @id @default(cuid())
+  automationId String
+  automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  leadId       String?
+  lead         Lead?      @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  status       String // SUCCESS, FAILED, SKIPPED
+  message      String
+  executedAt   DateTime   @default(now())
+
+  @@index([automationId])
+}
+
+model Template {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   @default("EMAIL") // EMAIL, WHATSAPP, SMS
+  subject   String?
+  body      String
+  variables String   @default("[]") // JSON array
+  category  String   @default("FOLLOW_UP") // WELCOME, FOLLOW_UP, CAMPUS_VISIT, ADMISSION_OFFER, REMINDER
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("SYSTEM") // FOLLOW_UP, LEAD_ASSIGNED, HIGH_SCORE, AUTOMATION, SYSTEM
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String // LOGIN, CREATE_LEAD, UPDATE_LEAD, BULK_STATUS_CHANGE, DELETE_LEAD, UPDATE_SETTINGS, EXPORT_DATA
+  entityType String // LEAD, USER, COURSE, AUTOMATION, SETTINGS
+  entityId   String?
+  details    String?  @default("{}") // JSON
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entityType])
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  leadId     String
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  name       String
+  fileType   String
+  fileUrl    String
+  fileSize   String
+  uploadedBy String?
+  createdAt  DateTime @default(now())
+
+  @@index([leadId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  email     String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([token])
+  @@index([email])
+}
