@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { StatSparkline } from "@/components/stat-sparkline";
+import { OnboardingWizard } from "@/components/onboarding-wizard";
 import {
   Users2,
   Sparkles,
@@ -21,6 +22,9 @@ import {
   Layers,
   ChevronRight,
   HelpCircle,
+  BarChart3,
+  PieChart as PieIcon,
+  Inbox,
 } from "lucide-react";
 import {
   AreaChart,
@@ -100,6 +104,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Onboarding Setup Wizard */}
+        {data?.onboarding && <OnboardingWizard onboarding={data.onboarding} />}
+
         {/* 6 High-Impact KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {/* 1. Total Leads */}
@@ -117,7 +124,7 @@ export default function DashboardPage() {
                   {kpis?.totalLeads?.trend}
                 </span>
               </div>
-              <StatSparkline data={kpis?.totalLeads?.sparkline || [10, 15, 12, 18, 22, 25]} color="#6366f1" />
+              <StatSparkline data={kpis?.totalLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#6366f1" />
             </div>
           </div>
 
@@ -136,7 +143,7 @@ export default function DashboardPage() {
                   {kpis?.newToday?.trend}
                 </span>
               </div>
-              <StatSparkline data={kpis?.newToday?.sparkline || [2, 4, 3, 5, 6, 8]} color="#0ea5e9" />
+              <StatSparkline data={kpis?.newToday?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0ea5e9" />
             </div>
           </div>
 
@@ -155,7 +162,7 @@ export default function DashboardPage() {
                 </p>
                 <span className="text-[10px] font-semibold text-slate-400">Score &ge; 75</span>
               </div>
-              <StatSparkline data={kpis?.hotLeads?.sparkline || [10, 12, 15, 18, 22, 28]} color="#10b981" />
+              <StatSparkline data={kpis?.hotLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#10b981" />
             </div>
           </div>
 
@@ -174,7 +181,7 @@ export default function DashboardPage() {
                 </p>
                 <span className="text-[10px] font-semibold text-slate-400">Pending calls</span>
               </div>
-              <StatSparkline data={kpis?.followUpsDue?.sparkline || [6, 8, 5, 9, 7, 8]} color="#f59e0b" />
+              <StatSparkline data={kpis?.followUpsDue?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#f59e0b" />
             </div>
           </div>
 
@@ -195,7 +202,7 @@ export default function DashboardPage() {
                   {kpis?.admissionsConfirmed?.trend}
                 </span>
               </div>
-              <StatSparkline data={kpis?.admissionsConfirmed?.sparkline || [1, 3, 4, 6, 9, 15]} color="#a855f7" />
+              <StatSparkline data={kpis?.admissionsConfirmed?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#a855f7" />
             </div>
           </div>
 
@@ -214,7 +221,7 @@ export default function DashboardPage() {
                   {kpis?.conversionRate?.trend}
                 </span>
               </div>
-              <StatSparkline data={kpis?.conversionRate?.sparkline || [7.8, 8.4, 9.1, 9.8, 10.3]} color="#0d9488" />
+              <StatSparkline data={kpis?.conversionRate?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0d9488" />
             </div>
           </div>
         </div>
@@ -243,6 +250,12 @@ export default function DashboardPage() {
             <div className="h-64 w-full">
               {loading ? (
                 <div className="h-full flex items-center justify-center text-xs text-slate-400">Loading chart...</div>
+              ) : !data?.leadsOverTime || data.leadsOverTime.length === 0 || data.leadsOverTime.every((d: any) => d.leads === 0 && d.admitted === 0) ? (
+                <div className="h-full flex flex-col items-center justify-center text-xs text-slate-400 space-y-1.5 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <BarChart3 className="w-8 h-8 text-slate-300 dark:text-slate-700" />
+                  <span className="font-semibold text-slate-600 dark:text-slate-400">No enquiry trends yet</span>
+                  <span className="text-[11px] text-slate-400">Student submissions will plot here automatically</span>
+                </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={data?.leadsOverTime || []}>
@@ -286,6 +299,12 @@ export default function DashboardPage() {
             <div className="h-64 w-full">
               {loading ? (
                 <div className="h-full flex items-center justify-center text-xs text-slate-400">Loading chart...</div>
+              ) : !data?.sourcePerformance || data.sourcePerformance.length === 0 || data.sourcePerformance.every((s: any) => s.total === 0) ? (
+                <div className="h-full flex flex-col items-center justify-center text-xs text-slate-400 space-y-1.5 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <Inbox className="w-8 h-8 text-slate-300 dark:text-slate-700" />
+                  <span className="font-semibold text-slate-600 dark:text-slate-400">No source data yet</span>
+                  <span className="text-[11px] text-slate-400">Inbound channel breakdown will appear here</span>
+                </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data?.sourcePerformance || []} layout="vertical">
@@ -318,27 +337,34 @@ export default function DashboardPage() {
               <p className="text-xs text-slate-400">Student movement through progressive lifecycle milestones</p>
             </div>
 
-            <div className="space-y-3">
-              {(data?.funnelData || []).map((item: any, idx: number) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-700 dark:text-slate-300">{item.stage}</span>
-                    <span className="font-bold">
-                      {item.count} leads <span className="text-slate-400 font-normal">({item.percentage}%)</span>
-                    </span>
+            {!data?.funnelData || data.funnelData.every((f: any) => f.count === 0) ? (
+              <div className="py-12 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl space-y-1">
+                <p className="font-semibold text-slate-600 dark:text-slate-400">No pipeline leads yet</p>
+                <p className="text-[11px] text-slate-400">Leads moving through stages will populate the funnel</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(data?.funnelData || []).map((item: any, idx: number) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-slate-700 dark:text-slate-300">{item.stage}</span>
+                      <span className="font-bold">
+                        {item.count} leads <span className="text-slate-400 font-normal">({item.percentage}%)</span>
+                      </span>
+                    </div>
+                    <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.max(6, item.percentage)}%`,
+                          backgroundColor: item.fill,
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${Math.max(6, item.percentage)}%`,
-                        backgroundColor: item.fill,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Course-wise Interest (Donut) */}
@@ -351,6 +377,12 @@ export default function DashboardPage() {
             <div className="h-52 w-full flex items-center justify-center">
               {loading ? (
                 <div className="text-xs text-slate-400">Loading chart...</div>
+              ) : !data?.courseInterest || data.courseInterest.length === 0 || data.courseInterest.every((c: any) => c.count === 0) ? (
+                <div className="h-full w-full flex flex-col items-center justify-center text-xs text-slate-400 space-y-1.5 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <PieIcon className="w-8 h-8 text-slate-300 dark:text-slate-700" />
+                  <span className="font-semibold text-slate-600 dark:text-slate-400">No program enquiries yet</span>
+                  <span className="text-[11px] text-slate-400">Course preferences will display here</span>
+                </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -382,20 +414,22 @@ export default function DashboardPage() {
             </div>
 
             {/* Donut Legend */}
-            <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-              {(data?.courseInterest || []).slice(0, 3).map((c: any, i: number) => (
-                <div key={i} className="flex items-center justify-between text-xs">
-                  <span className="flex items-center gap-2 truncate max-w-[170px] text-slate-600 dark:text-slate-400">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: DONUT_COLORS[i % DONUT_COLORS.length] }}
-                    />
-                    <span className="truncate">{c.name}</span>
-                  </span>
-                  <span className="font-semibold">{c.count}</span>
-                </div>
-              ))}
-            </div>
+            {data?.courseInterest && data.courseInterest.length > 0 && !data.courseInterest.every((c: any) => c.count === 0) && (
+              <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                {data.courseInterest.slice(0, 3).map((c: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-2 truncate max-w-[170px] text-slate-600 dark:text-slate-400">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: DONUT_COLORS[i % DONUT_COLORS.length] }}
+                      />
+                      <span className="truncate">{c.name}</span>
+                    </span>
+                    <span className="font-semibold">{c.count}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -463,27 +497,33 @@ export default function DashboardPage() {
               </div>
 
               <div className="divide-y divide-slate-100 dark:divide-slate-800/60 mt-2">
-                {(data?.topHotLeads || []).slice(0, 5).map((lead: any) => (
-                  <div key={lead.id} className="py-2.5 flex items-center justify-between text-xs">
-                    <div>
-                      <Link
-                        href={`/leads/${lead.id}`}
-                        className="font-semibold hover:text-indigo-600 transition-colors"
-                      >
-                        {lead.studentName}
-                      </Link>
-                      <p className="text-[11px] text-slate-400 truncate max-w-[160px]">
-                        {lead.course?.name || "General"}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                        {lead.score} <span className="text-[10px] text-slate-400">/ 100</span>
-                      </span>
-                      <p className="text-[10px] text-slate-400">{lead.assignedTo?.name || "Unassigned"}</p>
-                    </div>
+                {(data?.topHotLeads || []).length === 0 ? (
+                  <div className="py-8 text-center text-xs text-slate-400">
+                    No high-intent leads yet. Share your enquiry form to capture prospective candidates!
                   </div>
-                ))}
+                ) : (
+                  (data?.topHotLeads || []).slice(0, 5).map((lead: any) => (
+                    <div key={lead.id} className="py-2.5 flex items-center justify-between text-xs">
+                      <div>
+                        <Link
+                          href={`/leads/${lead.id}`}
+                          className="font-semibold hover:text-indigo-600 transition-colors"
+                        >
+                          {lead.studentName}
+                        </Link>
+                        <p className="text-[11px] text-slate-400 truncate max-w-[160px]">
+                          {lead.course?.name || "General"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                          {lead.score} <span className="text-[10px] text-slate-400">/ 100</span>
+                        </span>
+                        <p className="text-[10px] text-slate-400">{lead.assignedTo?.name || "Unassigned"}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -508,20 +548,26 @@ export default function DashboardPage() {
               </div>
 
               <div className="divide-y divide-slate-100 dark:divide-slate-800/60 mt-2">
-                {(data?.recentActivities || []).slice(0, 5).map((act: any) => (
-                  <div key={act.id} className="py-2.5 text-xs space-y-0.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[180px]">
-                        {act.title}
-                      </span>
-                      <span className="text-[10px] text-slate-400 shrink-0">{timeAgo(act.createdAt)}</span>
-                    </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
-                      {act.lead?.studentName ? `${act.lead.studentName}: ` : ""}
-                      {act.description}
-                    </p>
+                {(data?.recentActivities || []).length === 0 ? (
+                  <div className="py-8 text-center text-xs text-slate-400">
+                    No activity recorded yet. System events and counselor notes will stream here in real time.
                   </div>
-                ))}
+                ) : (
+                  (data?.recentActivities || []).slice(0, 5).map((act: any) => (
+                    <div key={act.id} className="py-2.5 text-xs space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[180px]">
+                          {act.title}
+                        </span>
+                        <span className="text-[10px] text-slate-400 shrink-0">{timeAgo(act.createdAt)}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                        {act.lead?.studentName ? `${act.lead.studentName}: ` : ""}
+                        {act.description}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

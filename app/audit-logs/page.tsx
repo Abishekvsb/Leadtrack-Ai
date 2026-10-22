@@ -154,7 +154,7 @@ export default function AuditLogsPage() {
                       <td className="p-4 font-medium text-slate-600 dark:text-slate-300">
                         {log.entityType}
                       </td>
-                      <td className="p-4 font-mono text-[11px] text-slate-400">{log.ipAddress || "127.0.0.1"}</td>
+                      <td className="p-4 font-mono text-[11px] text-slate-400">{log.ipAddress || "—"}</td>
                       <td className="p-4 max-w-xs truncate font-mono text-[11px] text-slate-500">
                         {log.details || "—"}
                       </td>

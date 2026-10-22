@@ -14,6 +14,7 @@ import {
   ChevronDown,
   CheckCircle2,
   Sparkles,
+  HelpCircle,
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useToast } from "@/components/toast-context";
@@ -132,6 +133,15 @@ export function Topbar({ user }: TopbarProps) {
 
       {/* Right Controls */}
       <div className="flex items-center gap-3">
+        {/* Help & In-App Guide */}
+        <Link
+          href="/guide"
+          className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          title="How LeadTrack AI Works (In-App Guide)"
+        >
+          <HelpCircle className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+        </Link>
+
         {/* Dark/Light Mode Switcher */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}

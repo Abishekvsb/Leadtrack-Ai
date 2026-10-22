@@ -159,7 +159,7 @@ export default function LandingPage() {
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              Public Form Demo
+              Student Enquiry Form
             </Link>
             <Link
               href="/login"
@@ -200,7 +200,7 @@ export default function LandingPage() {
               href="/login"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold text-sm shadow-xl shadow-indigo-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <span>Explore Live Institution Demo</span>
+              <span>Access Admissions Workspace</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
@@ -209,67 +209,55 @@ export default function LandingPage() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm backdrop-blur-md transition-all"
             >
               <Laptop className="w-4 h-4 text-indigo-500" />
-              <span>Test Public Student Form</span>
+              <span>Preview Public Enquiry Portal</span>
             </Link>
-          </div>
-
-          {/* Quick Demo Credentials Info */}
-          <div className="pt-2 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-center gap-2 flex-wrap">
-            <span className="font-semibold text-slate-700 dark:text-slate-300">Instant Demo Login:</span>
-            <code className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[11px] font-mono text-indigo-600 dark:text-indigo-400">
-              admin@leadtrack.ai
-            </code>
-            <span>/</span>
-            <code className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[11px] font-mono text-indigo-600 dark:text-indigo-400">
-              Admin@123
-            </code>
           </div>
         </div>
 
-        {/* Live UI Showcase Glass Card */}
+        {/* Live Feature Showcase Card */}
         <div className="max-w-6xl mx-auto mt-16 rounded-3xl p-3 bg-gradient-to-b from-indigo-500/20 via-purple-500/10 to-transparent border border-white/40 dark:border-white/10 shadow-2xl backdrop-blur-xl">
           <div className="rounded-2xl overflow-hidden border border-slate-200/60 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
               <div>
                 <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
-                  Live Operations Deck
+                  Admissions Intelligence Engine
                 </span>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
-                  Apex Institute of Technology & Management
+                  Unified Institution Command Center
                 </h3>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  155 Active Leads Tracked
+                  Real-Time Lead Scoring
                 </span>
                 <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-500/20">
-                  8 Degree Programs
+                  SLA Automation Engine
                 </span>
               </div>
             </div>
 
-            {/* Mock mini dashboard preview grid */}
+            {/* Feature metric highlights */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Total Enquiries</span>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">155</p>
-                <span className="text-[11px] font-semibold text-emerald-600 mt-1 inline-block">+14.2% this month</span>
+                <span className="text-[11px] text-slate-400 font-medium">Smart Prioritization</span>
+                <p className="text-xl font-bold text-slate-900 dark:text-white mt-1">AI Scoring (0–100)</p>
+                <span className="text-[11px] font-semibold text-emerald-600 mt-1 inline-block">Hot, Warm & Cold tiers</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Hot Leads</span>
-                <p className="text-2xl font-bold text-emerald-600 mt-1">42</p>
-                <span className="text-[11px] font-semibold text-emerald-600 mt-1 inline-block">Score &gt;= 75 / 100</span>
+                <span className="text-[11px] text-slate-400 font-medium">Pipeline Stages</span>
+                <p className="text-xl font-bold text-emerald-600 mt-1">7 Stages</p>
+                <span className="text-[11px] font-semibold text-emerald-600 mt-1 inline-block">Enquiry to Admission</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Admissions Confirmed</span>
-                <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">15</p>
-                <span className="text-[11px] font-semibold text-indigo-600 mt-1 inline-block">10.3% Conversion</span>
+                <span className="text-[11px] text-slate-400 font-medium">Counselor SLA</span>
+                <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">&lt; 2 Hours</p>
+                <span className="text-[11px] font-semibold text-indigo-600 mt-1 inline-block">Automated escalations</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">AI Automation Health</span>
-                <p className="text-2xl font-bold text-purple-600 mt-1">99.8%</p>
-                <span className="text-[11px] font-semibold text-purple-600 mt-1 inline-block">Zero SLA Breaches</span>
+                <span className="text-[11px] text-slate-400 font-medium">Security & Privacy</span>
+                <p className="text-xl font-bold text-purple-600 mt-1">Role-Based</p>
+                <span className="text-[11px] font-semibold text-purple-600 mt-1 inline-block">Audit-logged operations</span>
               </div>
             </div>
           </div>

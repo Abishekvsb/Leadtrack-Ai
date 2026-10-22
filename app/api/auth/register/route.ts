@@ -3,9 +3,42 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, signToken, setSessionCookie } from "@/lib/auth";
 import { authRegisterSchema } from "@/lib/validations";
 
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  try {
+    const userCount = await prisma.user.count();
+    return NextResponse.json({
+      success: true,
+      data: {
+        isFirstRun: userCount === 0,
+        registrationOpen: userCount === 0,
+      },
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to check registration status" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
+    // Check if any user already exists
+    const totalUsers = await prisma.user.count();
+    if (totalUsers > 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Public registration is closed. New counselors and staff must be invited by an Administrator on the Team page.",
+        },
+        { status: 403 }
+      );
+    }
+
     const parsed = authRegisterSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -15,9 +48,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, phone, institutionName, role, password } = parsed.data;
+    const { name, email, phone, institutionName, password } = parsed.data;
 
-    // Check if user exists
+    // First user is ALWAYS created as ADMIN
+    const role = "ADMIN";
+
+    // Check if email exists
     const existing = await prisma.user.findUnique({
       where: { email: email.toLowerCase().trim() },
     });
@@ -29,20 +65,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Find or create institution
-    let institution = await prisma.institution.findFirst({
-      where: { name: { equals: institutionName.trim() } },
+    // Create institution
+    const institution = await prisma.institution.create({
+      data: {
+        name: institutionName.trim(),
+        email: email.toLowerCase().trim(),
+        phone: phone.trim(),
+        settings: JSON.stringify({
+          scoringWeights: { source: 30, responseSpeed: 25, engagement: 25, completeness: 20 },
+          currency: "INR",
+          defaultLeadSource: "Website",
+          sdgGoal: "UN SDG 4 - Quality Education & Equal Access",
+        }),
+      },
     });
-
-    if (!institution) {
-      institution = await prisma.institution.create({
-        data: {
-          name: institutionName.trim(),
-          email: email.toLowerCase().trim(),
-          phone,
-        },
-      });
-    }
 
     const passwordHash = await hashPassword(password);
 
@@ -55,6 +91,20 @@ export async function POST(req: NextRequest) {
         passwordHash,
         institutionId: institution.id,
         status: "ACTIVE",
+      },
+    });
+
+    // Record initial audit log
+    await prisma.auditLog.create({
+      data: {
+        userId: user.id,
+        action: "INITIAL_ADMIN_SETUP",
+        entityType: "USER",
+        entityId: user.id,
+        details: JSON.stringify({
+          institutionName: institution.name,
+          adminEmail: user.email,
+        }),
       },
     });
 
@@ -82,6 +132,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Register API error:", error);
-    return NextResponse.json({ success: false, error: error.message || "Registration failed" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error.message || "Registration failed" },
+      { status: 500 }
+    );
   }
 }

@@ -1,134 +1,198 @@
 # LeadTrack AI – Intelligent Lead Management for Educational Institutions
 
-> **Admissions CRM & Student Intent Intelligence Platform Supporting UN SDG 4 (Quality Education & Inclusive Learning Opportunities)**
+> **Production-grade Admissions CRM & Student Intent Intelligence Platform supporting UN SDG 4 (Quality Education). Built with Next.js 14, PostgreSQL (Prisma), Tailwind CSS, and AI Copilot.**
 
 ---
 
-## 🌟 Executive Summary
+## 🌟 Overview
 
-**LeadTrack AI** is an enterprise-grade admissions management and student lead conversion CRM built for colleges, universities, and polytechnics. It bridges the gap between top-of-funnel student inquiries and verified enrollments by combining:
-- **0–100 Weighted AI Lead Intent Scoring** (Source authority, counselor touchpoint velocity, program demand, profile completeness, and recency)
-- **Omnichannel Student Inquiry Capture** with real-time duplicate phone/email detection and automated assignment
-- **Interactive Admissions Kanban Pipeline** (New → Contacted → Interested → Campus Visit → Application Submitted → Admitted → Lost)
-- **Counselor Follow-up Queue & SLA Reminders**
-- **Autonomous SLA Workflow Automation Engine** with manual live trigger capability
-- **Marketing Channel Acquisition ROI Analysis & Counselor Conversion Benchmarks**
-- **Dynamic Variable Communication Templates (Email & WhatsApp)** with real-time recipient preview
-- **Interactive AI Admissions Advisor** answering real-time pipeline queries
+**LeadTrack AI** is an institutional admissions CRM designed for universities, colleges, and polytechnics to manage student recruitment from initial enquiry to final matriculation.
+
+### Key Capabilities
+- **0–100 Weighted AI Lead Intent Scoring**: Dynamically evaluates applicant commitment based on channel authority, recency, program demand, and engagement velocity.
+- **Deduplication Engine**: Automatically normalizes incoming phone numbers and emails (+91 prefixes, spaces, lowercase formatting) to flag duplicates and offer single-click record merges.
+- **Interactive Admissions Kanban Pipeline**: Responsive drag-and-drop board (`@dnd-kit/core`) with mobile touch sensors, swipe snap columns, and an accessible "Move to" menu.
+- **AI Admissions Copilot**: Role-scoped conversational assistant grounded strictly in live database queries (with streaming responses, history, stop button, and offline rule-based fallback).
+- **First-Run Onboarding Flow**: Clean, empty database architecture with zero fake seed data, dynamic onboarding wizard, and secure invite-only team management.
+- **Automated SLA Workflows & Cron**: Background automation triggers and scheduled follow-up reminders via `POST /api/cron/run-automations`.
 
 ---
 
-## 🛠 Tech Stack Architecture
+## 🛠 Tech Stack
 
-| Layer | Technologies |
+| Layer | Technology |
 |---|---|
-| **Framework** | Next.js 14+ (App Router, Server Actions, Route Handlers) |
-| **Language** | TypeScript 5 (Strict mode) |
-| **Styling & Design** | Tailwind CSS, Glassmorphism, CSS Variables, Plus Jakarta Sans & Inter |
-| **Database & ORM** | SQLite (`file:./dev.db`) for zero-config local run, switchable to PostgreSQL (Neon / Supabase) via Prisma ORM |
-| **Drag & Drop** | `@dnd-kit/core` for Kanban admissions pipeline |
-| **Charts & Heatmaps** | Recharts (Area, Bar, Donut, Funnel, Custom Engagement Heatmap) |
-| **Spreadsheets & Reports**| `xlsx` (Excel / CSV export & import validation) |
-| **Security & Auth** | JWT sessions in httpOnly cookies, bcryptjs password hashing, role-based authorization (ADMIN, MANAGER, COUNSELOR) |
-| **Communications** | Nodemailer with SMTP integration & robust mock console logger |
-| **Celebrations** | `canvas-confetti` for enquiry completions |
+| **Framework** | Next.js 14+ (App Router, Route Handlers, Server Components) |
+| **Language** | TypeScript (Strict mode) |
+| **Database & ORM** | PostgreSQL with Prisma ORM (`DATABASE_URL` pooled + `DIRECT_URL` direct) |
+| **Styling** | Tailwind CSS, Lucide Icons, Glassmorphic design tokens |
+| **Interactions** | `@dnd-kit/core` with Pointer & Touch sensors |
+| **Visualizations**| Recharts (`ResponsiveContainer` charts with empty states) |
+| **Spreadsheets** | `xlsx` for bidirectional CSV / Excel import & export |
+| **Authentication**| HTTP-only secure cookie sessions, JWT, bcryptjs password hashing |
+| **AI Integration**| Google Gemini API / Anthropic Claude API with local grounded fallback engine |
 
 ---
 
-## ⚡ Quick Start & Run Locally
+## 🚀 First-Run Flow & Zero Demo Data Guarantee
 
-### 1. Prerequisites
+LeadTrack AI is built on a **fresh start philosophy**. The production database starts **completely empty**:
+- ❌ No fake leads or dummy contacts
+- ❌ No fake staff accounts or demo credentials
+- ❌ No hardcoded sample metrics
+
+### How First-Run Works
+1. When you deploy or launch the application for the first time, the database contains **zero users**.
+2. Visiting `/register` will automatically launch the **Institutional First-Run Setup**.
+3. You will provide your Institution Name, Campus Location, Administrator Name, Email, and Password.
+4. The system initializes your institution and assigns your account the **ADMIN** role.
+5. **Public registration is immediately closed.** Any subsequent visit to `/register` displays a notice directing candidates to the enquiry form.
+6. New counselors and managers are onboarded **strictly via secure invitation links** generated by administrators on the `/team` page (with 7-day token expiration).
+7. On your dashboard, an interactive **5-Step Onboarding Wizard** tracks your progress:
+   1. Configure Institution Profile
+   2. Add Academic Programs
+   3. Invite Admissions Counselors
+   4. Share Student Enquiry Form
+   5. Activate Automation Recipes
+
+---
+
+## 💻 Local Development Setup
+
+### Prerequisites
 - Node.js 18+ or 22+
-- npm or pnpm
+- npm (or pnpm / yarn)
+- A running PostgreSQL database (e.g. local PostgreSQL, Docker, or free Neon/Supabase project)
 
-### 2. Installation
+### 1. Clone & Install
 ```bash
-# Clone or navigate into directory
-cd "lead AI"
-
-# Install dependencies
+git clone https://github.com/Abishekvsb/Leadtrack-Ai.git
+cd Leadtrack-Ai
 npm install
 ```
 
-### 3. Database Initialization
+### 2. Configure Environment Variables
+Copy the example file:
 ```bash
-# Push Prisma schema to local database
-npx prisma db push
-
-# Seed 155+ realistic student leads, courses, automations & staff
-npx tsx prisma/seed.ts
+cp .env.example .env
+```
+Open `.env` and fill in your PostgreSQL credentials:
+```env
+DATABASE_URL="postgresql://neondb_owner:your_password@ep-sample-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+DIRECT_URL="postgresql://neondb_owner:your_password@ep-sample.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+JWT_SECRET="your-secure-random-32-character-secret"
+NEXT_PUBLIC_APP_URL="https://leadtrack-ai.onrender.com"
+CRON_SECRET="your-secure-cron-secret-token"
 ```
 
-### 4. Run Development Server
+### 3. Run Database Migrations & Seed Defaults
+```bash
+# Apply migrations to PostgreSQL
+npx prisma migrate deploy
+
+# Seed system defaults (default message templates and inactive automation recipes only)
+npm run seed
+```
+
+### 4. Start the Server
 ```bash
 npm run dev
 ```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser!
+Open your application in your browser (`https://leadtrack-ai.onrender.com` in production or your local dev port)! Visit `/register` to create your administrator account.
 
 ---
 
-## 🔑 Pre-Configured Demo Accounts
+## 🐘 Neon PostgreSQL Setup Guide
 
-| Role | Email | Password | Access Scope |
-|---|---|---|---|
-| **Administrator / Dean** | `admin@leadtrack.ai` | `Admin@123` | Full system access, Audit logs, Financial ROI, Team management |
-| **Admissions Counselor** | `counselor.priya@leadtrack.ai` | `Priya@123` | Assigned lead queue, follow-ups, call logger |
-| **Admissions Counselor** | `counselor.rahul@leadtrack.ai` | `Rahul@123` | Assigned lead queue, follow-ups, call logger |
-| **Admissions Manager** | `manager.anita@leadtrack.ai` | `Counselor@123` | Counselor oversight, pipeline analytics |
+Neon provides serverless PostgreSQL with instant autoscaling and connection pooling:
 
-> **Tip:** You can also use the 1-Click quick sign-in buttons on the `/login` screen to sign in instantly as any role!
-
----
-
-## 🧭 Page Sitemap (All 18 Production Pages)
-
-1. **`/`** — Ultra-Premium Landing Page (Hero, Features, How It Works, Stats Counters, UN SDG 4 section, FAQ, CTA)
-2. **`/login`** — Split-screen authentication with 1-click demo filler buttons, remember me, show/hide password
-3. **`/register`** — Institutional onboarding with role picker and password strength meter
-4. **`/forgot-password`** — Password reset link dispatcher with expiry tokens
-5. **`/reset-password`** — Secure password update with token validation
-6. **`/enquire`** — Public embeddable Student Enquiry Form with duplicate detection and confetti celebration
-7. **`/dashboard`** — Executive Command Center (6 KPIs with sparklines, Area Chart, Bar Chart, Funnel, Donut, Heatmap, Today's Follow-ups)
-8. **`/leads`** — Advanced Leads Registry (Search, 6 multi-filters, sorting, pagination, column toggles, CSV import modal, Excel export)
-9. **`/leads/[id]`** — Complete Student Dossier (Score gauge, Next Best Action, Pipeline stepper, Timeline, Notes, Documents, 1-Click Email/WhatsApp/Call, Deduplication merge)
-10. **`/pipeline`** — Drag & drop Kanban Board syncing database status in real-time
-11. **`/follow-ups`** — Counselor task queue with Overdue, Today, Upcoming tabs, calendar timeline, task resolver and reschedule
-12. **`/automation`** — Workflow Rule Builder with live execution audit history and "Run Automation Engine Now" button
-13. **`/templates`** — Standardized Email & WhatsApp templates with live dynamic variable interpolation preview
-14. **`/analytics`** — Deep Source ROI, counselor conversion leaderboards, program seat fulfillment, and CSV/PDF export
-15. **`/team`** — Counselor roster with workload counters, role modifier, and account provisioning
-16. **`/settings`** — Institution campus profile, degree program CRUD, and scoring engine weights
-17. **`/notifications`** — Centralized alert inbox with unread filters and quick navigation
-18. **`/audit-logs`** — Administrative compliance trail tracking user actions, IP addresses, and timestamps
-
----
-
-## 🌐 Deploying to Production (Vercel + Neon / Supabase)
-
-To deploy to Vercel with PostgreSQL:
-1. In `prisma/schema.prisma`, update the datasource:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-2. Set your `DATABASE_URL` in your Vercel project environment variables to your Neon or Supabase connection string:
+1. Create a free account at [neon.tech](https://neon.tech) and start a new project.
+2. In your Neon Dashboard, go to **Connection Details**:
+   - Check **Connection Pooling**: Copy this string into `DATABASE_URL` in your `.env` (it contains `-pooler` in the host).
+   - Uncheck **Connection Pooling**: Copy this direct connection string into `DIRECT_URL` in your `.env`.
+3. Example configuration:
    ```env
-   DATABASE_URL="postgresql://user:password@ep-host.neon.tech/leadtrack?sslmode=require"
-   JWT_SECRET="your-production-secret-min-32-chars"
-   NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
+   DATABASE_URL="postgresql://neondb_owner:npg_xyz@ep-plain-tree-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+   DIRECT_URL="postgresql://neondb_owner:npg_xyz@ep-plain-tree.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
    ```
-3. Run `npx prisma db push && npx tsx prisma/seed.ts` on the production database.
+4. Run migrations:
+   ```bash
+   npx prisma migrate deploy
+   ```
 
 ---
 
-## 📜 UN SDG 4 Alignment
+## ☁️ Render Deployment Steps
 
-LeadTrack AI is purposefully designed to advance **UN Sustainable Development Goal 4 (Quality Education)**:
-- **Target 4.3 (Equal Access to Affordable Higher Education):** Transparent, objective AI scoring eliminates subjective bias.
-- **Timely Information:** Automated merit scholarship broadcasts prevent deserving students from missing financial aid.
-- **Zero Lost Inquiries:** Automated SLA workflows guarantee every student query receives structured guidance.
+### Option A: 1-Click Blueprint (Recommended)
+1. Push your repository to GitHub.
+2. Log in to your [Render Dashboard](https://dashboard.render.com).
+3. Click **New +** → **Blueprint**.
+4. Select your LeadTrack AI repository. Render will automatically read `render.yaml`.
+5. Enter your environment variables:
+   - `DATABASE_URL`: Your pooled PostgreSQL connection string.
+   - `DIRECT_URL`: Your direct PostgreSQL connection string.
+   - `NEXT_PUBLIC_APP_URL`: Your Render service URL (e.g., `https://leadtrack-ai.onrender.com`).
+   - `GEMINI_API_KEY`: (Optional) Free Google Gemini API key.
+6. Click **Apply**. Render will deploy your service in the Singapore region!
+
+### Option B: Manual Web Service
+- **Environment**: Node
+- **Region**: Singapore
+- **Build Command**: `npm install && npx prisma migrate deploy && npm run build`
+- **Start Command**: `npm start`
+- **Health Check Path**: `/api/health`
 
 ---
-© LeadTrack AI. Built for institutions shaping the future of education.
+
+## ⏱️ Background Automations & Cron Setup
+
+To execute scheduled follow-up SLA reminders and autonomous lead triggers, call the protected cron endpoint every 15 minutes:
+
+### Endpoint
+```http
+POST /api/cron/run-automations
+Headers:
+  Authorization: Bearer YOUR_CRON_SECRET
+  (or query: ?secret=YOUR_CRON_SECRET)
+```
+
+### Setup Options
+- **Render Cron Job**:
+  Create a Cron Job service in Render running every 15 minutes (`*/15 * * * *`):
+  ```bash
+  curl -X POST "https://leadtrack-ai.onrender.com/api/cron/run-automations?secret=$CRON_SECRET"
+  ```
+- **External Webhook (UptimeRobot / cron-job.org)**:
+  Configure an HTTP monitor pointing to:
+  `https://leadtrack-ai.onrender.com/api/cron/run-automations?secret=YOUR_CRON_SECRET`
+- **In-App Manual Trigger**:
+  Admins can also click **"Run Automation Engine Now"** at any time on `/automation`.
+
+---
+
+## 🤖 AI Copilot Capabilities
+
+The built-in Copilot is strictly scoped to institutional admissions intelligence:
+- Live database queries scoped to the user's role (Counselors see only their leads).
+- Available tools: `getTodaysFollowUps`, `getHotLeads`, `getOverdueFollowUps`, `getLeadByNameOrPhone`, `getFunnelStats`, `getSourcePerformance`, `getCourseDemand`, `getCounselorPerformance`, `getConversionBottleneck`, `getAutomationStatus`, `getNewLeadsCount`.
+- Streaming responses with stop button and suggested quick chips.
+- Built-in App Knowledge Base explaining workflows with direct navigation links.
+- Graceful offline fallback: if no API key is provided, the rule-based intent router serves accurate answers grounded in live metrics.
+
+---
+
+## 📱 Mobile-First Features
+
+- Responsive layouts tested at 360px, 390px, 768px, and 1280px.
+- Bottom navigation bar and slide-over menu drawer on mobile viewports.
+- Stacked card view for leads on screens `< 768px` with direct `tel:` actions.
+- Touch sensor support on Kanban pipeline (`@dnd-kit/core` with touch delay and snap scrolling).
+- Accessible "Move to" stage menu for quick stage transitions without dragging.
+- PWA `manifest.json` configured with mobile theme color `#4f46e5`.
+
+---
+
+## 📄 License
+
+LeadTrack AI is open-source under the MIT License. Designed to empower institutions to expand higher education access globally in alignment with UN SDG 4.

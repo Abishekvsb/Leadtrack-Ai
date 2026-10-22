@@ -26,6 +26,7 @@ import {
   Sparkles,
   ArrowUpDown,
   ExternalLink,
+  Phone,
 } from "lucide-react";
 import { STATUS_COLORS, STATUS_LABELS, SCORE_COLORS, LeadStatus, ScoreCategory } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -51,6 +52,7 @@ function LeadsContent() {
   const [assignedToId, setAssignedToId] = useState(searchParams.get("assignedToId") || "");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   // Selection for bulk actions
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -416,9 +418,9 @@ function LeadsContent() {
 
         {/* Search & Multi-Filters Toolbar */}
         <div className="p-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {/* Search Input */}
-            <div className="sm:col-span-2 relative">
+          {/* Search bar + Mobile filter toggle */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <form onSubmit={handleSearchSubmit}>
                 <input
@@ -426,16 +428,32 @@ function LeadsContent() {
                   placeholder="Search name, phone, email, city..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none text-slate-900 dark:text-slate-100"
+                  className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none text-slate-900 dark:text-slate-100 min-h-[44px]"
                 />
               </form>
             </div>
 
+            {/* Mobile Filters Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setShowMobileFilters(!showMobileFilters)}
+              className="sm:hidden min-h-[44px] px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-200"
+            >
+              <Filter className="w-4 h-4" />
+              <span>Filters</span>
+              {(status !== "ALL" || courseId !== "ALL" || leadSource !== "ALL" || scoreCategory !== "ALL") && (
+                <span className="w-2 h-2 rounded-full bg-indigo-600" />
+              )}
+            </button>
+          </div>
+
+          {/* Filter dropdowns (Visible on desktop or when toggled on mobile) */}
+          <div className={`${showMobileFilters ? "grid" : "hidden sm:grid"} grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-1`}>
             {/* Status Filter */}
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
             >
               <option value="ALL">All Statuses</option>
               <option value="NEW">New Enquiry</option>
@@ -451,7 +469,7 @@ function LeadsContent() {
             <select
               value={scoreCategory}
               onChange={(e) => setScoreCategory(e.target.value)}
-              className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
             >
               <option value="ALL">All AI Scores</option>
               <option value="HOT">Hot Leads (Score &ge; 75)</option>
@@ -463,7 +481,7 @@ function LeadsContent() {
             <select
               value={leadSource}
               onChange={(e) => setLeadSource(e.target.value)}
-              className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
             >
               <option value="ALL">All Sources</option>
               <option value="Website">Website</option>
@@ -480,7 +498,7 @@ function LeadsContent() {
             <select
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
             >
               <option value="ALL">All Programs</option>
               {courses.map((c) => (
@@ -586,7 +604,8 @@ function LeadsContent() {
 
         {/* Data Table */}
         <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Desktop & Tablet Data Table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
@@ -781,6 +800,109 @@ function LeadsContent() {
             </table>
           </div>
 
+          {/* Mobile Stacked Cards View (visible on < 768px) */}
+          <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+            {loading ? (
+              <div className="p-8 text-center text-slate-400">
+                <Loader2 className="w-6 h-6 animate-spin text-indigo-500 mx-auto mb-2" />
+                <span className="text-xs">Loading leads...</span>
+              </div>
+            ) : leads.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 space-y-2">
+                <Users2 className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600" />
+                <p className="font-semibold text-sm">No leads match your criteria</p>
+                <p className="text-[11px]">Try adjusting your search terms or filters.</p>
+              </div>
+            ) : (
+              leads.map((lead) => {
+                const isSelected = selectedIds.includes(lead.id);
+                const statusInfo = STATUS_COLORS[lead.status as LeadStatus] || STATUS_COLORS.NEW;
+                const scoreInfo = SCORE_COLORS[lead.scoreCategory as ScoreCategory] || SCORE_COLORS.WARM;
+
+                return (
+                  <div
+                    key={lead.id}
+                    className={`p-4 space-y-3 transition-colors ${
+                      isSelected ? "bg-indigo-50/50 dark:bg-indigo-950/20" : ""
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <button
+                          onClick={() => handleToggleSelect(lead.id)}
+                          className="min-h-[36px] min-w-[36px] flex items-center justify-center -ml-1"
+                        >
+                          {isSelected ? (
+                            <CheckSquare className="w-5 h-5 text-indigo-600" />
+                          ) : (
+                            <Square className="w-5 h-5 text-slate-400" />
+                          )}
+                        </button>
+                        <div>
+                          <Link
+                            href={`/leads/${lead.id}`}
+                            className="font-bold text-sm text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-1"
+                          >
+                            {lead.studentName}
+                          </Link>
+                          <p className="text-[11px] text-slate-400">{lead.city || "No city specified"}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className={`px-2 py-0.5 rounded-md font-bold text-xs ${scoreInfo.badge}`}>
+                          {lead.score}
+                        </span>
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}>
+                          {STATUS_LABELS[lead.status as LeadStatus] || lead.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">Program & Source</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
+                          {lead.course?.code || lead.course?.name || "General"}
+                        </span>
+                        <span className="text-slate-500 text-[10px]">{lead.leadSource}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">Assigned Counselor</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
+                          {lead.assignedTo?.name || "Unassigned"}
+                        </span>
+                        <span className="text-slate-400 text-[10px]">{formatDate(lead.createdAt)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center gap-3 text-xs">
+                        {lead.phone && (
+                          <a
+                            href={`tel:${lead.phone}`}
+                            className="min-h-[44px] flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium hover:text-indigo-600"
+                          >
+                            <Phone className="w-4 h-4 text-emerald-600" />
+                            <span>{lead.phone}</span>
+                          </a>
+                        )}
+                      </div>
+
+                      <Link
+                        href={`/leads/${lead.id}`}
+                        className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 font-semibold text-xs flex items-center gap-1 text-slate-700 dark:text-slate-200 transition-colors"
+                      >
+                        <span>View</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
           {/* Pagination Footer */}
           <div className="flex items-center justify-between p-4 border-t border-slate-100 dark:border-slate-800 text-xs">
             <span className="text-slate-400">
@@ -836,6 +958,7 @@ function LeadsContent() {
                     <label className="text-xs font-semibold">Phone Number *</label>
                     <input
                       type="tel"
+                      inputMode="tel"
                       required
                       placeholder="+91 98765 43210"
                       value={createFormData.phone}
@@ -850,6 +973,7 @@ function LeadsContent() {
                     <label className="text-xs font-semibold">Email *</label>
                     <input
                       type="email"
+                      inputMode="email"
                       required
                       placeholder="student@gmail.com"
                       value={createFormData.email}

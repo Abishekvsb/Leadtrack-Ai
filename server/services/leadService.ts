@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { computeLeadScore } from "@/lib/scoring";
 import { LeadFilterParams, UserSession } from "@/lib/types";
+import { normalizeEmail, normalizePhone } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 
 export async function listLeads(params: LeadFilterParams, user?: UserSession | null) {
@@ -107,12 +108,20 @@ export async function getLeadById(id: string) {
 }
 
 export async function checkDuplicate(email: string, phone: string, excludeId?: string) {
-  return prisma.lead.findFirst({
+  const normEmail = normalizeEmail(email);
+  const normPhone = normalizePhone(phone);
+
+  if (!normEmail && !normPhone) return null;
+
+  const candidates = await prisma.lead.findMany({
     where: {
       AND: [
         excludeId ? { id: { not: excludeId } } : {},
         {
-          OR: [{ email: { equals: email.trim() } }, { phone: { equals: phone.trim() } }],
+          OR: [
+            normEmail ? { email: { equals: normEmail, mode: "insensitive" } } : {},
+            normPhone && normPhone.length >= 7 ? { phone: { contains: normPhone.slice(-7) } } : {},
+          ],
         },
       ],
     },
@@ -121,6 +130,21 @@ export async function checkDuplicate(email: string, phone: string, excludeId?: s
       assignedTo: { select: { name: true } },
     },
   });
+
+  return (
+    candidates.find((c) => {
+      const cPhone = normalizePhone(c.phone);
+      const cEmail = normalizeEmail(c.email);
+      const emailMatches = !!normEmail && !!cEmail && normEmail === cEmail;
+      const phoneMatches =
+        !!normPhone &&
+        !!cPhone &&
+        (cPhone === normPhone ||
+          (normPhone.length >= 10 && cPhone.endsWith(normPhone.slice(-10))) ||
+          (cPhone.length >= 10 && normPhone.endsWith(cPhone.slice(-10))));
+      return emailMatches || phoneMatches;
+    }) || null
+  );
 }
 
 export async function createLead(data: any, createdByUserId?: string | null) {

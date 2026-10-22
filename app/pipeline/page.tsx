@@ -21,6 +21,7 @@ import {
   useDraggable,
   useDroppable,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -38,12 +39,21 @@ const COLUMNS: LeadStatus[] = [
 ];
 
 // Draggable Lead Card Component
-function KanbanCard({ lead, isOverlay = false }: { lead: any; isOverlay?: boolean }) {
+function KanbanCard({
+  lead,
+  isOverlay = false,
+  onMoveStatus,
+}: {
+  lead: any;
+  isOverlay?: boolean;
+  onMoveStatus?: (leadId: string, status: LeadStatus) => void;
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: lead.id,
     data: { lead },
   });
 
+  const [showMoveMenu, setShowMoveMenu] = useState(false);
   const scoreInfo = SCORE_COLORS[lead.scoreCategory as ScoreCategory] || SCORE_COLORS.WARM;
 
   return (
@@ -51,7 +61,7 @@ function KanbanCard({ lead, isOverlay = false }: { lead: any; isOverlay?: boolea
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className={`p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-all cursor-grab active:cursor-grabbing space-y-2.5 text-xs ${
+      className={`p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-all cursor-grab active:cursor-grabbing space-y-2.5 text-xs relative ${
         isDragging ? "opacity-30 border-dashed border-indigo-400" : ""
       } ${isOverlay ? "shadow-2xl ring-2 ring-indigo-500 scale-105" : ""}`}
     >
@@ -59,7 +69,7 @@ function KanbanCard({ lead, isOverlay = false }: { lead: any; isOverlay?: boolea
         <Link
           href={`/leads/${lead.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-1"
+          className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-1 min-h-[24px] flex items-center"
         >
           {lead.studentName}
         </Link>
@@ -79,14 +89,58 @@ function KanbanCard({ lead, isOverlay = false }: { lead: any; isOverlay?: boolea
 
       <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400">
         <span className="truncate max-w-[100px]">{lead.assignedTo?.name || "Unassigned"}</span>
-        <span className="font-semibold text-slate-500">{lead.leadSource}</span>
+
+        {/* Move To Quick Menu (Alternative to drag on mobile/touch) */}
+        {!isOverlay && onMoveStatus && (
+          <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setShowMoveMenu(!showMoveMenu)}
+              className="inline-flex items-center gap-1 px-2 py-1 min-h-[32px] rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium transition-colors"
+              title="Move to stage"
+            >
+              <span>Move</span>
+              <MoveRight className="w-3 h-3" />
+            </button>
+
+            {showMoveMenu && (
+              <div className="absolute right-0 bottom-full mb-1.5 w-48 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl py-1.5 z-30 animate-in fade-in">
+                <p className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  Move lead to
+                </p>
+                {COLUMNS.filter((c) => c !== lead.status).map((col) => (
+                  <button
+                    key={col}
+                    type="button"
+                    onClick={() => {
+                      setShowMoveMenu(false);
+                      onMoveStatus(lead.id, col);
+                    }}
+                    className="w-full text-left px-2.5 py-1.5 min-h-[36px] text-xs hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2 text-slate-700 dark:text-slate-200"
+                  >
+                    <span className={`w-2 h-2 rounded-full ${STATUS_COLORS[col]?.dot || "bg-slate-400"}`} />
+                    <span>{STATUS_LABELS[col]}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 // Droppable Kanban Column Component
-function KanbanColumn({ status, leads, onMoveQuick }: { status: LeadStatus; leads: any[]; onMoveQuick: (id: string, newStatus: string) => void }) {
+function KanbanColumn({
+  status,
+  leads,
+  onMoveQuick,
+}: {
+  status: LeadStatus;
+  leads: any[];
+  onMoveQuick: (id: string, newStatus: LeadStatus) => void;
+}) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
   });
@@ -96,7 +150,7 @@ function KanbanColumn({ status, leads, onMoveQuick }: { status: LeadStatus; lead
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col rounded-3xl p-3 bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 w-72 shrink-0 max-h-[80vh] transition-colors ${
+      className={`flex flex-col rounded-3xl p-3 bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 w-[84vw] sm:w-72 shrink-0 max-h-[80vh] transition-colors snap-start ${
         isOver ? "bg-indigo-50/80 dark:bg-indigo-950/30 border-indigo-500/50" : ""
       }`}
     >
@@ -120,7 +174,9 @@ function KanbanColumn({ status, leads, onMoveQuick }: { status: LeadStatus; lead
             Drop leads here
           </div>
         ) : (
-          leads.map((lead) => <KanbanCard key={lead.id} lead={lead} />)
+          leads.map((lead) => (
+            <KanbanCard key={lead.id} lead={lead} onMoveStatus={onMoveQuick} />
+          ))
         )}
       </div>
     </div>
@@ -133,11 +189,17 @@ export default function PipelinePage() {
   const [loading, setLoading] = useState(true);
   const [activeLead, setActiveLead] = useState<any | null>(null);
 
-  // Setup DnD Sensors
+  // Setup DnD Sensors (Pointer + Touch with delay/tolerance for mobile dragging)
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 5,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
       },
     })
   );
@@ -204,6 +266,36 @@ export default function PipelinePage() {
     }
   };
 
+  const handleMoveStatus = async (leadId: string, targetStatus: LeadStatus) => {
+    const currentLead = leads.find((l) => l.id === leadId);
+    if (!currentLead || currentLead.status === targetStatus) return;
+
+    // Optimistic UI update
+    setLeads((prev) =>
+      prev.map((l) => (l.id === leadId ? { ...l, status: targetStatus } : l))
+    );
+
+    try {
+      const res = await fetch(`/api/leads/${leadId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: targetStatus }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        success(
+          `${currentLead.studentName} moved to ${STATUS_LABELS[targetStatus]}`
+        );
+      } else {
+        error(data.error || "Failed to update pipeline status");
+        fetchLeads();
+      }
+    } catch {
+      error("Network error updating lead");
+      fetchLeads();
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6 pb-12">
@@ -221,14 +313,14 @@ export default function PipelinePage() {
           <div className="flex items-center gap-2">
             <Link
               href="/leads"
-              className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="min-h-[44px] px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs flex items-center justify-center"
             >
               Table View
             </Link>
           </div>
         </div>
 
-        {/* Kanban Board Container with Horizontal Scroll */}
+        {/* Kanban Board Container with Horizontal Scroll & Touch Snap */}
         {loading ? (
           <div className="py-24 text-center space-y-3">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto" />
@@ -236,7 +328,7 @@ export default function PipelinePage() {
           </div>
         ) : (
           <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex gap-4 overflow-x-auto pb-6 pt-2">
+            <div className="flex gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth">
               {COLUMNS.map((col) => {
                 const colLeads = leads.filter((l) => l.status === col);
                 return (
@@ -244,9 +336,7 @@ export default function PipelinePage() {
                     key={col}
                     status={col}
                     leads={colLeads}
-                    onMoveQuick={(id, newSt) => {
-                      // fallback
-                    }}
+                    onMoveQuick={handleMoveStatus}
                   />
                 );
               })}

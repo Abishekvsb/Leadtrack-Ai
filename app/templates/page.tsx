@@ -34,10 +34,10 @@ export default function TemplatesPage() {
   const [body, setBody] = useState("");
 
   const sampleVariables: Record<string, string> = {
-    "{{name}}": "Aarav Sharma",
+    "{{name}}": "Student Candidate",
     "{{course}}": "B.Tech Computer Science",
-    "{{counselor}}": "Priya Sharma",
-    "{{institution}}": "Apex Institute of Technology",
+    "{{counselor}}": "Admissions Counselor",
+    "{{institution}}": "Your Institution",
   };
 
   const loadTemplates = async () => {

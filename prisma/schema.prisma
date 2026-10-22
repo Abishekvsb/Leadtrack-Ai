@@ -1,14 +1,13 @@
-// Prisma Schema for LeadTrack AI
-// Defaults to SQLite for seamless zero-config local run
-// For PostgreSQL, change provider to "postgresql" and update DATABASE_URL
+// Prisma Schema for LeadTrack AI (PostgreSQL)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -28,11 +27,27 @@ model User {
   followUps     FollowUp[]
   notifications Notification[]
   auditLogs     AuditLog[]
+  invitesSent   UserInvite[]   @relation("InvitedByUser")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
   @@index([email])
   @@index([role])
+}
+
+model UserInvite {
+  id          String    @id @default(cuid())
+  email       String
+  role        String    @default("COUNSELOR") // COUNSELOR, MANAGER, ADMIN
+  token       String    @unique
+  invitedById String?
+  invitedBy   User?     @relation("InvitedByUser", fields: [invitedById], references: [id], onDelete: SetNull)
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([token])
+  @@index([email])
 }
 
 model Institution {
@@ -72,6 +87,7 @@ model Course {
   updatedAt     DateTime     @updatedAt
 
   @@index([code])
+  @@index([institutionId])
 }
 
 model Lead {
@@ -115,6 +131,7 @@ model Lead {
   @@index([assignedToId])
   @@index([scoreCategory])
   @@index([createdAt])
+  @@index([followUpDue])
 }
 
 model LeadActivity {
@@ -177,7 +194,7 @@ model Automation {
   conditionConfig String          @default("{}") // JSON
   actionType      String // SEND_EMAIL, SEND_WHATSAPP, NOTIFY_COUNSELOR, UPDATE_STATUS, ASSIGN_LEAD
   actionConfig    String          @default("{}") // JSON
-  isActive        Boolean         @default(true)
+  isActive        Boolean         @default(false) // Default disabled until enabled by admin
   executionCount  Int             @default(0)
   lastRunAt       DateTime?
   logs            AutomationLog[]

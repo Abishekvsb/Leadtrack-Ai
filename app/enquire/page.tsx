@@ -110,7 +110,7 @@ export default function PublicEnquiryPage() {
             Apply / Enquire for Admissions
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
-            Apex Institute of Technology & Management – Empowering high-potential careers with world-class academics & scholarships.
+            Submit your details below to receive comprehensive course brochures, fee structures, and scholarship eligibility criteria.
           </p>
         </div>
 

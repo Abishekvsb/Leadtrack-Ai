@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         entityType: "USER",
         entityId: user.id,
         details: JSON.stringify({ email: user.email, role: user.role }),
-        ipAddress: req.headers.get("x-forwarded-for") || "127.0.0.1",
+        ipAddress: req.headers.get("x-forwarded-for")?.split(",")[0].trim() || req.headers.get("x-real-ip") || "unknown",
       },
     });
 

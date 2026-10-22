@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -16,10 +16,18 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#4f46e5",
+};
+
 export const metadata: Metadata = {
   title: "LeadTrack AI – Intelligent Lead Management for Educational Institutions",
   description:
     "Production-grade, AI-driven student enquiry management, lead scoring, and admissions pipeline platform supporting UN SDG 4 (Quality Education).",
+  manifest: "/manifest.json",
   keywords: [
     "lead management",
     "education crm",

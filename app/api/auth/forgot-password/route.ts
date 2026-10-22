@@ -33,7 +33,11 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${token}`;
+      const proto = req.headers.get("x-forwarded-proto") || "https";
+      const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
+      const fallbackUrl = host ? `${proto}://${host}` : "https://leadtrack-ai.onrender.com";
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || fallbackUrl;
+      const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
       await sendEmail({
         to: user.email,

@@ -61,11 +61,6 @@ export default function LoginPage() {
     }
   };
 
-  const fillCredentials = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setValidationError("");
-  };
 
   return (
     <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
@@ -120,7 +115,7 @@ export default function LoginPage() {
         {/* Footer info */}
         <div className="text-xs text-slate-400 flex items-center justify-between">
           <span>Supporting UN SDG 4: Quality Education</span>
-          <span className="text-indigo-300">Apex Institute Demo Instance</span>
+          <span className="text-indigo-300">Secure Admissions Platform</span>
         </div>
       </div>
 
@@ -134,36 +129,6 @@ export default function LoginPage() {
             <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1.5">
               Enter your credentials to access your admissions dashboard
             </p>
-          </div>
-
-          {/* Quick Demo Credentials Autofill */}
-          <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-800/40">
-            <span className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider block mb-2">
-              ⚡ 1-Click Quick Demo Sign In:
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => fillCredentials("admin@leadtrack.ai", "Admin@123")}
-                className="px-2 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all shadow-xs"
-              >
-                Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => fillCredentials("counselor.priya@leadtrack.ai", "Priya@123")}
-                className="px-2 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all shadow-xs"
-              >
-                Priya (Counselor)
-              </button>
-              <button
-                type="button"
-                onClick={() => fillCredentials("counselor.rahul@leadtrack.ai", "Rahul@123")}
-                className="px-2 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-800 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all shadow-xs"
-              >
-                Rahul (Counselor)
-              </button>
-            </div>
           </div>
 
           {validationError && (

@@ -320,7 +320,7 @@ export default function LeadDetailPage() {
         .replace(/{{name}}/g, lead.studentName)
         .replace(/{{course}}/g, lead.course?.name || "Program")
         .replace(/{{counselor}}/g, lead.assignedTo?.name || "Admissions Office")
-        .replace(/{{institution}}/g, "Apex Institute");
+        .replace(/{{institution}}/g, lead.institution?.name || "Admissions Office");
       setEmailSubject(subj);
       setEmailBody(body);
     }
@@ -437,7 +437,7 @@ export default function LeadDetailPage() {
             {/* 1-Click WhatsApp */}
             <a
               href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-                `Hello ${lead.studentName}! This is ${lead.assignedTo?.name || "Admissions"} from Apex Institute regarding your enquiry for ${lead.course?.name || "our programs"}.`
+                `Hello ${lead.studentName}! This is ${lead.assignedTo?.name || "Admissions"} from ${lead.institution?.name || "our admissions office"} regarding your enquiry for ${lead.course?.name || "our programs"}.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"

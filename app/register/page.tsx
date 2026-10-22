@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -12,9 +12,11 @@ import {
   Building,
   ArrowRight,
   Loader2,
-  CheckCircle2,
+  ShieldAlert,
+  ShieldCheck,
   Eye,
   EyeOff,
+  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/toast-context";
 
@@ -22,12 +24,14 @@ export default function RegisterPage() {
   const router = useRouter();
   const { success, error } = useToast();
 
+  const [checkingStatus, setCheckingStatus] = useState(true);
+  const [isFirstRun, setIsFirstRun] = useState(true);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     institutionName: "",
-    role: "COUNSELOR",
     password: "",
     confirmPassword: "",
     terms: false,
@@ -37,14 +41,30 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [validationError, setValidationError] = useState("");
 
-  // Password strength calculation
+  useEffect(() => {
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/auth/register");
+        const json = await res.json();
+        if (json.success && json.data) {
+          setIsFirstRun(json.data.isFirstRun);
+        }
+      } catch {
+        // Fallback default
+      } finally {
+        setCheckingStatus(false);
+      }
+    }
+    checkStatus();
+  }, []);
+
   const getPasswordStrength = (pass: string) => {
     let score = 0;
     if (pass.length >= 8) score++;
     if (/[A-Z]/.test(pass)) score++;
     if (/[0-9]/.test(pass)) score++;
     if (/[^A-Za-z0-9]/.test(pass)) score++;
-    return score; // 0 to 4
+    return score;
   };
 
   const strength = getPasswordStrength(formData.password);
@@ -53,13 +73,18 @@ export default function RegisterPage() {
     e.preventDefault();
     setValidationError("");
 
+    if (formData.password.length < 8) {
+      setValidationError("Password must be at least 8 characters.");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setValidationError("Passwords do not match.");
       return;
     }
 
     if (!formData.terms) {
-      setValidationError("You must accept the terms of service and privacy policy.");
+      setValidationError("You must accept the terms of service.");
       return;
     }
 
@@ -77,7 +102,7 @@ export default function RegisterPage() {
         setValidationError(data.error || "Registration failed");
         error(data.error || "Could not register account");
       } else {
-        success("Account created successfully! Welcome to LeadTrack AI.", "Registration Complete");
+        success("Institution and Administrator account created successfully!", "Setup Complete");
         router.push("/dashboard");
       }
     } catch {
@@ -87,6 +112,53 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  if (checkingStatus) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isFirstRun) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 text-slate-900 dark:text-slate-100">
+        <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-2xl text-center space-y-6">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center mx-auto">
+            <ShieldAlert className="w-7 h-7" />
+          </div>
+          <div>
+            <h2 className="font-display text-2xl font-extrabold text-slate-900 dark:text-white">
+              Public Registration Closed
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              This institution workspace has already been initialized. To protect institutional data, new counselors and staff are registered exclusively via Administrator invite links.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left text-xs space-y-2">
+            <span className="font-semibold text-slate-700 dark:text-slate-300 block">How to join:</span>
+            <p className="text-slate-600 dark:text-slate-400">
+              1. Contact your Admissions Dean or Administrator.<br />
+              2. Request an invite link from the <span className="font-mono text-indigo-600">Team</span> tab.<br />
+              3. Open the link to set your password and join.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Link
+              href="/login"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all"
+            >
+              <span>Go to Sign In</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 text-slate-900 dark:text-slate-100">
@@ -100,9 +172,13 @@ export default function RegisterPage() {
               LeadTrack AI
             </span>
           </Link>
-          <h2 className="font-display text-2xl font-extrabold">Register Institution Account</h2>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>First-Run Workspace Setup</span>
+          </div>
+          <h2 className="font-display text-2xl font-extrabold">Register Primary Administrator</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Set up intelligent lead management and counseling workflows
+            Create your institution workspace. You will be assigned the full Administrator role.
           </p>
         </div>
 
@@ -113,15 +189,30 @@ export default function RegisterPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Institution Name</label>
+            <div className="relative">
+              <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                required
+                placeholder="e.g. National Institute of Technology"
+                value={formData.institutionName}
+                onChange={(e) => setFormData({ ...formData, institutionName: e.target.value })}
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your Full Name</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Admin Full Name</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   required
-                  placeholder="Dr. Rajeshwar Sharma"
+                  placeholder="Dean / Director Name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
@@ -130,11 +221,12 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Phone Number</label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Official Phone</label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="tel"
+                  inputMode="tel"
                   required
                   placeholder="+91 98765 43210"
                   value={formData.phone}
@@ -146,13 +238,14 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Work Email</label>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Work Email (Admin Login)</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="email"
+                inputMode="email"
                 required
-                placeholder="admissions@institution.edu"
+                placeholder="admin@institution.edu"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
@@ -160,37 +253,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Institution Name</label>
-              <div className="relative">
-                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  required
-                  placeholder="Apex Institute of Tech"
-                  value={formData.institutionName}
-                  onChange={(e) => setFormData({ ...formData, institutionName: e.target.value })}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your Role</label>
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
-              >
-                <option value="COUNSELOR">Admissions Counselor</option>
-                <option value="MANAGER">Admissions Manager</option>
-                <option value="ADMIN">Dean / Director (Admin)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Password with Strength Meter */}
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Password</label>
             <div className="relative">
@@ -212,7 +274,6 @@ export default function RegisterPage() {
               </button>
             </div>
 
-            {/* Strength meter bar */}
             {formData.password && (
               <div className="space-y-1 pt-1">
                 <div className="flex gap-1 h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -250,7 +311,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Terms checkbox */}
           <div className="flex items-start gap-2 pt-1">
             <input
               type="checkbox"
@@ -260,7 +320,7 @@ export default function RegisterPage() {
               className="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
             />
             <label htmlFor="terms" className="text-xs text-slate-600 dark:text-slate-400 leading-tight">
-              I agree to the LeadTrack AI Terms of Service, Privacy Policy, and institutional compliance standards.
+              I agree to the LeadTrack AI Terms of Service, Privacy Policy, and institutional data governance.
             </label>
           </div>
 
@@ -269,12 +329,12 @@ export default function RegisterPage() {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50 mt-2"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Complete Registration"}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Complete Initial Setup"}
           </button>
         </form>
 
         <div className="text-center text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
-          Already have an account?{" "}
+          Already registered?{" "}
           <Link href="/login" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
             Sign In here
           </Link>

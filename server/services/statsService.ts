@@ -249,14 +249,104 @@ export async function getDashboardStats(params: DashboardStatsParams, user?: Use
   });
   const sparklineData = Object.values(sparklineMap);
 
+  // Compute onboarding checklist status dynamically
+  const [institution, coursesCount, staffCount, invitesCount, activeAutomationsCount] = await Promise.all([
+    prisma.institution.findFirst(),
+    prisma.course.count(),
+    prisma.user.count({ where: { role: { in: ["COUNSELOR", "MANAGER"] } } }),
+    prisma.userInvite.count(),
+    prisma.automation.count({ where: { isActive: true } }),
+  ]);
+
+  const onboardingSteps = [
+    {
+      id: "institution",
+      title: "Add institution details",
+      description: "Set official college name, campus address, website & branding",
+      href: "/settings",
+      completed: !!(institution && institution.name && (institution.website || institution.address || institution.phone || institution.city)),
+    },
+    {
+      id: "courses",
+      title: "Add courses & degrees",
+      description: "Configure intake capacity, annual tuition fees & eligibility",
+      href: "/courses",
+      completed: coursesCount > 0,
+    },
+    {
+      id: "counselors",
+      title: "Invite admissions counselors",
+      description: "Send invite links so counselors can log calls and guide students",
+      href: "/team",
+      completed: staffCount > 0 || invitesCount > 0,
+    },
+    {
+      id: "shareEnquiry",
+      title: "Share public enquiry form",
+      description: "Publish your enquiry link on your website or social media campaigns",
+      href: "/enquire",
+      isExternal: true,
+      completed: totalLeads > 0,
+    },
+    {
+      id: "automations",
+      title: "Enable automated follow-up recipes",
+      description: "Activate 2-day SLA email check-ins and hot lead notifications",
+      href: "/automations",
+      completed: activeAutomationsCount > 0,
+    },
+  ];
+
+  const completedCount = onboardingSteps.filter((s) => s.completed).length;
+  const progressPercent = Math.round((completedCount / onboardingSteps.length) * 100);
+  const showOnboarding = totalLeads === 0 || completedCount < onboardingSteps.length;
+
   return {
     kpis: {
-      totalLeads: { value: totalLeads, trend: "+14.2%", isPositive: true, sparkline: sparklineData },
-      newToday: { value: newToday, trend: "+8.5%", isPositive: true, sparkline: [2, 5, 4, 7, 6, 8, newToday] },
-      hotLeads: { value: hotLeads, trend: "+19.0%", isPositive: true, sparkline: [12, 14, 18, 17, 21, 24, hotLeads] },
-      followUpsDue: { value: followUpsDue, trend: "-5.0%", isPositive: true, sparkline: [8, 10, 7, 9, 6, 8, followUpsDue] },
-      admissionsConfirmed: { value: admissionsConfirmed, trend: "+25.0%", isPositive: true, sparkline: [2, 3, 5, 7, 9, 12, admissionsConfirmed] },
-      conversionRate: { value: `${conversionRate}%`, trend: "+2.8%", isPositive: true, sparkline: [8.2, 8.9, 9.4, 9.8, 10.1, 10.3, Number(conversionRate)] },
+      totalLeads: {
+        value: totalLeads,
+        trend: totalLeads > 0 ? "+100%" : "0%",
+        isPositive: true,
+        sparkline: sparklineData,
+      },
+      newToday: {
+        value: newToday,
+        trend: newToday > 0 ? `+${newToday}` : "0",
+        isPositive: true,
+        sparkline: sparklineData,
+      },
+      hotLeads: {
+        value: hotLeads,
+        trend: hotLeads > 0 ? `+${hotLeads}` : "0",
+        isPositive: true,
+        sparkline: sparklineData,
+      },
+      followUpsDue: {
+        value: followUpsDue,
+        trend: followUpsDue > 0 ? `${followUpsDue} due` : "0",
+        isPositive: followUpsDue === 0,
+        sparkline: sparklineData,
+      },
+      admissionsConfirmed: {
+        value: admissionsConfirmed,
+        trend: admissionsConfirmed > 0 ? `+${admissionsConfirmed}` : "0",
+        isPositive: true,
+        sparkline: sparklineData,
+      },
+      conversionRate: {
+        value: `${conversionRate}%`,
+        trend: Number(conversionRate) > 0 ? `${conversionRate}%` : "0%",
+        isPositive: true,
+        sparkline: sparklineData,
+      },
+    },
+    onboarding: {
+      steps: onboardingSteps,
+      completedCount,
+      totalSteps: onboardingSteps.length,
+      progressPercent,
+      isComplete: completedCount === onboardingSteps.length,
+      showOnboarding,
     },
     leadsOverTime,
     sourcePerformance,

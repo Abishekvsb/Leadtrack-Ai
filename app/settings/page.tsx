@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { useToast } from "@/components/toast-context";
 import {
@@ -19,9 +20,13 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
-export default function SettingsPage() {
+function SettingsContent() {
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get("tab") as any) || "institution";
   const { success, error } = useToast();
-  const [activeTab, setActiveTab] = useState<"institution" | "courses" | "scoring" | "security">("institution");
+  const [activeTab, setActiveTab] = useState<"institution" | "courses" | "scoring" | "security">(
+    initialTab === "courses" || initialTab === "scoring" || initialTab === "security" ? initialTab : "institution"
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -514,5 +519,19 @@ export default function SettingsPage() {
         )}
       </div>
     </DashboardLayout>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <DashboardLayout>
+          <div className="py-24 text-center text-xs text-slate-400">Loading settings...</div>
+        </DashboardLayout>
+      }
+    >
+      <SettingsContent />
+    </Suspense>
   );
 }

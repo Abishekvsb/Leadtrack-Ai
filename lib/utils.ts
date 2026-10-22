@@ -56,3 +56,21 @@ export function timeAgo(date: string | Date): string {
   if (days < 30) return `${days}d ago`;
   return formatDate(d);
 }
+
+export function normalizePhone(phone: string | null | undefined): string {
+  if (!phone) return "";
+  // Strip all non-numeric characters except leading plus if any
+  let digits = phone.replace(/\D/g, "");
+  // If Indian country code 91 with 12 digits, strip to last 10 digits
+  if (digits.length === 12 && digits.startsWith("91")) {
+    digits = digits.slice(2);
+  } else if (digits.length === 11 && digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+  return digits;
+}
+
+export function normalizeEmail(email: string | null | undefined): string {
+  if (!email) return "";
+  return email.toLowerCase().trim();
+}

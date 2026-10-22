@@ -27,7 +27,7 @@ interface SidebarProps {
   onOpenAiChat?: () => void;
 }
 
-export function Sidebar({ userRole = "ADMIN", institutionName = "Apex Institute", onOpenAiChat }: SidebarProps) {
+export function Sidebar({ userRole = "ADMIN", institutionName = "LeadTrack AI", onOpenAiChat }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
