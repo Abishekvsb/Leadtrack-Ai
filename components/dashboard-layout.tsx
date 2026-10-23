@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Sidebar } from "@/components/sidebar";
 import { Topbar } from "@/components/topbar";
+import { AnnouncementTicker } from "@/components/ui/design-system";
 import { AiAssistantModal } from "@/components/ai-assistant-modal";
 import { ProductTourModal } from "@/components/product-tour-modal";
 import {
@@ -38,6 +39,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [loading, setLoading] = useState(true);
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [tickerStats, setTickerStats] = useState<Array<{ label: string; value: string | number }>>([
+    { label: "Admissions Window", value: "Active Cycle 2026/27" },
+    { label: "UN SDG 4", value: "Quality Education" },
+    { label: "AI Lead Scoring", value: "Realtime" },
+  ]);
 
   useEffect(() => {
     async function loadUser() {
@@ -62,6 +68,30 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     loadUser();
   }, [router]);
 
+  // Load ticker live indicators
+  useEffect(() => {
+    async function loadTickerData() {
+      try {
+        const res = await fetch("/api/dashboard?range=today");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data?.kpis) {
+            const k = json.data.kpis;
+            const items = [
+              { label: "Today's Enquiries", value: k.newToday?.value ?? 0 },
+              { label: "Hot Leads Qualified", value: k.hotLeads?.value ?? 0 },
+              { label: "Follow-ups Due Today", value: k.followUpsDue?.value ?? 0 },
+              { label: "Confirmed Admissions", value: k.admissionsConfirmed?.value ?? 0 },
+              { label: "UN SDG 4", value: "Quality Higher Education" },
+            ];
+            setTickerStats(items);
+          }
+        }
+      } catch {}
+    }
+    loadTickerData();
+  }, []);
+
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
@@ -71,10 +101,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-[#F6F2EA] dark:text-[#0F1412] shadow-xs">
-            <GraduationCap className="w-5 h-5 stroke-[1.5]" />
+          <div className="w-12 h-12 rounded-[12px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-[#FFC21A] shadow-crimson-glow animate-pulse">
+            <GraduationCap className="w-6 h-6 stroke-[1.75]" />
           </div>
-          <p className="text-xs font-medium text-muted-foreground font-serif tracking-tight">
+          <p className="text-xs font-heading font-bold text-muted-foreground tracking-tight">
             LeadTrack AI Admissions Workspace...
           </p>
         </div>
@@ -90,24 +120,30 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      {/* Desktop Sidebar (Hidden on mobile) */}
-      <Sidebar
-        userRole={user?.role}
-        institutionName={user?.institution?.name || "LeadTrack AI"}
-        onOpenAiChat={() => setAiModalOpen(true)}
-      />
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      {/* Top Announcement Ticker in Royal Crimson & Gold */}
+      <AnnouncementTicker items={tickerStats} />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <Topbar user={user} />
-        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1280px] w-full mx-auto animate-fade-up pb-24 md:pb-8">
-          {children}
-        </main>
+      <div className="flex flex-1 min-h-[calc(100vh-32px)]">
+        {/* Desktop Sidebar (Hidden on mobile) */}
+        <Sidebar
+          userRole={user?.role}
+          institutionName={user?.institution?.name || "LeadTrack AI"}
+          institutionLogo={user?.institution?.logo}
+          onOpenAiChat={() => setAiModalOpen(true)}
+        />
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <Topbar user={user} />
+          <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1280px] w-full mx-auto animate-fade-up pb-24 md:pb-8">
+            {children}
+          </main>
+        </div>
       </div>
 
       {/* Mobile Bottom Navigation Bar (md:hidden, min 44px tap targets) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border flex items-center justify-around h-16 px-1 safe-area-pb">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border flex items-center justify-around h-16 px-1 safe-area-pb shadow-floating">
         {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -115,15 +151,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[6px] text-[10px] font-medium transition-colors ${
+              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[8px] text-[10px] font-medium transition-all ${
                 isActive
-                  ? "text-[#0F3D33] dark:text-[#4FB89A] font-semibold"
+                  ? "text-[#D62828] dark:text-[#FF5A5F] font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon
-                className={`w-4 h-4 stroke-[1.5] ${
-                  isActive ? "text-[#0F3D33] dark:text-[#4FB89A]" : ""
+                className={`w-4 h-4 stroke-[1.75] ${
+                  isActive ? "text-[#D62828] dark:text-[#FF5A5F]" : ""
                 }`}
               />
               <span className="mt-1">{item.label}</span>
@@ -134,19 +170,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Mobile AI Quick Trigger */}
         <button
           onClick={() => setAiModalOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[6px] text-[10px] font-medium text-[#0F3D33] dark:text-[#4FB89A]"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[8px] text-[10px] font-medium text-[#D62828] dark:text-[#FF5A5F]"
           title="Open AI Copilot"
         >
-          <div className="w-5 h-5 rounded-[6px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] flex items-center justify-center shadow-xs">
-            <Bot className="w-3.5 h-3.5 stroke-[1.5]" />
+          <div className="w-6 h-6 rounded-[8px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-[#FFC21A] flex items-center justify-center shadow-xs">
+            <Bot className="w-3.5 h-3.5 stroke-[1.75]" />
           </div>
-          <span className="mt-1">Copilot</span>
+          <span className="mt-1 font-bold">Copilot</span>
         </button>
 
         {/* More Menu Drawer Trigger */}
         <button
           onClick={() => setMobileDrawerOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[6px] text-[10px] font-medium text-muted-foreground hover:text-foreground"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[8px] text-[10px] font-medium text-muted-foreground hover:text-foreground"
           title="More navigation"
         >
           <Menu className="w-4 h-4 stroke-[1.5]" />
@@ -156,21 +192,21 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Mobile Slide-Over Drawer */}
       {mobileDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end md:hidden bg-black/40 animate-fade-up">
-          <div className="w-4/5 max-w-xs bg-card h-full p-6 shadow-academic-floating flex flex-col justify-between border-l border-border">
+        <div className="fixed inset-0 z-50 flex justify-end md:hidden bg-black/50 backdrop-blur-xs animate-fade-up">
+          <div className="w-4/5 max-w-xs bg-card h-full p-6 shadow-floating flex flex-col justify-between border-l border-border">
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
-                  <h3 className="font-serif text-sm font-normal text-foreground">
+                  <h3 className="font-heading text-sm font-bold text-foreground">
                     {user?.institution?.name || "LeadTrack AI"}
                   </h3>
-                  <span className="text-[10px] text-[#0F3D33] dark:text-[#4FB89A] font-semibold uppercase tracking-wider">
+                  <span className="text-[10px] text-[#D62828] dark:text-[#FF5A5F] font-bold uppercase tracking-wider">
                     {user?.role} Workspace
                   </span>
                 </div>
                 <button
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  className="p-1.5 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-muted/60"
                 >
                   <X className="w-4 h-4 stroke-[1.5]" />
                 </button>
@@ -180,27 +216,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   href="/automation"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <Sparkles className="w-4 h-4 text-[#E0A030] stroke-[1.5]" />
+                  <Sparkles className="w-4 h-4 text-[#FFC21A] stroke-[1.5]" />
                   <span>Automation Rules</span>
                 </Link>
 
                 <Link
                   href="/templates"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <MessageSquareShare className="w-4 h-4 text-[#5B7083] stroke-[1.5]" />
+                  <MessageSquareShare className="w-4 h-4 text-[#64748B] stroke-[1.5]" />
                   <span>Communication Templates</span>
                 </Link>
 
                 <Link
                   href="/analytics"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <BarChart3 className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A] stroke-[1.5]" />
+                  <BarChart3 className="w-4 h-4 text-[#D62828] dark:text-[#FF5A5F] stroke-[1.5]" />
                   <span>Analytics &amp; ROI</span>
                 </Link>
 
@@ -208,9 +244,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Link
                     href="/team"
                     onClick={() => setMobileDrawerOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                   >
-                    <Users className="w-4 h-4 text-[#5B7083] stroke-[1.5]" />
+                    <Users className="w-4 h-4 text-[#64748B] stroke-[1.5]" />
                     <span>Counselor Team</span>
                   </Link>
                 )}
@@ -218,7 +254,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   href="/settings"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
                   <Settings className="w-4 h-4 text-muted-foreground stroke-[1.5]" />
                   <span>Settings &amp; Courses</span>
@@ -227,7 +263,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   href="/guide"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
                   <HelpCircle className="w-4 h-4 text-muted-foreground stroke-[1.5]" />
                   <span>Admissions Guide</span>
@@ -236,7 +272,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   href="/enquire"
                   target="_blank"
-                  className="flex items-center justify-between px-3 py-2.5 rounded-[6px] text-xs font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:bg-muted/60 transition-colors min-h-[44px]"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-[8px] text-xs font-medium text-[#D62828] dark:text-[#FF5A5F] hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
                   <span>Public Enquiry Form</span>
                   <ExternalLink className="w-3.5 h-3.5 stroke-[1.5]" />
@@ -246,18 +282,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
             <div className="pt-4 border-t border-border space-y-3">
               <div className="flex items-center gap-3 px-1">
-                <div className="w-8 h-8 rounded-[6px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-semibold text-xs flex items-center justify-center">
+                <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white font-bold text-xs flex items-center justify-center border border-[#FFC21A]/30">
                   {getInitials(user?.name || "User")}
                 </div>
                 <div className="truncate">
-                  <p className="font-medium text-xs text-foreground truncate">{user?.name}</p>
+                  <p className="font-bold text-xs text-foreground truncate">{user?.name}</p>
                   <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
                 </div>
               </div>
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-[6px] text-xs font-medium text-[#C4552F] hover:bg-[#C4552F]/10 transition-colors min-h-[44px]"
+                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-[8px] text-xs font-bold text-[#D62828] dark:text-[#FF5A5F] hover:bg-[#D62828]/10 transition-colors min-h-[44px]"
               >
                 <LogOut className="w-4 h-4 stroke-[1.5]" />
                 <span>Sign Out</span>
@@ -267,15 +303,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       )}
 
-      {/* Desktop Floating AI Trigger (hidden on mobile, mobile uses bottom nav trigger) */}
+      {/* Desktop Floating AI Copilot Orb Trigger */}
       <button
         onClick={() => setAiModalOpen(true)}
-        className="hidden md:flex fixed bottom-6 right-6 z-40 items-center gap-2.5 px-4 py-2.5 rounded-[8px] bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-academic-floating border border-[#0F3D33] dark:border-[#4FB89A] hover:-translate-y-0.5 transition-all"
+        className="hidden md:flex fixed bottom-6 right-6 z-40 items-center gap-2.5 px-4 py-2.5 rounded-[12px] btn-crimson-gradient font-bold text-xs shadow-crimson-glow hover:-translate-y-1 transition-all group"
         title="Open AI Counselor Copilot"
       >
-        <Bot className="w-4 h-4 stroke-[1.5]" />
+        <div className="w-5 h-5 rounded-full bg-[#FFC21A] text-[#17141A] flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+          <Bot className="w-3.5 h-3.5 stroke-[2]" />
+        </div>
         <span>Counselor Copilot</span>
-        <span className="w-1.5 h-1.5 rounded-full bg-[#E0A030]" />
+        <span className="w-2 h-2 rounded-full bg-[#FFC21A] animate-ping" />
       </button>
 
       {/* AI Assistant Modal */}
@@ -286,4 +324,3 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     </div>
   );
 }
-

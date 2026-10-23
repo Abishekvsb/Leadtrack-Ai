@@ -12,6 +12,10 @@ import {
   ArrowRight,
   Loader2,
   CheckCircle2,
+  Sparkles,
+  Award,
+  Users2,
+  ShieldCheck,
 } from "lucide-react";
 import { useToast } from "@/components/toast-context";
 
@@ -61,83 +65,95 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex bg-background text-foreground">
-      {/* Left Column: Full-height deep green panel with serif quote and SDG 4 mark */}
-      <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 lg:p-16 bg-[#0F3D33] text-[#F6F2EA] relative border-r border-[#0A2B24] select-none">
+      {/* Left Column: Full-height Royal Crimson Aurora panel with floating glass stat chips */}
+      <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 lg:p-16 aurora-mesh text-white relative border-r border-[#8F1218] select-none overflow-hidden">
+        {/* Decorative gold ambient glow */}
+        <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-[#FFC21A]/20 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-[#D62828]/40 blur-3xl pointer-events-none" />
+
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-[8px] bg-[#F6F2EA] text-[#0F3D33] flex items-center justify-center font-serif text-lg font-bold shadow-xs">
-            <GraduationCap className="w-5 h-5 stroke-[1.5]" />
+        <Link href="/" className="flex items-center gap-3 relative z-10">
+          <div className="w-10 h-10 rounded-[12px] bg-white text-[#D62828] flex items-center justify-center font-heading text-lg font-bold shadow-lg">
+            <GraduationCap className="w-6 h-6 stroke-[1.75]" />
           </div>
           <div>
-            <span className="font-serif text-xl tracking-tight text-[#F6F2EA] block">
+            <span className="font-heading text-xl font-bold tracking-tight text-white block">
               LeadTrack AI
             </span>
-            <span className="text-[10px] uppercase font-semibold tracking-wider text-[#A7C8C0]">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-[#FFE08A]">
               Admissions Intelligence
             </span>
           </div>
         </Link>
 
-        {/* Center Quote / Academic Editorial Statement */}
-        <div className="space-y-8 max-w-lg my-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[6px] bg-[#165447] text-[#E0A030] text-[11px] font-semibold border border-[#1F6B5B]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E0A030]" />
-            <span className="uppercase tracking-wider">Institutional Integrity</span>
+        {/* Center Quote & Floating Glass Stat Chips */}
+        <div className="space-y-8 max-w-lg my-auto relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[8px] bg-white/10 backdrop-blur-md text-[#FFC21A] text-[11px] font-bold border border-white/15 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="uppercase tracking-wider">Royal Crimson Standard</span>
           </div>
 
-          <blockquote className="font-serif text-3xl sm:text-4xl leading-tight font-normal text-[#F6F2EA] tracking-tight">
+          <blockquote className="font-heading text-3xl sm:text-4xl leading-tight font-extrabold text-white tracking-tight">
             &ldquo;Admissions is not a mechanism of exclusion, but the deliberate stewardship of human potential.&rdquo;
           </blockquote>
 
-          <p className="text-sm text-[#D1E3DF] leading-relaxed font-sans">
+          <p className="text-sm text-white/85 leading-relaxed font-sans">
             LeadTrack AI unifies inquiry response cadences, scores student engagement through transparent indicators, and empowers counselors with dignity and precision.
           </p>
 
-          <div className="space-y-3 pt-2 text-xs text-[#D1E3DF] font-sans">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-4 h-4 text-[#E0A030] shrink-0 stroke-[1.5]" />
-              <span>Predictive lead qualification without biased black-box algorithms</span>
+          {/* Floating Glass Stat Chips */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center gap-3">
+              <div className="w-9 h-9 rounded-[8px] bg-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold shrink-0">
+                <Award className="w-5 h-5 stroke-[2]" />
+              </div>
+              <div>
+                <p className="font-heading text-lg font-bold leading-tight text-white">99.4%</p>
+                <p className="text-[10px] text-white/70 uppercase tracking-wider font-semibold">SLA Adherence</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-4 h-4 text-[#E0A030] shrink-0 stroke-[1.5]" />
-              <span>Role-governed admissions pipelines for counselors & deans</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-4 h-4 text-[#E0A030] shrink-0 stroke-[1.5]" />
-              <span>Full compliance logging and auditable counselor workflows</span>
+
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center gap-3">
+              <div className="w-9 h-9 rounded-[8px] bg-white text-[#D62828] flex items-center justify-center font-bold shrink-0">
+                <Users2 className="w-5 h-5 stroke-[2]" />
+              </div>
+              <div>
+                <p className="font-heading text-lg font-bold leading-tight text-white">3.4x</p>
+                <p className="text-[10px] text-white/70 uppercase tracking-wider font-semibold">Conversion Lift</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* UN SDG 4 Mark */}
-        <div className="pt-8 border-t border-[#165447] flex items-center justify-between text-xs text-[#A7C8C0]">
+        <div className="pt-8 border-t border-white/15 flex items-center justify-between text-xs text-white/80 relative z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-5 h-5 rounded-[4px] bg-[#E0A030] text-[#0F3D33] font-bold text-[10px] flex items-center justify-center font-mono">
+            <div className="w-6 h-6 rounded-[6px] bg-[#FFC21A] text-[#17141A] font-extrabold text-[11px] flex items-center justify-center font-mono">
               4
             </div>
-            <span className="tracking-tight">UN Sustainable Development Goal 4: Quality Education</span>
+            <span className="tracking-tight font-medium">UN Sustainable Development Goal 4: Quality Education</span>
           </div>
-          <span className="text-[11px] font-mono uppercase tracking-wider text-[#E0A030]">Confidential</span>
+          <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[#FFC21A]">Verified</span>
         </div>
       </div>
 
-      {/* Right Column: Clean Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-12">
+      {/* Right Column: Clean White Form with floating label feel */}
+      <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-12 bg-surface">
         <div className="max-w-md w-full mx-auto space-y-7">
           <div className="space-y-2">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Sign In
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F]">
+              Counselor Command Gateway
             </span>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Access Admissions
             </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Enter your institutional credentials to open your counselor command workspace.
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pt-1">
+              Enter your institutional credentials to open your admissions counselor workspace.
             </p>
           </div>
 
           {validationError && (
-            <div className="p-3.5 rounded-[8px] bg-[#C4552F]/10 border border-[#C4552F]/30 text-[#C4552F] text-xs font-medium">
+            <div className="p-3.5 rounded-[10px] bg-[#D62828]/10 border border-[#D62828]/30 text-[#D62828] dark:text-[#FF5A5F] text-xs font-bold">
               {validationError}
             </div>
           )}
@@ -145,7 +161,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">
+              <label className="text-xs font-bold text-foreground">
                 Institutional Email
               </label>
               <div className="relative">
@@ -156,7 +172,7 @@ export default function LoginPage() {
                   placeholder="counselor@institution.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-[8px] bg-surface border border-border focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent text-xs text-foreground transition-colors placeholder:text-muted-foreground/60"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-[10px] bg-background border border-border focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent text-xs text-foreground transition-all placeholder:text-muted-foreground/60 shadow-xs"
                 />
               </div>
             </div>
@@ -164,12 +180,12 @@ export default function LoginPage() {
             {/* Password Field */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-foreground">
+                <label className="text-xs font-bold text-foreground">
                   Password
                 </label>
                 <Link
                   href="/forgot-password"
-                  className="text-xs font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:underline"
+                  className="text-xs font-semibold text-[#D62828] dark:text-[#FF5A5F] hover:underline"
                 >
                   Forgot password?
                 </Link>
@@ -182,7 +198,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 rounded-[8px] bg-surface border border-border focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent text-xs text-foreground transition-colors placeholder:text-muted-foreground/60"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-[10px] bg-background border border-border focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent text-xs text-foreground transition-all placeholder:text-muted-foreground/60 shadow-xs"
                 />
                 <button
                   type="button"
@@ -196,12 +212,12 @@ export default function LoginPage() {
 
             {/* Remember Me */}
             <div className="flex items-center pt-1">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground select-none">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground select-none font-medium">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded-[4px] border-border text-[#0F3D33] focus:ring-accent"
+                  className="rounded-[4px] border-border text-[#D62828] focus:ring-accent"
                 />
                 <span>Remember this workstation for 7 days</span>
               </label>
@@ -211,28 +227,28 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[8px] bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs transition-colors shadow-xs disabled:opacity-50 mt-2"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px] btn-crimson-gradient btn-shimmer font-bold text-xs transition-all shadow-crimson-glow disabled:opacity-50 mt-2 cursor-pointer"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-[#FFC21A]" />
                   <span>Verifying credentials...</span>
                 </>
               ) : (
                 <>
                   <span>Sign In to Workspace</span>
-                  <ArrowRight className="w-4 h-4 stroke-[1.5]" />
+                  <ArrowRight className="w-4 h-4 stroke-[2]" />
                 </>
               )}
             </button>
           </form>
 
           {/* Register Link */}
-          <div className="text-center text-xs text-muted-foreground pt-3 border-t border-border">
+          <div className="text-center text-xs text-muted-foreground pt-4 border-t border-border">
             <span>New educational institution? </span>
             <Link
               href="/register"
-              className="font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:underline"
+              className="font-bold text-[#D62828] dark:text-[#FF5A5F] hover:underline"
             >
               Register institution
             </Link>
@@ -242,4 +258,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

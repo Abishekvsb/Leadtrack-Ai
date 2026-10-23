@@ -1,18 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/toast-context";
 
-const fraunces = Fraunces({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-heading",
   display: "swap",
 });
 
-const instrument = Instrument_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-instrument",
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -26,7 +27,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#0F3D33",
+  themeColor: "#D62828",
 };
 
 export const metadata: Metadata = {
@@ -53,9 +54,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${instrument.variable} ${jetbrains.variable}`}
+      className={`${plusJakarta.variable} ${inter.variable} ${jetbrains.variable}`}
     >
-      <body className="font-sans antialiased min-h-screen bg-background text-foreground selection:bg-[#E0A030]/25 selection:text-foreground">
+      <body className="font-sans antialiased min-h-screen bg-background text-foreground selection:bg-[#FFC21A]/30 selection:text-foreground">
         <ThemeProvider>
           <ToastProvider>
             {children}
@@ -65,4 +66,3 @@ export default function RootLayout({
     </html>
   );
 }
-

@@ -3,52 +3,72 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --background: 40 40% 94.5%; /* #F6F2EA Warm ivory */
-  --foreground: 45 8% 10%; /* #1B1A17 Deep ink */
-  --surface: 0 0% 100%; /* #FFFFFF Surface */
-  --card: 0 0% 100%;
-  --card-foreground: 45 8% 10%;
+  /* Royal Crimson and Gold Brand Tokens (Light Mode) */
+  --background: 39 100% 97%;       /* #FFF9EE warm paper */
+  --foreground: 270 13% 9%;        /* #17141A deep ink */
+  --surface: 0 0% 100%;            /* #FFFFFF pure white */
+  --card: 0 0% 100%;               /* #FFFFFF card */
+  --card-foreground: 270 13% 9%;   /* #17141A text */
   --popover: 0 0% 100%;
-  --popover-foreground: 45 8% 10%;
-  --primary: 167 61% 15%; /* #0F3D33 Deep Forest Green */
-  --primary-foreground: 40 40% 95%; /* #F6F2EA */
-  --primary-hover: 167 61% 11%;
-  --secondary: 40 25% 91%; /* #EDE6DA Warm ruled tint */
-  --secondary-foreground: 45 8% 10%;
-  --muted: 40 22% 91%;
-  --muted-foreground: 40 8% 39%; /* #6B665C Muted ink */
-  --accent: 38 74% 53%; /* #E0A030 Saffron */
-  --accent-foreground: 45 8% 10%;
-  --destructive: 15 61% 48%; /* #C4552F Terracotta */
+  --popover-foreground: 270 13% 9%;
+
+  --primary: 0 69% 50%;            /* #D62828 Royal Crimson */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+  --primary-hover: 0 72% 42%;      /* #B81E1E */
+  --primary-deep: 357 77% 32%;     /* #8F1218 */
+
+  --secondary: 40 45% 94%;         /* #F8F2E6 warm accent tint */
+  --secondary-foreground: 270 13% 9%;
+  --muted: 39 40% 93%;             /* #F6F0E4 */
+  --muted-foreground: 276 6% 42%;  /* #6B6470 */
+
+  --accent: 44 100% 55%;           /* #FFC21A Radiant Gold */
+  --accent-foreground: 270 13% 9%; /* dark ink on gold */
+  --accent-soft: 44 100% 77%;      /* #FFE08A */
+  --accent-deep: 42 100% 45%;      /* #E5A100 */
+  --accent-text: 39 100% 27%;      /* #8A5A00 high-contrast WCAG gold text */
+
+  --destructive: 0 69% 50%;
   --destructive-foreground: 0 0% 100%;
-  --border: 39 27% 85%; /* #E4DDD0 Warm 1px border */
-  --input: 39 27% 85%;
-  --ring: 38 74% 53%; /* #E0A030 Saffron focus ring */
-  --radius: 0.75rem; /* 12px card radius */
+
+  --border: 37 44% 89%;            /* #F0E6D6 warm hairline border */
+  --input: 37 44% 89%;
+  --ring: 44 100% 55%;             /* #FFC21A Gold focus ring */
+  --radius: 0.875rem;              /* 14px */
 }
 
 .dark {
-  --background: 156 14% 6.5%; /* #0F1412 Deep ink */
-  --foreground: 42 25% 90%; /* #ECE8DF Academic parchment text */
-  --surface: 150 12% 10%; /* #171D1A Dark surface */
-  --card: 150 12% 10%;
-  --card-foreground: 42 25% 90%;
-  --popover: 150 12% 10%;
-  --popover-foreground: 42 25% 90%;
-  --primary: 163 43% 52%; /* #4FB89A Mint / Forest in dark */
-  --primary-foreground: 156 14% 7%;
-  --primary-hover: 163 43% 58%;
-  --secondary: 150 11% 14%;
-  --secondary-foreground: 42 25% 90%;
-  --muted: 150 11% 14%;
-  --muted-foreground: 144 5% 58%; /* #8F9993 */
-  --accent: 38 74% 53%; /* #E0A030 */
-  --accent-foreground: 156 14% 7%;
-  --destructive: 15 61% 52%; /* #D3623C Terracotta */
+  /* Royal Crimson and Gold Brand Tokens (Dark Mode) */
+  --background: 345 29% 5.5%;      /* #120A0C obsidian crimson */
+  --foreground: 32 52% 94%;        /* #F7EFE6 ivory text */
+  --surface: 342 23% 9%;           /* #1B1114 dark surface */
+  --card: 342 23% 9%;              /* #1B1114 card */
+  --card-foreground: 32 52% 94%;   /* #F7EFE6 text */
+  --popover: 342 23% 9%;
+  --popover-foreground: 32 52% 94%;
+
+  --primary: 358 100% 68%;         /* #FF5A5F vibrant crimson */
+  --primary-foreground: 345 29% 5.5%;
+  --primary-hover: 358 100% 74%;
+  --primary-deep: 0 69% 50%;
+
+  --secondary: 342 23% 13%;        /* #27191E */
+  --secondary-foreground: 32 52% 94%;
+  --muted: 342 23% 13%;
+  --muted-foreground: 336 6% 62%;  /* #9E9296 */
+
+  --accent: 43 100% 68%;           /* #FFD25A bright gold */
+  --accent-foreground: 345 29% 5.5%;
+  --accent-soft: 44 100% 80%;
+  --accent-deep: 44 100% 55%;
+  --accent-text: 43 100% 68%;
+
+  --destructive: 358 100% 68%;
   --destructive-foreground: 0 0% 100%;
-  --border: 150 12% 17%; /* #26302B Dark border */
-  --input: 150 12% 17%;
-  --ring: 38 74% 53%;
+
+  --border: 344 22% 16%;           /* #2E1D21 dark border */
+  --input: 344 22% 16%;
+  --ring: 43 100% 68%;             /* #FFD25A */
 }
 
 * {
@@ -67,61 +87,160 @@ body {
   position: relative;
 }
 
-/* Subtle paper grain texture overlay (3-4% opacity, non-interactive) */
+/* Subtle luxury warm texture background */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 40;
-  opacity: 0.035;
+  opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Editorial typography and numeric rules */
+/* Numeric & tabular figures */
 .tabular-nums, .font-mono, td, th {
   font-variant-numeric: tabular-nums;
 }
 
-/* Soft shadow only on floating elements (menus, modals, copilot) */
-.shadow-academic-floating {
-  box-shadow: 0 16px 36px -8px rgba(27, 26, 23, 0.10), 0 4px 12px -2px rgba(27, 26, 23, 0.04);
+/* Heading Typography */
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading), -apple-system, sans-serif;
+  letter-spacing: -0.02em;
 }
 
-.dark .shadow-academic-floating {
+/* Page title gold underline accent */
+.title-gold-accent {
+  position: relative;
+  display: inline-block;
+}
+.title-gold-accent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 44px;
+  height: 3px;
+  background: linear-gradient(90deg, #FFC21A, #E5A100);
+  border-radius: 2px;
+}
+
+/* Royal card with gradient top hairline on hover */
+.royal-card {
+  position: relative;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 14px;
+  box-shadow: 0 1px 3px 0 rgba(23, 20, 26, 0.04), 0 4px 14px 0 rgba(23, 20, 26, 0.02);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease, border-color 180ms ease;
+  overflow: hidden;
+}
+
+.royal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D62828 0%, #FFC21A 100%);
+  opacity: 0;
+  transition: opacity 180ms ease;
+  z-index: 2;
+}
+
+.royal-card:hover::before {
+  opacity: 1;
+}
+
+.royal-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -4px rgba(214, 40, 40, 0.08), 0 2px 8px -2px rgba(23, 20, 26, 0.04);
+  border-color: rgba(214, 40, 40, 0.2);
+}
+
+.dark .royal-card-interactive:hover {
+  box-shadow: 0 12px 30px -4px rgba(255, 90, 95, 0.12), 0 2px 8px -2px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 90, 95, 0.3);
+}
+
+/* Floating Glass Surface */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 16px 36px -8px rgba(23, 20, 26, 0.10), 0 4px 12px -2px rgba(23, 20, 26, 0.04);
+}
+
+.dark .glass-surface {
+  background: rgba(27, 17, 20, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.55), 0 6px 14px -3px rgba(0, 0, 0, 0.35);
 }
 
-/* 1px Lift on Hover with Subtle Border Shift */
-.editorial-card {
-  background-color: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 12px;
-  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms ease;
+/* Crimson Gradient Button */
+.btn-crimson-gradient {
+  background: linear-gradient(135deg, #E63946 0%, #D62828 50%, #8F1218 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.25), 0 2px 8px rgba(214, 40, 40, 0.25);
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.editorial-card-interactive {
-  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms ease;
-}
-
-.editorial-card-interactive:hover {
+.btn-crimson-gradient:hover {
+  background: linear-gradient(135deg, #F04855 0%, #C82020 50%, #7E0E14 100%);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.3), 0 4px 14px rgba(214, 40, 40, 0.35);
   transform: translateY(-1px);
-  border-color: #CFC4B3;
 }
 
-.dark .editorial-card-interactive:hover {
-  border-color: #38463F;
+.btn-crimson-gradient:active {
+  transform: scale(0.97);
 }
 
-/* Ruled dividers */
-.academic-rule {
-  border-color: hsl(var(--border));
+/* Gold Shimmer Sweep Overlay */
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(255, 224, 138, 0.25) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
 }
 
-/* Thin custom editorial scrollbars */
+.btn-shimmer:hover::after {
+  animation: shimmer-sweep 1.2s ease-in-out infinite;
+}
+
+/* Aurora Mesh Background */
+.aurora-mesh {
+  background: radial-gradient(circle at 15% 20%, rgba(214, 40, 40, 0.85) 0%, transparent 50%),
+              radial-gradient(circle at 85% 30%, rgba(255, 194, 26, 0.45) 0%, transparent 45%),
+              radial-gradient(circle at 50% 80%, rgba(143, 18, 24, 0.9) 0%, transparent 50%),
+              #8F1218;
+}
+
+/* Marquee Pause on Hover */
+.marquee-container:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+/* Thin Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -129,38 +248,21 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(107, 102, 92, 0.28);
-  border-radius: 4px;
+  background: rgba(214, 40, 40, 0.22);
+  border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(143, 153, 147, 0.25);
+  background: rgba(255, 90, 95, 0.25);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 102, 92, 0.5);
+  background: rgba(214, 40, 40, 0.45);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(143, 153, 147, 0.45);
+  background: rgba(255, 90, 95, 0.5);
 }
-
-/* Staggered section animations */
-@keyframes editorialFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.stagger-1 { animation: editorialFadeUp 300ms cubic-bezier(0.16, 1, 0.3, 1) 40ms forwards; }
-.stagger-2 { animation: editorialFadeUp 300ms cubic-bezier(0.16, 1, 0.3, 1) 80ms forwards; }
-.stagger-3 { animation: editorialFadeUp 300ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards; }
-.stagger-4 { animation: editorialFadeUp 300ms cubic-bezier(0.16, 1, 0.3, 1) 160ms forwards; }
 
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {

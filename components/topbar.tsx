@@ -12,6 +12,7 @@ import {
   Settings,
   ChevronDown,
   HelpCircle,
+  ExternalLink,
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useToast } from "@/components/toast-context";
@@ -107,14 +108,14 @@ export function Topbar({ user }: TopbarProps) {
       : "Dashboard";
 
   return (
-    <header className="sticky top-0 z-20 h-16 w-full border-b border-border bg-card flex items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-20 h-16 w-full border-b border-border glass-surface flex items-center justify-between px-4 sm:px-6">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-xs select-none">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F]">
           LeadTrack
         </span>
-        <span className="text-border">/</span>
-        <span className="font-serif text-sm font-medium text-foreground tracking-tight">
+        <span className="text-[#FFC21A] font-bold">/</span>
+        <span className="font-heading text-sm font-bold text-foreground tracking-tight">
           {currentTitle}
         </span>
       </div>
@@ -128,7 +129,7 @@ export function Topbar({ user }: TopbarProps) {
             placeholder="Search leads by name, email, phone... (Enter)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 text-xs rounded-[8px] bg-background border border-border focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent text-foreground transition-colors placeholder:text-muted-foreground/70"
+            className="w-full pl-9 pr-4 py-2 text-xs rounded-[10px] bg-background/80 border border-border focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent text-foreground transition-all placeholder:text-muted-foreground/60 shadow-xs"
           />
         </form>
       </div>
@@ -138,7 +139,7 @@ export function Topbar({ user }: TopbarProps) {
         {/* Help & In-App Guide */}
         <Link
           href="/guide"
-          className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
+          className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
           title="In-App Admissions Guide"
         >
           <HelpCircle className="w-4 h-4 stroke-[1.5]" />
@@ -147,13 +148,13 @@ export function Topbar({ user }: TopbarProps) {
         {/* Dark/Light Mode Switcher */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
+          className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
           title="Toggle Light / Dark mode"
         >
           {theme === "dark" ? (
-            <Sun className="w-4 h-4 text-[#E0A030] stroke-[1.5]" />
+            <Sun className="w-4 h-4 text-[#FFD25A] stroke-[1.75]" />
           ) : (
-            <Moon className="w-4 h-4 text-[#0F3D33] stroke-[1.5]" />
+            <Moon className="w-4 h-4 text-[#D62828] stroke-[1.75]" />
           )}
         </button>
 
@@ -161,25 +162,25 @@ export function Topbar({ user }: TopbarProps) {
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifs(!showNotifs)}
-            className="relative min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
+            className="relative min-h-[38px] min-w-[38px] flex items-center justify-center p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
             title="Notifications"
           >
             <Bell className="w-4 h-4 stroke-[1.5]" />
             {unreadCount > 0 && (
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#E0A030]" />
+              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#D62828] ring-2 ring-card animate-pulse" />
             )}
           </button>
 
           {showNotifs && (
-            <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-24px)] rounded-[12px] bg-card border border-border shadow-academic-floating p-4 z-50 animate-fade-up">
+            <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-24px)] rounded-[14px] bg-card border border-border shadow-floating p-4 z-50 animate-fade-up">
               <div className="flex items-center justify-between pb-2.5 border-b border-border">
-                <span className="font-serif text-sm font-medium text-foreground">
+                <span className="font-heading text-sm font-bold text-foreground">
                   Notifications ({unreadCount})
                 </span>
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllRead}
-                    className="text-xs text-[#0F3D33] dark:text-[#4FB89A] hover:underline flex items-center"
+                    className="text-xs text-[#D62828] dark:text-[#FF5A5F] hover:underline font-medium flex items-center"
                   >
                     Mark all read
                   </button>
@@ -198,8 +199,8 @@ export function Topbar({ user }: TopbarProps) {
                         !n.isRead ? "font-medium" : "text-muted-foreground"
                       }`}
                     >
-                      <p className="font-medium text-foreground">{n.title}</p>
-                      <p className="text-muted-foreground line-clamp-2 mt-0.5">{n.message}</p>
+                      <p className="font-semibold text-foreground">{n.title}</p>
+                      <p className="text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">{n.message}</p>
                     </div>
                   ))
                 )}
@@ -208,7 +209,7 @@ export function Topbar({ user }: TopbarProps) {
                 <Link
                   href="/notifications"
                   onClick={() => setShowNotifs(false)}
-                  className="text-xs text-[#0F3D33] dark:text-[#4FB89A] font-medium hover:underline"
+                  className="text-xs text-[#D62828] dark:text-[#FF5A5F] font-semibold hover:underline"
                 >
                   View full notifications center →
                 </Link>
@@ -221,16 +222,16 @@ export function Topbar({ user }: TopbarProps) {
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setShowProfile(!showProfile)}
-            className="min-h-[38px] flex items-center gap-2 p-1 rounded-[6px] hover:bg-muted/70 transition-colors"
+            className="min-h-[38px] flex items-center gap-2 p-1 rounded-[8px] hover:bg-muted/70 transition-colors"
           >
-            <div className="w-7 h-7 rounded-[6px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-semibold text-xs flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-[#FFC21A]/30">
               {getInitials(user?.name || "User")}
             </div>
             <div className="hidden sm:flex flex-col text-left">
-              <span className="text-xs font-medium leading-tight text-foreground truncate max-w-[120px]">
+              <span className="text-xs font-bold leading-tight text-foreground truncate max-w-[120px]">
                 {user?.name || "Counselor"}
               </span>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
                 {user?.role || "COUNSELOR"}
               </span>
             </div>
@@ -238,16 +239,16 @@ export function Topbar({ user }: TopbarProps) {
           </button>
 
           {showProfile && (
-            <div className="absolute right-0 mt-2 w-52 rounded-[12px] bg-card border border-border shadow-academic-floating p-2 z-50 animate-fade-up">
-              <div className="px-3 py-2 border-b border-border">
-                <p className="text-xs font-medium text-foreground truncate">{user?.name}</p>
+            <div className="absolute right-0 mt-2 w-56 rounded-[14px] bg-card border border-border shadow-floating p-2 z-50 animate-fade-up">
+              <div className="px-3 py-2.5 border-b border-border">
+                <p className="text-xs font-bold text-foreground truncate">{user?.name}</p>
                 <p className="text-[11px] text-muted-foreground truncate">{user?.email}</p>
               </div>
               <div className="py-1">
                 <Link
                   href="/settings"
                   onClick={() => setShowProfile(false)}
-                  className="flex items-center gap-2 px-3 py-2 text-xs rounded-[6px] text-foreground hover:bg-muted/60 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-xs rounded-[8px] text-foreground hover:bg-muted/60 transition-colors"
                 >
                   <Settings className="w-3.5 h-3.5 text-muted-foreground stroke-[1.5]" />
                   Account Settings
@@ -256,7 +257,7 @@ export function Topbar({ user }: TopbarProps) {
               <div className="pt-1 border-t border-border">
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-[6px] text-[#C4552F] hover:bg-[#C4552F]/10 transition-colors font-medium text-left"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs rounded-[8px] text-[#D62828] dark:text-[#FF5A5F] hover:bg-[#D62828]/10 transition-colors font-bold text-left"
                 >
                   <LogOut className="w-3.5 h-3.5 stroke-[1.5]" />
                   Sign Out
@@ -269,4 +270,3 @@ export function Topbar({ user }: TopbarProps) {
     </header>
   );
 }
-

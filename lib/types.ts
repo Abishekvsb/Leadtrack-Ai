@@ -65,17 +65,17 @@ export const STATUS_LABELS: Record<LeadStatus, string> = {
 };
 
 export const STATUS_COLORS: Record<LeadStatus, { bg: string; text: string; border: string; dot: string }> = {
-  NEW: { bg: "bg-[#5B7083]/10", text: "text-[#5B7083] dark:text-[#8CA0B2]", border: "border-[#5B7083]/20", dot: "bg-[#5B7083]" },
-  CONTACTED: { bg: "bg-[#E0A030]/10", text: "text-[#B87B14] dark:text-[#E0A030]", border: "border-[#E0A030]/25", dot: "bg-[#E0A030]" },
-  INTERESTED: { bg: "bg-[#E0A030]/15", text: "text-[#A26908] dark:text-[#E8AF44]", border: "border-[#E0A030]/30", dot: "bg-[#E0A030]" },
-  CAMPUS_VISIT: { bg: "bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15", text: "text-[#0F3D33] dark:text-[#4FB89A]", border: "border-[#0F3D33]/20 dark:border-[#4FB89A]/30", dot: "bg-[#0F3D33] dark:bg-[#4FB89A]" },
-  APPLICATION_SUBMITTED: { bg: "bg-[#E0A030]/15 dark:bg-[#E0A030]/20", text: "text-[#945E00] dark:text-[#F3BA54]", border: "border-[#E0A030]/30", dot: "bg-[#E0A030]" },
-  ADMITTED: { bg: "bg-[#0F3D33]/15 dark:bg-[#4FB89A]/20", text: "text-[#0F3D33] dark:text-[#4FB89A]", border: "border-[#0F3D33]/30 dark:border-[#4FB89A]/40", dot: "bg-[#0F3D33] dark:bg-[#4FB89A]" },
-  LOST: { bg: "bg-[#6B665C]/10 dark:bg-[#6B665C]/20", text: "text-[#6B665C] dark:text-[#A8A296]", border: "border-[#6B665C]/20", dot: "bg-[#6B665C]" },
+  NEW: { bg: "bg-[#64748B]/10", text: "text-[#64748B] dark:text-[#94A3B8]", border: "border-[#64748B]/20", dot: "bg-[#64748B]" },
+  CONTACTED: { bg: "bg-[#FFC21A]/10", text: "text-[#8A5A00] dark:text-[#FFD25A]", border: "border-[#FFC21A]/30", dot: "bg-[#FFC21A]" },
+  INTERESTED: { bg: "bg-[#FFC21A]/15", text: "text-[#8A5A00] dark:text-[#FFD25A]", border: "border-[#FFC21A]/35", dot: "bg-[#FFC21A]" },
+  CAMPUS_VISIT: { bg: "bg-[#D62828]/10 dark:bg-[#FF5A5F]/15", text: "text-[#D62828] dark:text-[#FF5A5F]", border: "border-[#D62828]/25 dark:border-[#FF5A5F]/35", dot: "bg-[#D62828] dark:bg-[#FF5A5F]" },
+  APPLICATION_SUBMITTED: { bg: "bg-[#E5A100]/15 dark:bg-[#FFD25A]/20", text: "text-[#8A5A00] dark:text-[#FFD25A]", border: "border-[#E5A100]/30", dot: "bg-[#E5A100]" },
+  ADMITTED: { bg: "bg-[#16A34A]/10 dark:bg-[#16A34A]/20", text: "text-[#16A34A] dark:text-[#4ADE80]", border: "border-[#16A34A]/30 dark:border-[#16A34A]/40", dot: "bg-[#16A34A]" },
+  LOST: { bg: "bg-[#6B6470]/10 dark:bg-[#6B6470]/20", text: "text-[#6B6470] dark:text-[#A19AA6]", border: "border-[#6B6470]/20", dot: "bg-[#6B6470]" },
 };
 
 export const SCORE_COLORS: Record<ScoreCategory, { bg: string; text: string; badge: string }> = {
-  HOT: { bg: "bg-[#C4552F]/10", text: "text-[#C4552F] dark:text-[#E27652]", badge: "bg-[#C4552F] text-white font-mono" },
-  WARM: { bg: "bg-[#E0A030]/15", text: "text-[#B87B14] dark:text-[#E0A030]", badge: "bg-[#E0A030] text-[#1B1A17] font-mono font-semibold" },
-  COLD: { bg: "bg-[#5B7083]/10", text: "text-[#5B7083] dark:text-[#8CA0B2]", badge: "bg-[#5B7083] text-white font-mono" },
+  HOT: { bg: "bg-[#D62828]/10", text: "text-[#D62828] dark:text-[#FF5A5F]", badge: "bg-[#D62828] text-white font-mono font-bold" },
+  WARM: { bg: "bg-[#FFC21A]/15", text: "text-[#8A5A00] dark:text-[#FFD25A]", badge: "bg-[#FFC21A] text-[#17141A] font-mono font-bold" },
+  COLD: { bg: "bg-[#64748B]/10", text: "text-[#64748B] dark:text-[#94A3B8]", badge: "bg-[#64748B] text-white font-mono" },
 };

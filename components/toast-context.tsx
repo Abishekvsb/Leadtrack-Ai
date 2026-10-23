@@ -10,6 +10,7 @@ interface Toast {
   type: ToastType;
   message: string;
   title?: string;
+  createdAt: number;
 }
 
 interface ToastContextType {
@@ -32,7 +33,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const addToast = useCallback(
     (message: string, type: ToastType = "info", title?: string) => {
       const id = Math.random().toString(36).substring(2, 9);
-      setToasts((prev) => [...prev, { id, type, message, title }]);
+      const createdAt = Date.now();
+      setToasts((prev) => [...prev, { id, type, message, title, createdAt }]);
 
       setTimeout(() => {
         removeToast(id);
@@ -52,38 +54,49 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
         {toasts.map((t) => {
           let borderColor = "border-border";
-          let icon = <Info className="w-4 h-4 text-[#5B7083] shrink-0 stroke-[1.5]" />;
+          let progressBg = "bg-muted-foreground";
+          let icon = <Info className="w-4 h-4 text-[#64748B] shrink-0 stroke-[1.5]" />;
 
           if (t.type === "success") {
-            borderColor = "border-[#0F3D33]/40 dark:border-[#4FB89A]/40";
-            icon = <CheckCircle2 className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A] shrink-0 stroke-[1.5]" />;
+            borderColor = "border-[#16A34A]/40";
+            progressBg = "bg-[#16A34A]";
+            icon = <CheckCircle2 className="w-4 h-4 text-[#16A34A] shrink-0 stroke-[1.5]" />;
           } else if (t.type === "error") {
-            borderColor = "border-[#C4552F]/40";
-            icon = <AlertCircle className="w-4 h-4 text-[#C4552F] shrink-0 stroke-[1.5]" />;
+            borderColor = "border-[#D62828]/40";
+            progressBg = "bg-[#D62828]";
+            icon = <AlertCircle className="w-4 h-4 text-[#D62828] dark:text-[#FF5A5F] shrink-0 stroke-[1.5]" />;
           } else if (t.type === "warning") {
-            borderColor = "border-[#E0A030]/40";
-            icon = <AlertTriangle className="w-4 h-4 text-[#E0A030] shrink-0 stroke-[1.5]" />;
+            borderColor = "border-[#FFC21A]/50";
+            progressBg = "bg-[#FFC21A]";
+            icon = <AlertTriangle className="w-4 h-4 text-[#8A5A00] dark:text-[#FFD25A] shrink-0 stroke-[1.5]" />;
           }
 
           return (
             <div
               key={t.id}
-              className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-[10px] shadow-academic-floating border bg-card text-card-foreground transition-all animate-fade-up ${borderColor}`}
+              className={`pointer-events-auto relative overflow-hidden flex items-start gap-3 p-4 rounded-[14px] glass-surface border text-card-foreground shadow-floating transition-all animate-fade-up ${borderColor}`}
             >
               <div className="mt-0.5">{icon}</div>
               <div className="flex-1 text-xs">
-                {t.title && <p className="font-medium text-foreground">{t.title}</p>}
-                <p className="text-muted-foreground leading-relaxed">{t.message}</p>
+                {t.title && <p className="font-heading font-bold text-foreground">{t.title}</p>}
+                <p className="text-muted-foreground leading-relaxed mt-0.5">{t.message}</p>
               </div>
               <button
                 onClick={() => removeToast(t.id)}
-                className="text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded-[4px]"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-[6px]"
               >
                 <X className="w-3.5 h-3.5 stroke-[1.5]" />
               </button>
+              {/* Progress bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted/40">
+                <div
+                  className={`h-full ${progressBg} animate-[shimmer-sweep_4.5s_linear_forwards]`}
+                  style={{ width: "100%" }}
+                />
+              </div>
             </div>
           );
         })}

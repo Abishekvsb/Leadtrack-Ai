@@ -64,36 +64,36 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
   };
 
   return (
-    <div className="rounded-[12px] bg-card border border-border p-5 sm:p-6 shadow-xs transition-all space-y-5">
+    <div className="rounded-[14px] bg-card border border-border p-5 sm:p-6 royal-card shadow-card transition-all space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 border border-[#0F3D33]/20 dark:border-[#4FB89A]/30 text-[10px] font-semibold uppercase tracking-wider text-[#0F3D33] dark:text-[#4FB89A]">
-            <Sparkles className="w-3 h-3 text-[#E0A030] stroke-[1.5]" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] bg-[#D62828]/10 dark:bg-[#FF5A5F]/15 border border-[#D62828]/25 text-[10px] font-bold uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F]">
+            <Sparkles className="w-3 h-3 text-[#FFC21A] stroke-[2]" />
             <span>Institution Setup Checklist</span>
           </div>
-          <h2 className="font-serif text-xl sm:text-2xl font-normal text-foreground tracking-tight">
+          <h2 className="font-heading text-xl sm:text-2xl font-bold text-foreground tracking-tight">
             Admissions Workspace Preparation
           </h2>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Complete these foundational steps to begin capturing and scoring student inquiries.
+            Complete these foundational steps to begin capturing, scoring, and converting student inquiries.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <span className="text-xs font-mono font-medium text-foreground tabular-nums">
+            <span className="text-xs font-mono font-bold text-foreground tabular-nums">
               {onboarding.completedCount} / {onboarding.totalSteps} Completed
             </span>
-            <div className="w-32 h-1.5 rounded-full bg-muted mt-1.5 overflow-hidden">
+            <div className="w-36 h-2 rounded-full bg-muted mt-1.5 overflow-hidden">
               <div
-                className="h-full bg-[#0F3D33] dark:bg-[#4FB89A] transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#D62828] to-[#FFC21A] transition-all duration-500 rounded-full"
                 style={{ width: `${onboarding.progressPercent}%` }}
               />
             </div>
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
+            className="p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
             title={collapsed ? "Expand checklist" : "Collapse checklist"}
           >
             {collapsed ? <ChevronDown className="w-4 h-4 stroke-[1.5]" /> : <ChevronUp className="w-4 h-4 stroke-[1.5]" />}
@@ -108,32 +108,32 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
             return (
               <div
                 key={step.id}
-                className={`p-4 rounded-[10px] border transition-all flex flex-col justify-between space-y-3.5 ${
+                className={`p-4 rounded-[12px] border transition-all flex flex-col justify-between space-y-3.5 ${
                   step.completed
-                    ? "bg-background border-border"
-                    : "bg-surface border-border hover:border-[#0F3D33]/40 dark:hover:border-[#4FB89A]/40"
+                    ? "bg-background/80 border-border"
+                    : "bg-surface border-border hover:border-[#D62828]/40 dark:hover:border-[#FF5A5F]/40 shadow-xs"
                 }`}
               >
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-7 h-7 rounded-[6px] flex items-center justify-center font-bold text-xs ${
+                        className={`w-7 h-7 rounded-[8px] flex items-center justify-center font-bold text-xs ${
                           step.completed
-                            ? "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A]"
+                            ? "bg-[#D62828]/10 text-[#D62828] dark:bg-[#FF5A5F]/15 dark:text-[#FF5A5F]"
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        <Icon className="w-3.5 h-3.5 stroke-[1.5]" />
+                        <Icon className="w-3.5 h-3.5 stroke-[1.75]" />
                       </div>
-                      <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                      <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider font-semibold">
                         0{idx + 1}
                       </span>
                     </div>
 
                     {step.completed ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F3D33] dark:text-[#4FB89A]">
-                        <CheckCircle2 className="w-3.5 h-3.5 stroke-[1.5]" />
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#16A34A] dark:text-[#4ADE80]">
+                        <CheckCircle2 className="w-3.5 h-3.5 stroke-[2]" />
                         <span>Done</span>
                       </span>
                     ) : (
@@ -145,7 +145,7 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
                   </div>
 
                   <div>
-                    <h3 className="font-serif text-sm font-normal text-foreground tracking-tight">{step.title}</h3>
+                    <h3 className="font-heading text-sm font-bold text-foreground tracking-tight">{step.title}</h3>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                       {step.description}
                     </p>
@@ -157,31 +157,31 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
                     <div className="flex items-center gap-2 w-full justify-between">
                       <button
                         onClick={handleCopyEnquiryLink}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-muted/60 hover:bg-muted text-foreground text-xs font-medium transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-muted/60 hover:bg-muted text-foreground text-xs font-semibold transition-colors"
                       >
-                        {copied ? <Check className="w-3 h-3 stroke-[1.5]" /> : <Copy className="w-3 h-3 stroke-[1.5]" />}
+                        {copied ? <Check className="w-3 h-3 stroke-[2]" /> : <Copy className="w-3 h-3 stroke-[1.5]" />}
                         <span>{copied ? "Copied" : "Copy Form URL"}</span>
                       </button>
                       <Link
                         href="/enquire"
                         target="_blank"
-                        className="text-xs font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:underline inline-flex items-center gap-1"
+                        className="text-xs font-bold text-[#D62828] dark:text-[#FF5A5F] hover:underline inline-flex items-center gap-1"
                       >
                         <span>Open</span>
-                        <ArrowRight className="w-3 h-3 stroke-[1.5]" />
+                        <ArrowRight className="w-3 h-3 stroke-[2]" />
                       </Link>
                     </div>
                   ) : (
                     <Link
                       href={step.href}
-                      className={`w-full inline-flex items-center justify-between text-xs font-medium py-0.5 transition-colors ${
+                      className={`w-full inline-flex items-center justify-between text-xs font-bold py-0.5 transition-colors ${
                         step.completed
                           ? "text-muted-foreground hover:text-foreground"
-                          : "text-[#0F3D33] dark:text-[#4FB89A] hover:underline"
+                          : "text-[#D62828] dark:text-[#FF5A5F] hover:underline"
                       }`}
                     >
                       <span>{step.completed ? "Review configuration" : "Configure step"}</span>
-                      <ArrowRight className="w-3 h-3 stroke-[1.5]" />
+                      <ArrowRight className="w-3 h-3 stroke-[2]" />
                     </Link>
                   )}
                 </div>
@@ -193,4 +193,3 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
     </div>
   );
 }
-
