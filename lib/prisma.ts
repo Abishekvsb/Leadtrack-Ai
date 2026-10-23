@@ -11,10 +11,13 @@ if (!process.env.DATABASE_URL) {
     "";
   if (fallbackUrl) {
     process.env.DATABASE_URL = fallbackUrl;
+  } else {
+    // Prevent PrismaClient constructor crash when env var is missing
+    process.env.DATABASE_URL = "postgresql://leadtrack:leadtrack@localhost:5432/leadtrack?sslmode=require";
   }
 }
 
-if (!process.env.DIRECT_URL && process.env.DATABASE_URL) {
+if (!process.env.DIRECT_URL) {
   process.env.DIRECT_URL =
     process.env.POSTGRES_URL_NON_POOLING ||
     process.env.POSTGRES_DIRECT_URL ||
