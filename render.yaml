@@ -4,17 +4,25 @@ services:
     runtime: node
     region: singapore
     plan: starter
-    buildCommand: npm install && (npx prisma migrate deploy || true) && npm run build
+    buildCommand: npm install --include=dev && npx prisma generate && (npx prisma migrate deploy || npx prisma db push --skip-generate || true) && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: "20.18.0"
+      - key: PORT
+        value: "10000"
+      - key: HOSTNAME
+        value: "0.0.0.0"
       - key: DATABASE_URL
         value: "postgresql://neondb_owner:npg_lpXCRakiO5Z2@ep-dark-smoke-azb3wjjh-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
       - key: DIRECT_URL
         value: "postgresql://neondb_owner:npg_lpXCRakiO5Z2@ep-dark-smoke-azb3wjjh.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
       - key: JWT_SECRET
+        generateValue: true
+      - key: NEXTAUTH_SECRET
         generateValue: true
       - key: NEXT_PUBLIC_APP_URL
         value: "https://leadtrack-ai.onrender.com"
