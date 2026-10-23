@@ -23,7 +23,7 @@ import {
   LogOut,
   Bot,
   ExternalLink,
-  ChevronRight,
+  GraduationCap,
 } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 
@@ -69,12 +69,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-500/25 animate-pulse">
-            <Sparkles className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-[#F6F2EA] dark:text-[#0F1412] shadow-xs">
+            <GraduationCap className="w-5 h-5 stroke-[1.5]" />
           </div>
-          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Loading LeadTrack AI...</p>
+          <p className="text-xs font-medium text-muted-foreground font-serif tracking-tight">
+            LeadTrack AI Admissions Workspace...
+          </p>
         </div>
       </div>
     );
@@ -84,11 +86,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "Leads", href: "/leads", icon: Users2 },
     { label: "Pipeline", href: "/pipeline", icon: KanbanSquare },
-    { label: "Calls", href: "/follow-ups", icon: PhoneCall },
+    { label: "Follow-ups", href: "/follow-ups", icon: PhoneCall },
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="flex min-h-screen bg-background text-foreground">
       {/* Desktop Sidebar (Hidden on mobile) */}
       <Sidebar
         userRole={user?.role}
@@ -99,13 +101,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar user={user} />
-        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto animate-in fade-in duration-300 pb-24 md:pb-8">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-[1280px] w-full mx-auto animate-fade-up pb-24 md:pb-8">
           {children}
         </main>
       </div>
 
       {/* Mobile Bottom Navigation Bar (md:hidden, min 44px tap targets) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center justify-around h-16 px-1 safe-area-pb">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border flex items-center justify-around h-16 px-1 safe-area-pb">
         {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -113,13 +115,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-xl text-[10px] font-semibold transition-colors ${
+              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[6px] text-[10px] font-medium transition-colors ${
                 isActive
-                  ? "text-indigo-600 dark:text-indigo-400 font-bold"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  ? "text-[#0F3D33] dark:text-[#4FB89A] font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? "text-indigo-600 dark:text-indigo-400" : ""}`} />
+              <Icon
+                className={`w-4 h-4 stroke-[1.5] ${
+                  isActive ? "text-[#0F3D33] dark:text-[#4FB89A]" : ""
+                }`}
+              />
               <span className="mt-1">{item.label}</span>
             </Link>
           );
@@ -128,11 +134,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Mobile AI Quick Trigger */}
         <button
           onClick={() => setAiModalOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-xl text-[10px] font-semibold text-indigo-600 dark:text-indigo-400"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[6px] text-[10px] font-medium text-[#0F3D33] dark:text-[#4FB89A]"
           title="Open AI Copilot"
         >
-          <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-xs">
-            <Bot className="w-3.5 h-3.5" />
+          <div className="w-5 h-5 rounded-[6px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] flex items-center justify-center shadow-xs">
+            <Bot className="w-3.5 h-3.5 stroke-[1.5]" />
           </div>
           <span className="mt-1">Copilot</span>
         </button>
@@ -140,33 +146,33 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* More Menu Drawer Trigger */}
         <button
           onClick={() => setMobileDrawerOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-xl text-[10px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[6px] text-[10px] font-medium text-muted-foreground hover:text-foreground"
           title="More navigation"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-4 h-4 stroke-[1.5]" />
           <span className="mt-1">More</span>
         </button>
       </nav>
 
       {/* Mobile Slide-Over Drawer */}
       {mobileDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end md:hidden bg-black/50 backdrop-blur-xs animate-in fade-in">
-          <div className="w-4/5 max-w-xs bg-white dark:bg-slate-900 h-full p-6 shadow-2xl flex flex-col justify-between border-l border-slate-200 dark:border-slate-800 animate-in slide-in-from-right duration-250">
+        <div className="fixed inset-0 z-50 flex justify-end md:hidden bg-black/40 animate-fade-up">
+          <div className="w-4/5 max-w-xs bg-card h-full p-6 shadow-academic-floating flex flex-col justify-between border-l border-border">
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                  <h3 className="font-serif text-sm font-normal text-foreground">
                     {user?.institution?.name || "LeadTrack AI"}
                   </h3>
-                  <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold uppercase tracking-wider">
+                  <span className="text-[10px] text-[#0F3D33] dark:text-[#4FB89A] font-semibold uppercase tracking-wider">
                     {user?.role} Workspace
                   </span>
                 </div>
                 <button
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-600"
+                  className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/60"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 stroke-[1.5]" />
                 </button>
               </div>
 
@@ -174,27 +180,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   href="/automation"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <Sparkles className="w-4 h-4 text-[#E0A030] stroke-[1.5]" />
                   <span>Automation Rules</span>
                 </Link>
 
                 <Link
                   href="/templates"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <MessageSquareShare className="w-4 h-4 text-blue-500" />
+                  <MessageSquareShare className="w-4 h-4 text-[#5B7083] stroke-[1.5]" />
                   <span>Communication Templates</span>
                 </Link>
 
                 <Link
                   href="/analytics"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <BarChart3 className="w-4 h-4 text-emerald-500" />
+                  <BarChart3 className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A] stroke-[1.5]" />
                   <span>Analytics &amp; ROI</span>
                 </Link>
 
@@ -202,9 +208,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Link
                     href="/team"
                     onClick={() => setMobileDrawerOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                   >
-                    <Users className="w-4 h-4 text-indigo-500" />
+                    <Users className="w-4 h-4 text-[#5B7083] stroke-[1.5]" />
                     <span>Counselor Team</span>
                   </Link>
                 )}
@@ -212,48 +218,48 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   href="/settings"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <Settings className="w-4 h-4 text-slate-400" />
+                  <Settings className="w-4 h-4 text-muted-foreground stroke-[1.5]" />
                   <span>Settings &amp; Courses</span>
                 </Link>
 
                 <Link
                   href="/guide"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px]"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
-                  <HelpCircle className="w-4 h-4 text-purple-500" />
-                  <span>How App Works (Guide)</span>
+                  <HelpCircle className="w-4 h-4 text-muted-foreground stroke-[1.5]" />
+                  <span>Admissions Guide</span>
                 </Link>
 
                 <Link
                   href="/enquire"
                   target="_blank"
-                  className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors min-h-[44px]"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-[6px] text-xs font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:bg-muted/60 transition-colors min-h-[44px]"
                 >
                   <span>Public Enquiry Form</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <ExternalLink className="w-3.5 h-3.5 stroke-[1.5]" />
                 </Link>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+            <div className="pt-4 border-t border-border space-y-3">
               <div className="flex items-center gap-3 px-1">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center">
+                <div className="w-8 h-8 rounded-[6px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-semibold text-xs flex items-center justify-center">
                   {getInitials(user?.name || "User")}
                 </div>
                 <div className="truncate">
-                  <p className="font-bold text-xs truncate">{user?.name}</p>
-                  <p className="text-[10px] text-slate-400 truncate">{user?.email}</p>
+                  <p className="font-medium text-xs text-foreground truncate">{user?.name}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
                 </div>
               </div>
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors min-h-[44px]"
+                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-[6px] text-xs font-medium text-[#C4552F] hover:bg-[#C4552F]/10 transition-colors min-h-[44px]"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 stroke-[1.5]" />
                 <span>Sign Out</span>
               </button>
             </div>
@@ -264,11 +270,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Desktop Floating AI Trigger (hidden on mobile, mobile uses bottom nav trigger) */}
       <button
         onClick={() => setAiModalOpen(true)}
-        className="hidden md:flex fixed bottom-6 right-6 z-40 items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-medium text-xs shadow-xl shadow-indigo-600/30 hover:scale-105 active:scale-95 transition-all"
-        title="Open AI Counselor Advisor"
+        className="hidden md:flex fixed bottom-6 right-6 z-40 items-center gap-2.5 px-4 py-2.5 rounded-[8px] bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-academic-floating border border-[#0F3D33] dark:border-[#4FB89A] hover:-translate-y-0.5 transition-all"
+        title="Open AI Counselor Copilot"
       >
-        <Bot className="w-4 h-4 animate-bounce" />
-        <span>Ask AI Advisor</span>
+        <Bot className="w-4 h-4 stroke-[1.5]" />
+        <span>Counselor Copilot</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#E0A030]" />
       </button>
 
       {/* AI Assistant Modal */}
@@ -279,3 +286,4 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     </div>
   );
 }
+

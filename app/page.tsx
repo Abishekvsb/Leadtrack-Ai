@@ -15,64 +15,60 @@ import {
   ChevronDown,
   Globe,
   Award,
-  HeartHandshake,
   Bot,
   ExternalLink,
   Laptop,
+  Compass,
+  FileText,
+  Clock,
 } from "lucide-react";
 
 export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const stats = [
-    { label: "Admissions Conversion Lift", value: "3.4x", sub: "compared to legacy CRM spreadsheets" },
-    { label: "Student Enquiries Processed", value: "250K+", sub: "across colleges & universities" },
-    { label: "Counselor Response SLA", value: "< 2 Hrs", sub: "automated instant WhatsApp & email" },
+    { label: "Admissions Conversion Lift", value: "3.4×", sub: "measured against manual spreadsheets" },
+    { label: "Student Enquiries Processed", value: "250K+", sub: "across colleges & degree institutions" },
+    { label: "Counselor Response SLA", value: "< 2 Hrs", sub: "automated instant WhatsApp & email dispatch" },
     { label: "Aligned with UN SDG 4", value: "100%", sub: "Quality Education & Equal Access" },
   ];
 
   const features = [
     {
       icon: Sparkles,
-      title: "AI-Powered Lead Scoring (0-100)",
+      title: "Predictive Lead Scoring (0–100)",
       description:
-        "Automatically identifies high-intent candidates using weighted models on source quality, response latency, engagement touches, and program demand.",
-      color: "from-indigo-500 to-purple-600",
+        "Transparent multi-pillar scoring model analyzing source quality, response latency, engagement touches, and program demand to rank candidates as Hot, Warm, or Cold.",
     },
     {
       icon: KanbanSquare,
       title: "Interactive Admissions Pipeline",
       description:
-        "Smooth drag-and-drop Kanban moving applicants from New Enquiry through Campus Visit to Confirmed Admission with live DB synchronization.",
-      color: "from-blue-500 to-cyan-500",
+        "7-stage drag-and-drop Kanban carrying candidates from initial enquiry through campus walkthrough to formal application and confirmed matriculation.",
     },
     {
       icon: Zap,
       title: "Autonomous SLA Automations",
       description:
-        "Never miss a student. Auto-trigger personalized WhatsApp check-ins, send prospectus brochures, and escalate inactive leads to senior deans.",
-      color: "from-amber-500 to-orange-500",
+        "Ensure zero student falls through the cracks. Auto-dispatch prospectus brochures, schedule reminder calls, and escalate inactive leads after 48 hours.",
     },
     {
       icon: BarChart3,
-      title: "Source ROI & Counselor Analytics",
+      title: "Source Yield & Counselor Analytics",
       description:
-        "Track acquisition costs across Google Ads, Instagram, Walk-ins, and Education Expos. Measure individual counselor conversion benchmarks.",
-      color: "from-emerald-500 to-teal-500",
+        "Measure acquisition ROI across search, Instagram, campus walk-ins, and education fairs. Benchmark individual counselor conversion velocities.",
     },
     {
       icon: Users2,
-      title: "Omnichannel Enquiry Capture",
+      title: "Omnichannel Inbound Capture",
       description:
-        "Public embeddable enquiry widgets, WhatsApp bot connectors, Facebook Lead Ads, and bulk CSV imports with intelligent duplicate detection.",
-      color: "from-rose-500 to-pink-500",
+        "Embeddable public inquiry portals, WhatsApp business connectors, and bulk registry imports with intelligent deduplication and phone normalization.",
     },
     {
       icon: Bot,
-      title: "AI Admissions Advisor Chat",
+      title: "Admissions Advisory Copilot",
       description:
-        "Interactive assistant answering counselor questions: 'Which leads should I call today?', 'Analyze B.Tech CS demand', and diagnosing drop-offs.",
-      color: "from-violet-500 to-indigo-600",
+        "Integrated AI assistant answering counselor queries: 'Identify today's urgent callbacks', 'Analyze computer science demand', and diagnosing drop-offs.",
     },
   ];
 
@@ -80,125 +76,118 @@ export default function LandingPage() {
     {
       step: "01",
       title: "Capture Enquiries Omnichannel",
-      desc: "Centralize incoming students from your website, social media campaigns, campus walk-ins, and education fairs without duplicates.",
+      desc: "Centralize prospective applicant inquiries from your portal, social campaigns, campus walk-ins, and education expositions without duplicate records.",
     },
     {
       step: "02",
       title: "Score & Prioritize with AI",
-      desc: "Our machine learning engine grades candidates as Hot, Warm, or Cold, recommending the exact next best action for counselors.",
+      desc: "The predictive engine grades student intent mathematically as Hot, Warm, or Cold, recommending the exact next outreach action for faculty counselors.",
     },
     {
       step: "03",
-      title: "Automate Follow-ups & Visits",
-      desc: "Trigger tailored email & WhatsApp templates, schedule campus walkthroughs, and keep parents updated at every milestone.",
+      title: "Coordinate Consultations & Visits",
+      desc: "Trigger pre-approved WhatsApp and email correspondence, schedule campus laboratory tours, and keep parents updated at every milestone.",
     },
     {
       step: "04",
-      title: "Convert to Enrolled Students",
-      desc: "Track application documents, fee submissions, and confirm admissions while generating deep ROI and seat-occupancy reports.",
+      title: "Confirm Enrollment & Intake",
+      desc: "Verify academic documents, track scholarship discounts, and confirm admissions while updating degree program intake capacity in real-time.",
     },
   ];
 
   const faqs = [
     {
       q: "How does LeadTrack AI support UN Sustainable Development Goal 4 (SDG 4)?",
-      a: "LeadTrack AI champions UN SDG 4 (Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all) by helping institutions remove barriers to admission, eliminate lost queries, provide merit scholarship alerts to deserving students, and offer timely career counseling regardless of background.",
+      a: "LeadTrack AI champions UN SDG 4 (Quality Education) by eliminating operational bottlenecks in admissions, preventing dropped inquiries, accelerating merit scholarship dispatches to deserving candidates, and ensuring every student receives timely academic counseling regardless of background.",
     },
     {
-      q: "Can we embed the enquiry form on our official college website?",
-      a: "Yes! LeadTrack AI includes a public, shareable enquiry portal (/enquire) with duplicate phone/email prevention, responsive design, and instantaneous lead scoring that can be directly embedded in an iframe or linked from promotional campaigns.",
+      q: "Can we embed the enquiry portal on our institutional college website?",
+      a: "Yes. LeadTrack AI provides a public, shareable enquiry portal (/enquire) with duplicate phone/email detection, responsive layout, and immediate intent scoring that can be integrated via iframe or linked from recruitment campaigns.",
     },
     {
-      q: "How does the AI Lead Scoring Engine work?",
-      a: "The engine scores leads from 0 to 100 based on weighted dimensions: source quality (referrals and walk-ins carry higher organic intent), counselor interaction count, profile completeness, program demand, and recency of enquiry. Counselors can click 'Why this score' on any lead to see the transparent mathematical breakdown.",
+      q: "How does the AI Lead Scoring Engine compute student grades?",
+      a: "The engine scores leads from 0 to 100 based on 4 transparent pillars: source channel intent (30%), counselor engagement touches (25%), inquiry recency (25%), and profile completeness (20%). Counselors can inspect the mathematical breakdown on any candidate dossier.",
     },
     {
-      q: "Does LeadTrack AI support role-based permissions?",
-      a: "Absolutely. Administrators have full system and financial reporting access; Admissions Managers supervise counselors and team distribution; Counselors have a dedicated, focused workspace showing only their assigned applicants and daily call tasks.",
+      q: "Does LeadTrack AI support role-based permissions for faculty?",
+      a: "Yes. Administrators hold institutional oversight and financial analytics access; Admissions Managers supervise counseling queues and team distribution; Counselors work within a focused workspace displaying their assigned applicants and daily consultation schedule.",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#F6F2EA] dark:bg-[#0F1412] text-[#1B1A17] dark:text-[#ECE8DF] selection:bg-[#E0A030]/30 selection:text-[#1B1A17] font-sans">
       {/* Navigation */}
-      <nav className="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <nav className="sticky top-0 z-40 w-full border-b border-[#E4DDD0] dark:border-[#26302B] bg-[#F6F2EA]/90 dark:bg-[#0F1412]/90 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white shadow-xl shadow-indigo-500/25">
-              <GraduationCap className="w-7 h-7" />
+            <div className="w-10 h-10 rounded-lg bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-[#F6F2EA] dark:text-[#0F1412] shadow-2xs">
+              <GraduationCap className="w-5 h-5" />
             </div>
             <div>
-              <span className="font-display font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent">
+              <span className="font-serif font-bold text-lg tracking-tight text-[#1B1A17] dark:text-[#ECE8DF] block">
                 LeadTrack AI
               </span>
-              <span className="block text-[10px] font-semibold tracking-wider uppercase text-slate-400">
-                Admissions CRM Platform
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187]">
+                Admissions Operating System
               </span>
             </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
-            <a href="#features" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              Features
+          <div className="hidden md:flex items-center gap-8 text-xs font-medium text-[#6B665C] dark:text-[#959187]">
+            <a href="#features" className="hover:text-[#1B1A17] dark:hover:text-[#ECE8DF] transition-colors">
+              Platform Features
             </a>
-            <a href="#how-it-works" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              How It Works
+            <a href="#how-it-works" className="hover:text-[#1B1A17] dark:hover:text-[#ECE8DF] transition-colors">
+              Lifecycle Blueprint
             </a>
-            <a href="#sdg4" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              UN SDG 4
+            <a href="#sdg4" className="hover:text-[#1B1A17] dark:hover:text-[#ECE8DF] transition-colors">
+              UN SDG 4 Mandate
             </a>
-            <a href="#faq" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              FAQ
+            <a href="#faq" className="hover:text-[#1B1A17] dark:hover:text-[#ECE8DF] transition-colors">
+              Governance FAQ
             </a>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <Link
               href="/enquire"
               target="_blank"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] text-xs font-medium text-[#1B1A17] dark:text-[#ECE8DF] hover:bg-[#FAF7F0] dark:hover:bg-[#1E2622] transition-colors"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Student Enquiry Form
+              <ExternalLink className="w-3.5 h-3.5 text-[#6B665C]" />
+              <span>Candidate Portal</span>
             </Link>
             <Link
               href="/login"
-              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40"
+              className="px-4 py-2 rounded-lg bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#3ea688] text-[#F6F2EA] dark:text-[#0F1412] font-semibold text-xs shadow-2xs transition-colors"
             >
-              Sign In Portal →
+              Faculty Sign In →
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-28 px-6 overflow-hidden">
-        {/* Soft Background Gradients */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-indigo-500/20 via-purple-500/15 to-cyan-500/10 blur-[130px] -z-10 rounded-full pointer-events-none" />
-
-        <div className="max-w-5xl mx-auto text-center space-y-8">
-          {/* SDG 4 Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-400 text-xs font-semibold backdrop-blur-md">
-            <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span>Empowering Institutions in Service of UN SDG 4: Quality Education</span>
+      <section className="relative pt-18 pb-24 px-6 overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center space-y-6">
+          {/* Institutional Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[11px] font-mono uppercase tracking-wider text-[#0F3D33] dark:text-[#4FB89A]">
+            <Award className="w-3.5 h-3.5 text-[#E0A030]" />
+            <span>Advancing UN SDG 4: Quality &amp; Equitable Education</span>
           </div>
 
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.12]">
-            Turn Student Inquiries Into{" "}
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent">
-              Confirmed Admissions
-            </span>
+          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF] leading-[1.08] max-w-4xl mx-auto">
+            Admissions intelligence, authored for higher ed.
           </h1>
 
-          <p className="max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
-            The intelligent admissions CRM built for higher education institutions. Score student intent with AI,
-            automate multi-channel follow-ups, eliminate lost queries, and fill every cohort with clarity.
+          <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-[#6B665C] dark:text-[#959187] font-normal leading-relaxed">
+            The predictive admissions operating system built for colleges and universities. Grade applicant intent with transparent AI, enforce counselor response SLAs, and fill cohorts with precision.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
             <Link
               href="/login"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold text-sm shadow-xl shadow-indigo-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#3ea688] text-[#F6F2EA] dark:text-[#0F1412] font-semibold text-xs transition-colors shadow-xs"
             >
               <span>Access Admissions Workspace</span>
               <ArrowRight className="w-4 h-4" />
@@ -206,110 +195,129 @@ export default function LandingPage() {
             <Link
               href="/enquire"
               target="_blank"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm backdrop-blur-md transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] hover:bg-[#FAF7F0] dark:hover:bg-[#1E2622] text-[#1B1A17] dark:text-[#ECE8DF] font-medium text-xs transition-colors"
             >
-              <Laptop className="w-4 h-4 text-indigo-500" />
-              <span>Preview Public Enquiry Portal</span>
+              <Laptop className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
+              <span>Public Enquiry Portal Preview</span>
             </Link>
           </div>
         </div>
 
-        {/* Live Feature Showcase Card */}
-        <div className="max-w-6xl mx-auto mt-16 rounded-3xl p-3 bg-gradient-to-b from-indigo-500/20 via-purple-500/10 to-transparent border border-white/40 dark:border-white/10 shadow-2xl backdrop-blur-xl">
-          <div className="rounded-2xl overflow-hidden border border-slate-200/60 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-6 md:p-8">
-            <div className="flex flex-col md:flex-row items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
+        {/* Browser Frame Showcase */}
+        <div className="max-w-5xl mx-auto mt-14 rounded-xl border border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] shadow-lg overflow-hidden">
+          {/* Browser Chrome Header */}
+          <div className="px-4 py-3 border-b border-[#E4DDD0] dark:border-[#26302B] bg-[#FAF7F0] dark:bg-[#131916] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E4DDD0] dark:bg-[#26302B]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E4DDD0] dark:bg-[#26302B]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#E4DDD0] dark:bg-[#26302B]" />
+              <span className="ml-3 font-mono text-[11px] text-[#6B665C] dark:text-[#959187]">
+                leadtrack.institute / dashboard / admissions-registry
+              </span>
+            </div>
+            <div className="flex items-center gap-2 font-mono text-[10px] text-[#6B665C] dark:text-[#959187]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0F3D33] dark:bg-[#4FB89A]" />
+              <span>LIVE REGISTRY</span>
+            </div>
+          </div>
+
+          {/* Browser Frame Content */}
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E4DDD0] dark:border-[#26302B] gap-3">
               <div>
-                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#6B665C] dark:text-[#959187]">
                   Admissions Intelligence Engine
                 </span>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
-                  Unified Institution Command Center
+                <h3 className="font-serif text-lg font-bold text-[#1B1A17] dark:text-[#ECE8DF]">
+                  Institutional Candidate Registry &amp; Cohort Yield
                 </h3>
               </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  Real-Time Lead Scoring
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded font-mono text-[10px] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] border border-[#0F3D33]/25 dark:border-[#4FB89A]/30">
+                  Real-Time Scoring Active
                 </span>
-                <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border border-indigo-500/20">
-                  SLA Automation Engine
+                <span className="px-2.5 py-1 rounded font-mono text-[10px] bg-[#E0A030]/10 text-[#B87A14] dark:text-[#E0A030] border border-[#E0A030]/30">
+                  SLA Engine: &lt; 2h
                 </span>
               </div>
             </div>
 
             {/* Feature metric highlights */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Smart Prioritization</span>
-                <p className="text-xl font-bold text-slate-900 dark:text-white mt-1">AI Scoring (0–100)</p>
-                <span className="text-[11px] font-semibold text-emerald-600 mt-1 inline-block">Hot, Warm & Cold tiers</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+              <div className="p-3.5 rounded-lg bg-[#FAF7F0] dark:bg-[#131916] border border-[#E4DDD0] dark:border-[#26302B]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187]">Intent Tiers</span>
+                <p className="font-serif text-lg font-bold text-[#1B1A17] dark:text-[#ECE8DF] mt-1">Score 0–100</p>
+                <span className="text-[10px] font-mono text-[#0F3D33] dark:text-[#4FB89A] mt-1 block">Hot, Warm &amp; Cold</span>
               </div>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Pipeline Stages</span>
-                <p className="text-xl font-bold text-emerald-600 mt-1">7 Stages</p>
-                <span className="text-[11px] font-semibold text-emerald-600 mt-1 inline-block">Enquiry to Admission</span>
+              <div className="p-3.5 rounded-lg bg-[#FAF7F0] dark:bg-[#131916] border border-[#E4DDD0] dark:border-[#26302B]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187]">Pipeline Velocity</span>
+                <p className="font-mono text-lg font-bold text-[#0F3D33] dark:text-[#4FB89A] mt-1">7 Stages</p>
+                <span className="text-[10px] font-mono text-[#6B665C] dark:text-[#959187] mt-1 block">Enquiry to Intake</span>
               </div>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Counselor SLA</span>
-                <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">&lt; 2 Hours</p>
-                <span className="text-[11px] font-semibold text-indigo-600 mt-1 inline-block">Automated escalations</span>
+              <div className="p-3.5 rounded-lg bg-[#FAF7F0] dark:bg-[#131916] border border-[#E4DDD0] dark:border-[#26302B]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187]">First Touch SLA</span>
+                <p className="font-mono text-lg font-bold text-[#B87A14] dark:text-[#E0A030] mt-1">&lt; 2 Hours</p>
+                <span className="text-[10px] font-mono text-[#6B665C] dark:text-[#959187] mt-1 block">Automated Dispatch</span>
               </div>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-                <span className="text-[11px] text-slate-400 font-medium">Security & Privacy</span>
-                <p className="text-xl font-bold text-purple-600 mt-1">Role-Based</p>
-                <span className="text-[11px] font-semibold text-purple-600 mt-1 inline-block">Audit-logged operations</span>
+              <div className="p-3.5 rounded-lg bg-[#FAF7F0] dark:bg-[#131916] border border-[#E4DDD0] dark:border-[#26302B]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187]">Governance</span>
+                <p className="font-serif text-lg font-bold text-[#1B1A17] dark:text-[#ECE8DF] mt-1">Role-Based</p>
+                <span className="text-[10px] font-mono text-[#6B665C] dark:text-[#959187] mt-1 block">Archival Audit Trail</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Counter Section */}
-      <section className="py-16 bg-white/60 dark:bg-slate-900/60 border-y border-slate-200/80 dark:border-slate-800/80">
+      {/* Stats Section */}
+      <section className="py-12 bg-white dark:bg-[#171D1A] border-y border-[#E4DDD0] dark:border-[#26302B]">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((s, idx) => (
             <div key={idx} className="flex flex-col text-center sm:text-left">
-              <span className="font-display text-4xl sm:text-5xl font-extrabold text-indigo-600 dark:text-indigo-400">
+              <span className="font-mono text-3xl sm:text-4xl font-bold text-[#0F3D33] dark:text-[#4FB89A] tracking-tight">
                 {s.value}
               </span>
-              <span className="text-base font-semibold text-slate-800 dark:text-slate-100 mt-2">{s.label}</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{s.sub}</span>
+              <span className="text-xs font-semibold text-[#1B1A17] dark:text-[#ECE8DF] mt-1 font-serif">
+                {s.label}
+              </span>
+              <span className="text-[11px] text-[#6B665C] dark:text-[#959187] mt-0.5">
+                {s.sub}
+              </span>
             </div>
           ))}
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
-            Complete Feature Matrix
+      <section id="features" className="py-20 px-6 max-w-7xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#0F3D33] dark:text-[#4FB89A]">
+            Capabilities &amp; Architecture
           </span>
-          <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Designed for Modern Academic Admissions
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF]">
+            Engineered for Academic Admissions
           </h2>
-          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
-            Eliminate chaotic spreadsheets, missed calls, and disconnected channels. Everything your team needs to guide
-            students from discovery to enrollment.
+          <p className="text-[#6B665C] dark:text-[#959187] text-xs sm:text-sm leading-relaxed">
+            Eliminate disorganized spreadsheets, dropped calls, and disconnected marketing channels. Provide counseling staff with an authoritative command center.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f, i) => {
             const Icon = f.icon;
             return (
               <div
                 key={i}
-                className="group p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col justify-between"
+                className="p-6 rounded-xl bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] hover:border-[#0F3D33]/40 dark:hover:border-[#4FB89A]/40 transition-colors shadow-2xs flex flex-col justify-between"
               >
                 <div>
-                  <div
-                    className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${f.color} flex items-center justify-center text-white shadow-lg mb-6 group-hover:scale-110 transition-transform`}
-                  >
-                    <Icon className="w-6 h-6" />
+                  <div className="w-10 h-10 rounded-lg bg-[#FAF7F0] dark:bg-[#131916] border border-[#E4DDD0] dark:border-[#26302B] text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-display text-lg font-bold text-slate-900 dark:text-white mb-2">{f.title}</h3>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <h3 className="font-serif text-base font-bold text-[#1B1A17] dark:text-[#ECE8DF] mb-2">
+                    {f.title}
+                  </h3>
+                  <p className="text-xs text-[#6B665C] dark:text-[#959187] leading-relaxed">
                     {f.description}
                   </p>
                 </div>
@@ -320,31 +328,33 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-24 px-6 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/80 dark:border-slate-800/80">
+      <section id="how-it-works" className="py-20 px-6 bg-[#FAF7F0] dark:bg-[#131916] border-y border-[#E4DDD0] dark:border-[#26302B]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
-              Execution Architecture
+          <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-[#0F3D33] dark:text-[#4FB89A]">
+              Standard Operating Flow
             </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight">
-              From Inquiry to Student in 4 Steps
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF]">
+              From Candidacy to Enrolled in 4 Steps
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {steps.map((st, i) => (
               <div
                 key={i}
-                className="relative p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col justify-between"
+                className="p-6 rounded-xl bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] shadow-2xs flex flex-col justify-between"
               >
                 <div>
-                  <span className="font-mono text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                  <span className="font-serif text-3xl font-bold text-[#E0A030] block">
                     {st.step}
                   </span>
-                  <h3 className="font-display text-base font-bold text-slate-900 dark:text-white mt-4 mb-2">
+                  <h3 className="font-serif text-base font-bold text-[#1B1A17] dark:text-[#ECE8DF] mt-3 mb-2">
                     {st.title}
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{st.desc}</p>
+                  <p className="text-xs text-[#6B665C] dark:text-[#959187] leading-relaxed">
+                    {st.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -353,30 +363,28 @@ export default function LandingPage() {
       </section>
 
       {/* UN SDG 4 Section */}
-      <section id="sdg4" className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="rounded-3xl p-8 md:p-14 bg-gradient-to-tr from-emerald-600 via-teal-600 to-indigo-700 text-white shadow-2xl relative overflow-hidden">
-          <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-wider">
-              <Award className="w-4 h-4" />
+      <section id="sdg4" className="py-20 px-6 max-w-7xl mx-auto">
+        <div className="rounded-xl p-8 md:p-12 bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#171D1A] dark:border dark:border-[#26302B] shadow-lg relative overflow-hidden">
+          <div className="max-w-3xl space-y-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#F6F2EA]/10 border border-[#F6F2EA]/20 text-[11px] font-mono uppercase tracking-wider text-[#E0A030]">
+              <Award className="w-3.5 h-3.5" />
               <span>United Nations SDG 4 Commitment</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-              Championing Quality Education & Equitable Access for Every Aspirant
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-[#F6F2EA]">
+              Championing Quality Education &amp; Equitable Access for Every Candidate
             </h2>
-            <p className="text-emerald-50 text-sm sm:text-base leading-relaxed">
-              Target 4.3 seeks to ensure equal access for all women and men to affordable and quality technical, vocational
-              and tertiary education. LeadTrack AI provides colleges with transparent scoring models, automated scholarship
-              outreach, and responsive counseling so no student is left behind due to operational bottlenecks.
+            <p className="text-xs sm:text-sm text-[#F6F2EA]/80 leading-relaxed font-sans">
+              Target 4.3 guarantees equal access for all women and men to affordable, quality tertiary and technical education. LeadTrack AI provides institutions with non-discriminatory scoring models, automated scholarship outreach, and rapid counselor response so that no qualified candidate is excluded by administrative inertia.
             </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium">
+            <div className="flex flex-wrap gap-2.5 pt-2">
+              <div className="px-3 py-1.5 rounded-md bg-[#F6F2EA]/10 border border-[#F6F2EA]/15 text-xs font-mono">
                 ✓ Merit Scholarship Dispatches
               </div>
-              <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium">
+              <div className="px-3 py-1.5 rounded-md bg-[#F6F2EA]/10 border border-[#F6F2EA]/15 text-xs font-mono">
                 ✓ Non-Discriminatory AI Scoring
               </div>
-              <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium">
-                ✓ Rapid Inquiry Response Guarantee
+              <div className="px-3 py-1.5 rounded-md bg-[#F6F2EA]/10 border border-[#F6F2EA]/15 text-xs font-mono">
+                ✓ 2-Hour Response SLA Guarantee
               </div>
             </div>
           </div>
@@ -384,33 +392,35 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ Accordion Section */}
-      <section id="faq" className="py-20 px-6 max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
-            Have Questions?
+      <section id="faq" className="py-16 px-6 max-w-3xl mx-auto">
+        <div className="text-center mb-10 space-y-1">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#0F3D33] dark:text-[#4FB89A]">
+            Guidance &amp; Verification
           </span>
-          <h2 className="font-display text-3xl font-extrabold tracking-tight mt-2">
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF]">
             Frequently Asked Questions
           </h2>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden"
+              className="rounded-xl border border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] overflow-hidden shadow-2xs"
             >
               <button
                 onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                className="w-full flex items-center justify-between p-5 text-left text-sm font-semibold text-slate-800 dark:text-slate-100 hover:text-indigo-600 transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left text-xs sm:text-sm font-semibold text-[#1B1A17] dark:text-[#ECE8DF] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors font-serif"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-slate-400 transition-transform ${activeFaq === i ? "rotate-180" : ""}`}
+                  className={`w-4 h-4 text-[#6B665C] transition-transform duration-200 shrink-0 ml-2 ${
+                    activeFaq === i ? "rotate-180 text-[#0F3D33] dark:text-[#4FB89A]" : ""
+                  }`}
                 />
               </button>
               {activeFaq === i && (
-                <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-4">
+                <div className="px-4 pb-4 text-xs text-[#6B665C] dark:text-[#959187] leading-relaxed border-t border-[#E4DDD0]/60 dark:border-[#26302B] pt-3 font-sans">
                   {faq.a}
                 </div>
               )}
@@ -420,18 +430,18 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 max-w-7xl mx-auto text-center">
-        <div className="p-12 md:p-16 rounded-3xl bg-gradient-to-b from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 backdrop-blur-xl space-y-6">
-          <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Ready to Supercharge Your Academic Admissions?
+      <section className="py-16 px-6 max-w-5xl mx-auto text-center">
+        <div className="p-10 md:p-14 rounded-xl bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] shadow-xs space-y-5">
+          <h2 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF]">
+            Ready to upgrade your institutional admissions?
           </h2>
-          <p className="max-w-2xl mx-auto text-slate-600 dark:text-slate-300 text-sm sm:text-base">
-            Join premier universities and colleges accelerating their admissions pipeline with LeadTrack AI.
+          <p className="max-w-xl mx-auto text-xs sm:text-sm text-[#6B665C] dark:text-[#959187]">
+            Empower counseling deans, accelerate response velocity, and achieve full cohort yield with LeadTrack AI.
           </p>
           <div className="pt-2">
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-xl shadow-indigo-500/30 transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#3ea688] text-[#F6F2EA] dark:text-[#0F1412] font-semibold text-xs shadow-xs transition-colors"
             >
               <span>Launch Institution Portal Now</span>
               <ArrowRight className="w-4 h-4" />
@@ -441,25 +451,25 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 py-12 px-6 bg-white dark:bg-slate-950 text-xs text-slate-500">
+      <footer className="border-t border-[#E4DDD0] dark:border-[#26302B] py-10 px-6 bg-[#FAF7F0] dark:bg-[#0F1412] text-xs text-[#6B665C] dark:text-[#959187]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold">
-              <GraduationCap className="w-5 h-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-md bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] flex items-center justify-center font-bold">
+              <GraduationCap className="w-4 h-4" />
             </div>
-            <span className="font-display font-bold text-slate-900 dark:text-white text-sm">
+            <span className="font-serif font-bold text-[#1B1A17] dark:text-[#ECE8DF] text-sm">
               LeadTrack AI
             </span>
           </div>
-          <p className="text-center md:text-left">
-            © {new Date().getFullYear()} LeadTrack AI. Built with pride for colleges and universities. Supporting UN SDG 4.
+          <p className="text-center md:text-left text-[11px] font-sans">
+            © {new Date().getFullYear()} LeadTrack AI. Authored for colleges and universities. Supporting UN SDG 4.
           </p>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="hover:text-indigo-600 transition-colors">
-              Counselor Login
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <Link href="/login" className="hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors">
+              Faculty Access
             </Link>
-            <Link href="/enquire" target="_blank" className="hover:text-indigo-600 transition-colors">
-              Public Enquiry
+            <Link href="/enquire" target="_blank" className="hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors">
+              Candidate Form
             </Link>
           </div>
         </div>

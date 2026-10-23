@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -27,39 +27,39 @@ export function ConfirmDialog({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200">
-        <div className="flex items-start gap-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-fade-up">
+      <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-academic-floating border border-border">
+        <div className="flex items-start gap-3.5">
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+            className={`w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0 border ${
               isDestructive
-                ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                ? "bg-[#C4552F]/10 text-[#C4552F] border-[#C4552F]/20"
+                : "bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] border-[#0F3D33]/20 dark:border-[#4FB89A]/30"
             }`}
           >
-            <AlertTriangle className="w-5 h-5" />
+            <AlertTriangle className="w-4 h-4 stroke-[1.5]" />
           </div>
           <div className="flex-1">
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">{message}</p>
+            <h3 className="font-serif text-base font-normal text-foreground tracking-tight">{title}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{message}</p>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 mt-6">
+        <div className="flex items-center justify-end gap-2.5 mt-6">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
+            className="px-3.5 py-2 text-xs font-medium rounded-[8px] border border-border hover:bg-muted/70 text-foreground transition-colors"
           >
             {cancelLabel}
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className={`px-4 py-2 text-xs font-semibold rounded-xl text-white transition-all shadow-md ${
+            className={`px-4 py-2 text-xs font-medium rounded-[8px] transition-colors ${
               isDestructive
-                ? "bg-rose-600 hover:bg-rose-700 shadow-rose-500/20"
-                : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20"
+                ? "bg-[#C4552F] hover:bg-[#B04724] text-white"
+                : "bg-[#0F3D33] dark:bg-[#4FB89A] hover:bg-[#165447] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412]"
             }`}
           >
             {confirmLabel}
@@ -69,3 +69,4 @@ export function ConfirmDialog({
     </div>
   );
 }
+

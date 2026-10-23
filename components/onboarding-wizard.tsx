@@ -64,124 +64,124 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
   };
 
   return (
-    <div className="rounded-3xl bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-slate-50/50 dark:to-slate-900/50 border border-indigo-200/80 dark:border-indigo-800/50 p-6 md:p-8 shadow-sm transition-all space-y-6">
+    <div className="rounded-[12px] bg-card border border-border p-5 sm:p-6 shadow-xs transition-all space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-[11px] font-semibold text-indigo-700 dark:text-indigo-300">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 border border-[#0F3D33]/20 dark:border-[#4FB89A]/30 text-[10px] font-semibold uppercase tracking-wider text-[#0F3D33] dark:text-[#4FB89A]">
+            <Sparkles className="w-3 h-3 text-[#E0A030] stroke-[1.5]" />
             <span>Institution Setup Checklist</span>
           </div>
-          <h2 className="font-display text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-            Get Your Admissions Workspace Ready
+          <h2 className="font-serif text-xl sm:text-2xl font-normal text-foreground tracking-tight">
+            Admissions Workspace Preparation
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Follow these 5 core steps to launch your lead pipeline and start capturing students.
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Complete these foundational steps to begin capturing and scoring student inquiries.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
-              {onboarding.completedCount} of {onboarding.totalSteps} Completed
+            <span className="text-xs font-mono font-medium text-foreground tabular-nums">
+              {onboarding.completedCount} / {onboarding.totalSteps} Completed
             </span>
-            <div className="w-32 h-2 rounded-full bg-slate-200 dark:bg-slate-800 mt-1.5 overflow-hidden">
+            <div className="w-32 h-1.5 rounded-full bg-muted mt-1.5 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-indigo-600 to-emerald-500 transition-all duration-500"
+                className="h-full bg-[#0F3D33] dark:bg-[#4FB89A] transition-all duration-300"
                 style={{ width: `${onboarding.progressPercent}%` }}
               />
             </div>
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
             title={collapsed ? "Expand checklist" : "Collapse checklist"}
           >
-            {collapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+            {collapsed ? <ChevronDown className="w-4 h-4 stroke-[1.5]" /> : <ChevronUp className="w-4 h-4 stroke-[1.5]" />}
           </button>
         </div>
       </div>
 
       {!collapsed && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
           {onboarding.steps.map((step, idx) => {
             const Icon = STEP_ICONS[step.id] || Building;
             return (
               <div
                 key={step.id}
-                className={`p-5 rounded-2xl border transition-all flex flex-col justify-between space-y-4 ${
+                className={`p-4 rounded-[10px] border transition-all flex flex-col justify-between space-y-3.5 ${
                   step.completed
-                    ? "bg-white/80 dark:bg-slate-900/80 border-emerald-500/30 dark:border-emerald-500/20 shadow-xs"
-                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 shadow-sm"
+                    ? "bg-background border-border"
+                    : "bg-surface border-border hover:border-[#0F3D33]/40 dark:hover:border-[#4FB89A]/40"
                 }`}
               >
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                       <div
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${
+                        className={`w-7 h-7 rounded-[6px] flex items-center justify-center font-bold text-xs ${
                           step.completed
-                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                            : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                            ? "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A]"
+                            : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        <Icon className="w-4 h-4" />
+                        <Icon className="w-3.5 h-3.5 stroke-[1.5]" />
                       </div>
-                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Step {idx + 1}
+                      <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+                        0{idx + 1}
                       </span>
                     </div>
 
                     {step.completed ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                        <CheckCircle2 className="w-4 h-4" />
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0F3D33] dark:text-[#4FB89A]">
+                        <CheckCircle2 className="w-3.5 h-3.5 stroke-[1.5]" />
                         <span>Done</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400">
-                        <Circle className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                        <Circle className="w-3 h-3 text-border stroke-[1.5]" />
                         <span>Pending</span>
                       </span>
                     )}
                   </div>
 
                   <div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">{step.title}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                    <h3 className="font-serif text-sm font-normal text-foreground tracking-tight">{step.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                       {step.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+                <div className="pt-2 flex items-center justify-between border-t border-border">
                   {step.id === "shareEnquiry" ? (
                     <div className="flex items-center gap-2 w-full justify-between">
                       <button
                         onClick={handleCopyEnquiryLink}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold text-xs hover:bg-indigo-100 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-muted/60 hover:bg-muted text-foreground text-xs font-medium transition-colors"
                       >
-                        {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span>{copied ? "Link Copied" : "Copy Form Link"}</span>
+                        {copied ? <Check className="w-3 h-3 stroke-[1.5]" /> : <Copy className="w-3 h-3 stroke-[1.5]" />}
+                        <span>{copied ? "Copied" : "Copy Form URL"}</span>
                       </button>
                       <Link
                         href="/enquire"
                         target="_blank"
-                        className="text-xs font-semibold text-slate-500 hover:text-indigo-600 inline-flex items-center gap-1"
+                        className="text-xs font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:underline inline-flex items-center gap-1"
                       >
                         <span>Open</span>
-                        <ArrowRight className="w-3 h-3" />
+                        <ArrowRight className="w-3 h-3 stroke-[1.5]" />
                       </Link>
                     </div>
                   ) : (
                     <Link
                       href={step.href}
-                      className={`w-full inline-flex items-center justify-between text-xs font-semibold py-1 transition-colors ${
+                      className={`w-full inline-flex items-center justify-between text-xs font-medium py-0.5 transition-colors ${
                         step.completed
-                          ? "text-slate-500 hover:text-indigo-600"
-                          : "text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-bold"
+                          ? "text-muted-foreground hover:text-foreground"
+                          : "text-[#0F3D33] dark:text-[#4FB89A] hover:underline"
                       }`}
                     >
                       <span>{step.completed ? "Review configuration" : "Configure step"}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-3 h-3 stroke-[1.5]" />
                     </Link>
                   )}
                 </div>
@@ -193,3 +193,4 @@ export function OnboardingWizard({ onboarding }: OnboardingProps) {
     </div>
   );
 }
+

@@ -79,8 +79,8 @@ USER QUESTION: ${query}
 
 Provide a concise, helpful response using ONLY the verified context:`;
 
-        // Try primary model (gemini-3.6-flash) with fallback to gemini-3.5-flash
-        const models = ["gemini-3.6-flash", "gemini-3.5-flash"];
+        // Try primary model (gemini-3.6-flash) with fallback to gemini-3.5-flash and gemini-3.5-flash-lite
+        const models = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
         for (const model of models) {
           const geminiRes = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,

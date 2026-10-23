@@ -11,9 +11,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false
+        value: "postgresql://neondb_owner:npg_lpXCRakiO5Z2@ep-dark-smoke-azb3wjjh-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
       - key: DIRECT_URL
-        sync: false
+        value: "postgresql://neondb_owner:npg_lpXCRakiO5Z2@ep-dark-smoke-azb3wjjh.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
       - key: JWT_SECRET
         generateValue: true
       - key: NEXT_PUBLIC_APP_URL

@@ -97,31 +97,31 @@ export default function AcceptInvitePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-6 h-6 text-[#0F3D33] dark:text-[#4FB89A] animate-spin" />
       </div>
     );
   }
 
   if (errorMessage || !inviteData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12">
-        <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-2xl text-center space-y-6">
-          <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 flex items-center justify-center mx-auto">
-            <ShieldAlert className="w-7 h-7" />
+      <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
+        <div className="max-w-md w-full bg-card rounded-academic p-8 border border-border shadow-academic-floating text-center space-y-6">
+          <div className="w-12 h-12 rounded-academic bg-[#C4552F]/10 border border-[#C4552F]/20 text-[#C4552F] flex items-center justify-center mx-auto">
+            <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="font-display text-2xl font-extrabold text-slate-900 dark:text-white">
+            <h2 className="font-serif text-2xl font-bold text-foreground">
               Invitation Unavailable
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
               {errorMessage || "This invitation link is not valid or has expired."}
             </p>
           </div>
           <div className="pt-2">
             <Link
               href="/login"
-              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all"
+              className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-academic-sm bg-[#0F3D33] hover:bg-[#0B2E26] dark:bg-[#4FB89A] dark:hover:bg-[#3FA387] text-white dark:text-[#0F1412] font-semibold text-xs transition-colors"
             >
               <span>Go to Sign In</span>
               <ArrowRight className="w-4 h-4" />
@@ -133,88 +133,88 @@ export default function AcceptInvitePage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 text-slate-900 dark:text-slate-100">
-      <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12 text-foreground">
+      <div className="max-w-md w-full bg-card rounded-academic p-8 border border-border shadow-academic-floating space-y-6">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
-              <GraduationCap className="w-6 h-6" />
+            <div className="w-9 h-9 rounded-academic-sm bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-white dark:text-[#0F1412]">
+              <GraduationCap className="w-5 h-5" />
             </div>
-            <span className="font-display font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="font-serif font-bold text-xl tracking-tight text-foreground">
               LeadTrack AI
             </span>
           </Link>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 border border-[#0F3D33]/20 dark:border-[#4FB89A]/30 text-[11px] font-medium text-[#0F3D33] dark:text-[#4FB89A]">
+            <Sparkles className="w-3 h-3" />
             <span>Official Team Invitation</span>
           </div>
 
-          <h2 className="font-display text-2xl font-extrabold">Complete Your Account Setup</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            You&apos;ve been invited by <span className="font-semibold text-slate-700 dark:text-slate-300">{inviteData.invitedByName}</span> to join{" "}
-            <span className="font-semibold text-indigo-600 dark:text-indigo-400">{inviteData.institutionName}</span> as an{" "}
-            <span className="font-semibold">{inviteData.role}</span>.
+          <h2 className="font-serif text-2xl font-bold text-foreground">Complete Your Account Setup</h2>
+          <p className="text-xs text-muted-foreground">
+            You&apos;ve been invited by <span className="font-semibold text-foreground">{inviteData.invitedByName}</span> to join{" "}
+            <span className="font-semibold text-[#0F3D33] dark:text-[#4FB89A]">{inviteData.institutionName}</span> as an{" "}
+            <span className="font-semibold text-foreground">{inviteData.role}</span>.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Email Address (Assigned)</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email Address (Assigned)</label>
             <input
               type="email"
               disabled
               value={inviteData.email}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-500 cursor-not-allowed outline-none"
+              className="w-full px-3 py-2 text-xs rounded-academic-sm bg-muted border border-border text-muted-foreground cursor-not-allowed outline-none"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your Full Name</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Your Full Name</label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 required
                 placeholder="Full Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Phone Number (Optional)</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Phone Number (Optional)</label>
             <div className="relative">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="tel"
                 inputMode="tel"
                 placeholder="+91 98765 43210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Create Password</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Create Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="At least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-9 pr-9 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
+                className="w-full pl-9 pr-9 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
@@ -222,16 +222,16 @@ export default function AcceptInvitePage() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Confirm Password</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Confirm Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="Re-enter password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
               />
             </div>
           </div>
@@ -239,7 +239,7 @@ export default function AcceptInvitePage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50 mt-2"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-academic-sm bg-[#0F3D33] hover:bg-[#0B2E26] dark:bg-[#4FB89A] dark:hover:bg-[#3FA387] text-white dark:text-[#0F1412] font-semibold text-xs transition-colors disabled:opacity-50 mt-2"
           >
             {submitting ? (
               <>

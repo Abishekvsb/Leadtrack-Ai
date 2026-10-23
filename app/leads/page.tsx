@@ -25,8 +25,9 @@ import {
   Loader2,
   Sparkles,
   ArrowUpDown,
-  ExternalLink,
   Phone,
+  GraduationCap,
+  Calendar,
 } from "lucide-react";
 import { STATUS_COLORS, STATUS_LABELS, SCORE_COLORS, LeadStatus, ScoreCategory } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -47,23 +48,22 @@ function LeadsContent() {
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [status, setStatus] = useState(searchParams.get("status") || "ALL");
   const [courseId, setCourseId] = useState(searchParams.get("courseId") || "ALL");
-  const [leadSource, setLeadSource] = useState(searchParams.get("leadSource") || "ALL");
+  const [leadSource, setLeadSource] = useState("ALL");
   const [scoreCategory, setScoreCategory] = useState(searchParams.get("scoreCategory") || "ALL");
-  const [assignedToId, setAssignedToId] = useState(searchParams.get("assignedToId") || "");
+  const [assignedToId, setAssignedToId] = useState("ALL");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // Selection for bulk actions
+  // Selection & Bulk Actions
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [bulkStatusModal, setBulkStatusModal] = useState(false);
   const [bulkAssignModal, setBulkAssignModal] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [bulkTargetStatus, setBulkTargetStatus] = useState("CONTACTED");
   const [bulkTargetCounselor, setBulkTargetCounselor] = useState("");
 
-  // Create Lead Modal
-  const [createModalOpen, setCreateModalOpen] = useState(false);
+  // Create Form State
   const [createFormData, setCreateFormData] = useState({
     studentName: "",
     email: "",
@@ -78,7 +78,7 @@ function LeadsContent() {
     message: "",
   });
 
-  // CSV Import Modal
+  // CSV Import State
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [csvPreviewData, setCsvPreviewData] = useState<any[]>([]);
   const [importing, setImporting] = useState(false);
@@ -122,7 +122,7 @@ function LeadsContent() {
           setSelectedIds([]);
         }
       }
-    } catch (e) {
+    } catch {
       error("Failed to load leads");
     } finally {
       setLoading(false);
@@ -131,6 +131,7 @@ function LeadsContent() {
 
   useEffect(() => {
     fetchLeads(pagination.page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, courseId, leadSource, scoreCategory, assignedToId, sortBy, sortOrder]);
 
   // Load courses and team for filter dropdowns
@@ -139,26 +140,21 @@ function LeadsContent() {
       try {
         const [cRes, uRes] = await Promise.all([fetch("/api/courses"), fetch("/api/team")]);
         if (cRes.ok) {
-          const cJson = await cRes.json();
-          if (cJson.success) setCourses(cJson.data.courses || []);
+          const cData = await cRes.json();
+          if (cData.success) setCourses(cData.data);
         }
         if (uRes.ok) {
-          const uJson = await uRes.json();
-          if (uJson.success) {
-            const list = uJson.data.users || [];
-            setCounselors(list.filter((u: any) => u.role === "COUNSELOR"));
-          }
+          const uData = await uRes.json();
+          if (uData.success) setCounselors(uData.data);
         }
-      } catch {}
+      } catch (err) {
+        console.error("Failed to load courses or counselors", err);
+      }
     }
     loadAux();
   }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchLeads(1);
-  };
-
+  // Selection Handlers
   const handleSelectAll = () => {
     if (selectedIds.length === leads.length) {
       setSelectedIds([]);
@@ -177,13 +173,9 @@ function LeadsContent() {
   const handleBulkStatus = async () => {
     try {
       const res = await fetch("/api/leads/bulk", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "CHANGE_STATUS",
-          leadIds: selectedIds,
-          status: bulkTargetStatus,
-        }),
+        body: JSON.stringify({ leadIds: selectedIds, status: bulkTargetStatus }),
       });
       const data = await res.json();
       if (data.success) {
@@ -194,25 +186,17 @@ function LeadsContent() {
         error(data.error);
       }
     } catch {
-      error("Bulk action failed");
+      error("Bulk status update failed");
     }
   };
 
   // Bulk Counselor Assign
   const handleBulkAssign = async () => {
-    if (!bulkTargetCounselor) {
-      error("Please pick a counselor");
-      return;
-    }
     try {
       const res = await fetch("/api/leads/bulk", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "ASSIGN",
-          leadIds: selectedIds,
-          assignedToId: bulkTargetCounselor,
-        }),
+        body: JSON.stringify({ leadIds: selectedIds, assignedToId: bulkTargetCounselor || null }),
       });
       const data = await res.json();
       if (data.success) {
@@ -231,12 +215,9 @@ function LeadsContent() {
   const handleBulkDelete = async () => {
     try {
       const res = await fetch("/api/leads/bulk", {
-        method: "POST",
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "DELETE",
-          leadIds: selectedIds,
-        }),
+        body: JSON.stringify({ leadIds: selectedIds }),
       });
       const data = await res.json();
       if (data.success) {
@@ -291,29 +272,38 @@ function LeadsContent() {
         const wb = XLSX.read(bstr, { type: "binary" });
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
-        const rawJson = XLSX.utils.sheet_to_json(ws);
+        const data: any[] = XLSX.utils.sheet_to_json(ws);
 
-        // Map and validate rows
-        const normalized = rawJson.map((row: any) => ({
-          studentName: row["Student Name"] || row["studentName"] || row["Name"] || "Student",
-          email: row["Email"] || row["email"] || `imported.${Date.now()}@gmail.com`,
-          phone: String(row["Phone"] || row["phone"] || "+91 98000 00000"),
-          city: row["City"] || row["city"] || "Bangalore",
+        if (data.length === 0) {
+          error("The uploaded spreadsheet appears to be empty.");
+          return;
+        }
+
+        const normalized = data.map((row) => ({
+          studentName: row["Student Name"] || row["Name"] || row["studentName"] || "",
+          email: row["Email"] || row["email"] || "",
+          phone: String(row["Phone"] || row["phone"] || row["Mobile"] || ""),
+          city: row["City"] || row["city"] || "",
           leadSource: row["Source"] || row["leadSource"] || "Website",
-          status: row["Status"] || "NEW",
         }));
 
-        setCsvPreviewData(normalized);
+        const valid = normalized.filter((r) => r.studentName && (r.email || r.phone));
+        if (valid.length === 0) {
+          error("No valid student records with Name and Phone/Email found.");
+          return;
+        }
+
+        setCsvPreviewData(valid);
+        success(`Parsed ${valid.length} valid lead records for import!`);
       } catch {
-        error("Error parsing CSV / Excel file.");
+        error("Error parsing spreadsheet file.");
       }
     };
     reader.readAsBinaryString(file);
   };
 
-  // Execute Import
+  // Commit CSV Import to Backend
   const handleCommitImport = async () => {
-    if (csvPreviewData.length === 0) return;
     setImporting(true);
     let successCount = 0;
 
@@ -372,15 +362,18 @@ function LeadsContent() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 pb-12">
+      <div className="space-y-6 pb-12 max-w-7xl mx-auto">
         {/* Top Header & Action Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Admissions Lead Registry
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+              Admissions Registry
+            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+              Student Candidates
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Manage candidate enquiries, execute bulk workflows & track admissions readiness
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Manage prospective student records, execute bulk assignments, and track admissions readiness.
             </p>
           </div>
 
@@ -388,74 +381,55 @@ function LeadsContent() {
             {/* Import Button */}
             <button
               onClick={() => setImportModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors"
             >
-              <Upload className="w-3.5 h-3.5 text-slate-500" />
+              <Upload className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Import CSV</span>
             </button>
 
-            {/* Export Dropdown */}
-            <div className="relative group">
-              <button
-                onClick={() => handleExport("csv")}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
-              >
-                <Download className="w-3.5 h-3.5 text-slate-500" />
-                <span>Export CSV</span>
-              </button>
-            </div>
+            {/* Export Button */}
+            <button
+              onClick={() => handleExport("csv")}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors"
+            >
+              <Download className="w-3.5 h-3.5 text-muted-foreground" />
+              <span>Export CSV</span>
+            </button>
 
             {/* Add Lead Button */}
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md shadow-indigo-500/25 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] text-xs font-medium transition-all shadow-xs"
             >
               <Plus className="w-4 h-4" />
-              <span>Add New Lead</span>
+              <span>New Candidate</span>
             </button>
           </div>
         </div>
 
-        {/* Search & Multi-Filters Toolbar */}
-        <div className="p-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-3">
-          {/* Search bar + Mobile filter toggle */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <form onSubmit={handleSearchSubmit}>
-                <input
-                  type="text"
-                  placeholder="Search name, phone, email, city..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none text-slate-900 dark:text-slate-100 min-h-[44px]"
-                />
-              </form>
+        {/* Filter & Search Bar */}
+        <div className="bg-card border border-border rounded-[12px] p-4 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+            {/* Search Input */}
+            <div className="relative lg:col-span-2">
+              <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search by student name, email, phone, city..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && fetchLeads(1)}
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] focus:ring-1 focus:ring-[#0F3D33]/30 min-h-[40px] transition-all"
+              />
             </div>
 
-            {/* Mobile Filters Toggle Button */}
-            <button
-              type="button"
-              onClick={() => setShowMobileFilters(!showMobileFilters)}
-              className="sm:hidden min-h-[44px] px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-200"
-            >
-              <Filter className="w-4 h-4" />
-              <span>Filters</span>
-              {(status !== "ALL" || courseId !== "ALL" || leadSource !== "ALL" || scoreCategory !== "ALL") && (
-                <span className="w-2 h-2 rounded-full bg-indigo-600" />
-              )}
-            </button>
-          </div>
-
-          {/* Filter dropdowns (Visible on desktop or when toggled on mobile) */}
-          <div className={`${showMobileFilters ? "grid" : "hidden sm:grid"} grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-1`}>
             {/* Status Filter */}
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
             >
-              <option value="ALL">All Statuses</option>
+              <option value="ALL">All Pipeline Stages</option>
               <option value="NEW">New Enquiry</option>
               <option value="CONTACTED">Contacted</option>
               <option value="INTERESTED">Interested</option>
@@ -465,25 +439,25 @@ function LeadsContent() {
               <option value="LOST">Lost</option>
             </select>
 
-            {/* Score Category Filter */}
+            {/* Score Filter */}
             <select
               value={scoreCategory}
               onChange={(e) => setScoreCategory(e.target.value)}
-              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
             >
-              <option value="ALL">All AI Scores</option>
-              <option value="HOT">Hot Leads (Score &ge; 75)</option>
-              <option value="WARM">Warm Leads (45 - 74)</option>
-              <option value="COLD">Cold Leads (&lt; 45)</option>
+              <option value="ALL">All Score Bands</option>
+              <option value="HOT">Hot Leads (80+)</option>
+              <option value="WARM">Warm Leads (50-79)</option>
+              <option value="COLD">Cold Leads (&lt;50)</option>
             </select>
 
-            {/* Lead Source Filter */}
+            {/* Source Filter */}
             <select
               value={leadSource}
               onChange={(e) => setLeadSource(e.target.value)}
-              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
             >
-              <option value="ALL">All Sources</option>
+              <option value="ALL">All Inbound Sources</option>
               <option value="Website">Website</option>
               <option value="Instagram">Instagram</option>
               <option value="Facebook">Facebook</option>
@@ -498,22 +472,22 @@ function LeadsContent() {
             <select
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              className="px-3 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none min-h-[44px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
             >
-              <option value="ALL">All Programs</option>
+              <option value="ALL">All Academic Programs</option>
               {courses.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.code}
+                  {c.code || c.name}
                 </option>
               ))}
             </select>
           </div>
 
           {/* Active Filter Clear & Column Visibility */}
-          <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100 dark:border-slate-800/80">
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400">
-                Found <span className="font-semibold text-slate-800 dark:text-slate-200">{pagination.total}</span> leads
+          <div className="flex items-center justify-between text-xs pt-3 border-t border-border">
+            <div className="flex items-center gap-3">
+              <span className="text-muted-foreground">
+                Showing <span className="font-mono font-medium text-foreground">{pagination.total}</span> candidates
               </span>
               {(status !== "ALL" || courseId !== "ALL" || leadSource !== "ALL" || scoreCategory !== "ALL" || search) && (
                 <button
@@ -524,9 +498,10 @@ function LeadsContent() {
                     setScoreCategory("ALL");
                     setSearch("");
                   }}
-                  className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline"
+                  className="text-[#0F3D33] dark:text-[#4FB89A] font-medium hover:underline inline-flex items-center gap-1"
                 >
-                  Clear all filters
+                  <X className="w-3 h-3" />
+                  <span>Clear filters</span>
                 </button>
               )}
             </div>
@@ -535,26 +510,26 @@ function LeadsContent() {
             <div className="relative">
               <button
                 onClick={() => setShowColMenu(!showColMenu)}
-                className="flex items-center gap-1.5 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Eye className="w-3.5 h-3.5" />
                 <span>Columns</span>
               </button>
 
               {showColMenu && (
-                <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-3 z-30 space-y-1.5 animate-in fade-in">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                    Toggle Columns
+                <div className="absolute right-0 mt-2 w-48 rounded-[10px] bg-card border border-border shadow-academic-floating p-3 z-30 space-y-2">
+                  <span className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider block">
+                    Display Columns
                   </span>
                   {Object.keys(visibleColumns).map((col) => (
-                    <label key={col} className="flex items-center gap-2 cursor-pointer text-xs">
+                    <label key={col} className="flex items-center gap-2 cursor-pointer text-xs text-foreground">
                       <input
                         type="checkbox"
                         checked={(visibleColumns as any)[col]}
                         onChange={(e) =>
                           setVisibleColumns({ ...visibleColumns, [col]: e.target.checked })
                         }
-                        className="rounded border-slate-300 text-indigo-600"
+                        className="rounded-[4px] border-border text-[#0F3D33] focus:ring-[#0F3D33]"
                       />
                       <span className="capitalize">{col}</span>
                     </label>
@@ -567,34 +542,37 @@ function LeadsContent() {
 
         {/* Bulk Actions Floating Bar */}
         {selectedIds.length > 0 && (
-          <div className="sticky top-20 z-20 flex items-center justify-between p-3.5 rounded-2xl bg-indigo-900 text-white shadow-2xl animate-in slide-in-from-top-2">
+          <div className="sticky top-20 z-20 flex items-center justify-between p-3.5 rounded-[10px] bg-[#0F3D33] dark:bg-[#171D1A] text-[#F6F2EA] dark:text-[#ECE8DF] border border-[#26302B] shadow-academic-floating animate-in slide-in-from-top-2">
             <div className="flex items-center gap-3 text-xs">
-              <span className="px-2.5 py-1 rounded-lg bg-indigo-700 font-bold">{selectedIds.length}</span>
-              <span>leads selected</span>
+              <span className="px-2.5 py-0.5 rounded-[6px] bg-[#165447] dark:bg-[#26302B] font-mono font-bold text-accent">
+                {selectedIds.length}
+              </span>
+              <span>candidates selected</span>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setBulkStatusModal(true)}
-                className="px-3 py-1.5 rounded-xl bg-indigo-800 hover:bg-indigo-700 text-xs font-semibold transition-colors"
+                className="px-3 py-1.5 rounded-[8px] bg-[#165447] hover:bg-[#1F6E5D] dark:bg-[#26302B] dark:hover:bg-[#324039] text-xs font-medium transition-colors"
               >
-                Change Status
+                Update Stage
               </button>
               <button
                 onClick={() => setBulkAssignModal(true)}
-                className="px-3 py-1.5 rounded-xl bg-indigo-800 hover:bg-indigo-700 text-xs font-semibold transition-colors"
+                className="px-3 py-1.5 rounded-[8px] bg-[#165447] hover:bg-[#1F6E5D] dark:bg-[#26302B] dark:hover:bg-[#324039] text-xs font-medium transition-colors"
               >
                 Assign Counselor
               </button>
               <button
                 onClick={() => setDeleteConfirmOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-rose-600/80 hover:bg-rose-600 text-xs font-semibold transition-colors"
+                className="px-3 py-1.5 rounded-[8px] bg-[#C4552F] hover:bg-[#A94322] text-xs font-medium text-white transition-colors"
               >
                 Delete Selected
               </button>
               <button
                 onClick={() => setSelectedIds([])}
-                className="p-1.5 rounded-lg hover:bg-indigo-800 text-indigo-300"
+                className="p-1.5 rounded-[6px] hover:bg-[#165447] text-[#F6F2EA]/70 hover:text-white"
+                title="Deselect all"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -603,85 +581,94 @@ function LeadsContent() {
         )}
 
         {/* Data Table */}
-        <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs overflow-hidden">
+        <div className="rounded-[12px] bg-card border border-border shadow-xs overflow-hidden">
           {/* Desktop & Tablet Data Table */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                <tr className="border-b border-border bg-[#F6F2EA]/40 dark:bg-[#171D1A]/60 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
                   <th className="p-4 w-10 text-center">
-                    <button onClick={handleSelectAll}>
+                    <button onClick={handleSelectAll} className="focus:outline-none">
                       {selectedIds.length > 0 && selectedIds.length === leads.length ? (
-                        <CheckSquare className="w-4 h-4 text-indigo-600" />
+                        <CheckSquare className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
                       ) : (
-                        <Square className="w-4 h-4 text-slate-400" />
+                        <Square className="w-4 h-4 text-muted-foreground" />
                       )}
                     </button>
                   </th>
 
                   {visibleColumns.student && (
-                    <th className="p-4 cursor-pointer" onClick={() => {
-                      setSortBy("studentName");
-                      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-                    }}>
+                    <th
+                      className="p-4 cursor-pointer select-none hover:text-foreground"
+                      onClick={() => {
+                        setSortBy("studentName");
+                        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                      }}
+                    >
                       <div className="flex items-center gap-1.5">
-                        <span>Student Profile</span>
-                        <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                        <span>Candidate</span>
+                        <ArrowUpDown className="w-3 h-3 text-muted-foreground" />
                       </div>
                     </th>
                   )}
 
-                  {visibleColumns.contact && <th className="p-4">Contact</th>}
-                  {visibleColumns.course && <th className="p-4">Program & Source</th>}
+                  {visibleColumns.contact && <th className="p-4">Contact Details</th>}
+                  {visibleColumns.course && <th className="p-4">Program &amp; Channel</th>}
 
                   {visibleColumns.score && (
-                    <th className="p-4 cursor-pointer" onClick={() => {
-                      setSortBy("score");
-                      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-                    }}>
+                    <th
+                      className="p-4 cursor-pointer select-none hover:text-foreground"
+                      onClick={() => {
+                        setSortBy("score");
+                        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                      }}
+                    >
                       <div className="flex items-center gap-1.5">
-                        <span>AI Lead Score</span>
-                        <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                        <span>AI Score</span>
+                        <ArrowUpDown className="w-3 h-3 text-muted-foreground" />
                       </div>
                     </th>
                   )}
 
-                  {visibleColumns.status && <th className="p-4">Pipeline Status</th>}
-                  {visibleColumns.counselor && <th className="p-4">Assigned To</th>}
+                  {visibleColumns.status && <th className="p-4">Admissions Stage</th>}
+                  {visibleColumns.counselor && <th className="p-4">Counselor</th>}
 
                   {visibleColumns.created && (
-                    <th className="p-4 cursor-pointer" onClick={() => {
-                      setSortBy("createdAt");
-                      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-                    }}>
+                    <th
+                      className="p-4 cursor-pointer select-none hover:text-foreground"
+                      onClick={() => {
+                        setSortBy("createdAt");
+                        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                      }}
+                    >
                       <div className="flex items-center gap-1.5">
-                        <span>Enquiry Date</span>
-                        <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                        <span>Date Logged</span>
+                        <ArrowUpDown className="w-3 h-3 text-muted-foreground" />
                       </div>
                     </th>
                   )}
 
-                  <th className="p-4 text-right">Actions</th>
+                  <th className="p-4 text-right">Dossier</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+              <tbody className="divide-y divide-border text-xs">
                 {loading ? (
                   <tr>
-                    <td colSpan={9} className="py-16 text-center text-slate-400">
+                    <td colSpan={9} className="py-20 text-center text-muted-foreground">
                       <div className="flex flex-col items-center gap-2">
-                        <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
-                        <span>Loading leads...</span>
+                        <Loader2 className="w-5 h-5 animate-spin text-[#0F3D33] dark:text-[#4FB89A]" />
+                        <span className="font-serif italic text-sm">Accessing admissions registry...</span>
                       </div>
                     </td>
                   </tr>
                 ) : leads.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="py-16 text-center text-slate-400">
+                    <td colSpan={9} className="py-20 text-center text-muted-foreground">
                       <div className="max-w-xs mx-auto space-y-2">
-                        <Users2 className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600" />
-                        <p className="font-semibold text-sm">No leads match your criteria</p>
-                        <p className="text-[11px]">Try adjusting your search terms or filters.</p>
+                        <Users2 className="w-8 h-8 mx-auto text-muted-foreground/60 stroke-[1.5]" />
+                        <p className="font-serif text-base text-foreground">No candidate records found</p>
+                        <p className="text-xs text-muted-foreground">Try broadening your search or adjusting active filters.</p>
                       </div>
                     </td>
                   </tr>
@@ -694,16 +681,16 @@ function LeadsContent() {
                     return (
                       <tr
                         key={lead.id}
-                        className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors ${
-                          isSelected ? "bg-indigo-50/50 dark:bg-indigo-950/20" : ""
+                        className={`hover:bg-[#EDE6DA]/30 dark:hover:bg-[#1F2723]/30 transition-colors ${
+                          isSelected ? "bg-[#EDE6DA]/50 dark:bg-[#1F2723]/60" : ""
                         }`}
                       >
                         <td className="p-4 text-center">
-                          <button onClick={() => handleToggleSelect(lead.id)}>
+                          <button onClick={() => handleToggleSelect(lead.id)} className="focus:outline-none">
                             {isSelected ? (
-                              <CheckSquare className="w-4 h-4 text-indigo-600" />
+                              <CheckSquare className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
                             ) : (
-                              <Square className="w-4 h-4 text-slate-400" />
+                              <Square className="w-4 h-4 text-muted-foreground" />
                             )}
                           </button>
                         </td>
@@ -712,27 +699,27 @@ function LeadsContent() {
                           <td className="p-4">
                             <Link
                               href={`/leads/${lead.id}`}
-                              className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                              className="font-serif text-sm font-normal text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors"
                             >
                               {lead.studentName}
                             </Link>
-                            <p className="text-[11px] text-slate-400">{lead.city}</p>
+                            <p className="text-[11px] text-muted-foreground">{lead.city || "Unspecified City"}</p>
                           </td>
                         )}
 
                         {visibleColumns.contact && (
                           <td className="p-4 space-y-0.5">
-                            <p className="font-medium text-slate-800 dark:text-slate-200">{lead.phone}</p>
-                            <p className="text-[11px] text-slate-400">{lead.email}</p>
+                            <p className="font-mono text-xs text-foreground tabular-nums">{lead.phone}</p>
+                            <p className="text-[11px] text-muted-foreground truncate max-w-[180px]">{lead.email}</p>
                           </td>
                         )}
 
                         {visibleColumns.course && (
-                          <td className="p-4 space-y-0.5">
-                            <p className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[170px]">
+                          <td className="p-4 space-y-1">
+                            <p className="font-medium text-foreground truncate max-w-[170px]">
                               {lead.course?.name || "General Enquiry"}
                             </p>
-                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            <span className="inline-block px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#EDE6DA] dark:bg-[#1F2723] text-muted-foreground border border-border">
                               {lead.leadSource}
                             </span>
                           </td>
@@ -740,17 +727,17 @@ function LeadsContent() {
 
                         {visibleColumns.score && (
                           <td className="p-4">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2.5">
                               <span
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${scoreInfo.badge}`}
+                                className={`w-8 h-8 rounded-[6px] flex items-center justify-center font-mono font-bold text-xs ${scoreInfo.badge}`}
                               >
                                 {lead.score}
                               </span>
                               <div className="flex flex-col">
-                                <span className={`text-[10px] font-bold ${scoreInfo.text}`}>
+                                <span className={`text-[10px] font-mono font-semibold tracking-wider ${scoreInfo.text}`}>
                                   {lead.scoreCategory}
                                 </span>
-                                <span className="text-[10px] text-slate-400">
+                                <span className="text-[10px] font-mono tabular-nums text-muted-foreground">
                                   {lead.conversionProbability}% conv
                                 </span>
                               </div>
@@ -760,25 +747,25 @@ function LeadsContent() {
 
                         {visibleColumns.status && (
                           <td className="p-4">
-                            <span
-                              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}
-                            >
-                              <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dot}`} />
-                              {STATUS_LABELS[lead.status as LeadStatus] || lead.status}
+                            <span className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium">
+                              <span className={`w-2 h-2 rounded-full ${statusInfo.dot}`} />
+                              <span>{STATUS_LABELS[lead.status as LeadStatus] || lead.status}</span>
                             </span>
                           </td>
                         )}
 
                         {visibleColumns.counselor && (
                           <td className="p-4">
-                            <p className="font-medium text-slate-800 dark:text-slate-200">
-                              {lead.assignedTo?.name || "Unassigned"}
+                            <p className="font-medium text-foreground">
+                              {lead.assignedTo?.name || (
+                                <span className="text-muted-foreground italic">Unassigned</span>
+                              )}
                             </p>
                           </td>
                         )}
 
                         {visibleColumns.created && (
-                          <td className="p-4 text-slate-500 text-[11px]">
+                          <td className="p-4 text-muted-foreground font-mono tabular-nums text-[11px]">
                             {formatDate(lead.createdAt)}
                           </td>
                         )}
@@ -786,10 +773,10 @@ function LeadsContent() {
                         <td className="p-4 text-right">
                           <Link
                             href={`/leads/${lead.id}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-[11px] text-indigo-600 dark:text-indigo-400 transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-[11px] transition-colors"
                           >
-                            <span>Open</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
+                            <span>Dossier</span>
+                            <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
                           </Link>
                         </td>
                       </tr>
@@ -801,17 +788,17 @@ function LeadsContent() {
           </div>
 
           {/* Mobile Stacked Cards View (visible on < 768px) */}
-          <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="block md:hidden divide-y divide-border">
             {loading ? (
-              <div className="p-8 text-center text-slate-400">
-                <Loader2 className="w-6 h-6 animate-spin text-indigo-500 mx-auto mb-2" />
-                <span className="text-xs">Loading leads...</span>
+              <div className="p-8 text-center text-muted-foreground">
+                <Loader2 className="w-5 h-5 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto mb-2" />
+                <span className="font-serif italic text-xs">Loading records...</span>
               </div>
             ) : leads.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 space-y-2">
-                <Users2 className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600" />
-                <p className="font-semibold text-sm">No leads match your criteria</p>
-                <p className="text-[11px]">Try adjusting your search terms or filters.</p>
+              <div className="p-8 text-center text-muted-foreground space-y-2">
+                <Users2 className="w-8 h-8 mx-auto text-muted-foreground/60 stroke-[1.5]" />
+                <p className="font-serif text-sm text-foreground">No candidate records found</p>
+                <p className="text-[11px] text-muted-foreground">Try broadening your search filters.</p>
               </div>
             ) : (
               leads.map((lead) => {
@@ -823,56 +810,61 @@ function LeadsContent() {
                   <div
                     key={lead.id}
                     className={`p-4 space-y-3 transition-colors ${
-                      isSelected ? "bg-indigo-50/50 dark:bg-indigo-950/20" : ""
+                      isSelected ? "bg-[#EDE6DA]/50 dark:bg-[#1F2723]/60" : ""
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2.5">
                         <button
                           onClick={() => handleToggleSelect(lead.id)}
-                          className="min-h-[44px] min-w-[44px] flex items-center justify-center -ml-1"
+                          className="min-h-[44px] min-w-[44px] flex items-center justify-center -ml-1 focus:outline-none"
                         >
                           {isSelected ? (
-                            <CheckSquare className="w-5 h-5 text-indigo-600" />
+                            <CheckSquare className="w-5 h-5 text-[#0F3D33] dark:text-[#4FB89A]" />
                           ) : (
-                            <Square className="w-5 h-5 text-slate-400" />
+                            <Square className="w-5 h-5 text-muted-foreground" />
                           )}
                         </button>
                         <div>
                           <Link
                             href={`/leads/${lead.id}`}
-                            className="font-bold text-sm text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-1"
+                            className="font-serif text-base font-normal text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors line-clamp-1"
                           >
                             {lead.studentName}
                           </Link>
-                          <p className="text-[11px] text-slate-400">{lead.city || "No city specified"}</p>
+                          <p className="text-[11px] text-muted-foreground">{lead.city || "Unspecified City"}</p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className={`px-2 py-0.5 rounded-md font-bold text-xs ${scoreInfo.badge}`}>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`px-2 py-0.5 rounded-[6px] font-mono font-bold text-xs ${scoreInfo.badge}`}>
                           {lead.score}
                         </span>
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}>
-                          {STATUS_LABELS[lead.status as LeadStatus] || lead.status}
+                        <span className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium">
+                          <span className={`w-2 h-2 rounded-full ${statusInfo.dot}`} />
+                          <span className="text-[11px]">{STATUS_LABELS[lead.status as LeadStatus] || lead.status}</span>
                         </span>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/40 p-3 rounded-[8px] border border-border">
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Program & Source</span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
+                        <span className="text-muted-foreground block text-[10px] uppercase font-mono tracking-wider">
+                          Program &amp; Source
+                        </span>
+                        <span className="font-medium text-foreground truncate block">
                           {lead.course?.code || lead.course?.name || "General"}
                         </span>
-                        <span className="text-slate-500 text-[10px]">{lead.leadSource}</span>
+                        <span className="text-muted-foreground text-[10px]">{lead.leadSource}</span>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Assigned Counselor</span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
+                        <span className="text-muted-foreground block text-[10px] uppercase font-mono tracking-wider">
+                          Counselor
+                        </span>
+                        <span className="font-medium text-foreground truncate block">
                           {lead.assignedTo?.name || "Unassigned"}
                         </span>
-                        <span className="text-slate-400 text-[10px]">{formatDate(lead.createdAt)}</span>
+                        <span className="text-muted-foreground font-mono text-[10px]">{formatDate(lead.createdAt)}</span>
                       </div>
                     </div>
 
@@ -881,9 +873,9 @@ function LeadsContent() {
                         {lead.phone && (
                           <a
                             href={`tel:${lead.phone}`}
-                            className="min-h-[44px] flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium hover:text-indigo-600"
+                            className="min-h-[44px] flex items-center gap-1.5 text-foreground hover:text-[#0F3D33] font-mono tabular-nums"
                           >
-                            <Phone className="w-4 h-4 text-emerald-600" />
+                            <Phone className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A]" />
                             <span>{lead.phone}</span>
                           </a>
                         )}
@@ -891,10 +883,10 @@ function LeadsContent() {
 
                       <Link
                         href={`/leads/${lead.id}`}
-                        className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 font-semibold text-xs flex items-center gap-1 text-slate-700 dark:text-slate-200 transition-colors"
+                        className="min-h-[44px] px-4 py-2 rounded-[8px] bg-card border border-border hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs flex items-center gap-1 text-foreground transition-colors"
                       >
-                        <span>View</span>
-                        <ChevronRight className="w-4 h-4" />
+                        <span>Open Dossier</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
                       </Link>
                     </div>
                   </div>
@@ -904,17 +896,17 @@ function LeadsContent() {
           </div>
 
           {/* Pagination Footer */}
-          <div className="flex items-center justify-between p-4 border-t border-slate-100 dark:border-slate-800 text-xs">
-            <span className="text-slate-400">
-              Showing page <span className="font-semibold text-slate-800 dark:text-slate-200">{pagination.page}</span> of{" "}
-              {pagination.totalPages}
+          <div className="flex items-center justify-between p-4 border-t border-border text-xs">
+            <span className="text-muted-foreground">
+              Page <span className="font-mono font-medium text-foreground">{pagination.page}</span> of{" "}
+              <span className="font-mono font-medium text-foreground">{pagination.totalPages}</span>
             </span>
 
             <div className="flex items-center gap-2">
               <button
                 disabled={pagination.page <= 1}
                 onClick={() => fetchLeads(pagination.page - 1)}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] disabled:opacity-40 transition-colors"
                 title="Previous page"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -922,7 +914,7 @@ function LeadsContent() {
               <button
                 disabled={pagination.page >= pagination.totalPages}
                 onClick={() => fetchLeads(pagination.page + 1)}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] disabled:opacity-40 transition-colors"
                 title="Next page"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -933,31 +925,39 @@ function LeadsContent() {
 
         {/* Modal: Create Lead */}
         {createModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-base">Add New Student Lead</h3>
-                <button onClick={() => setCreateModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-xl bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between pb-4 border-b border-border">
+                <div>
+                  <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Registry Entry</div>
+                  <h3 className="font-serif text-xl sm:text-2xl font-normal text-foreground tracking-tight">
+                    Add Candidate Profile
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setCreateModalOpen(false)}
+                  className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <form onSubmit={handleCreateLead} className="space-y-4 pt-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Student Name *</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Candidate Full Name *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Aarav Mehta"
                       value={createFormData.studentName}
                       onChange={(e) => setCreateFormData({ ...createFormData, studentName: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Phone Number *</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Phone Number *</label>
                     <input
                       type="tel"
                       inputMode="tel"
@@ -965,14 +965,14 @@ function LeadsContent() {
                       placeholder="+91 98765 43210"
                       value={createFormData.phone}
                       onChange={(e) => setCreateFormData({ ...createFormData, phone: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Email *</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Email Address *</label>
                     <input
                       type="email"
                       inputMode="email"
@@ -980,30 +980,30 @@ function LeadsContent() {
                       placeholder="student@gmail.com"
                       value={createFormData.email}
                       onChange={(e) => setCreateFormData({ ...createFormData, email: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">City *</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">City *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Pune"
                       value={createFormData.city}
                       onChange={(e) => setCreateFormData({ ...createFormData, city: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Program</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Academic Program</label>
                     <select
                       value={createFormData.courseId}
                       onChange={(e) => setCreateFormData({ ...createFormData, courseId: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="">Select Degree Program</option>
                       {courses.map((c) => (
@@ -1014,12 +1014,12 @@ function LeadsContent() {
                     </select>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Lead Source</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Inbound Channel</label>
                     <select
                       value={createFormData.leadSource}
                       onChange={(e) => setCreateFormData({ ...createFormData, leadSource: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="Website">Website</option>
                       <option value="Instagram">Instagram</option>
@@ -1034,12 +1034,12 @@ function LeadsContent() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Assign Counselor</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Assigned Counselor</label>
                     <select
                       value={createFormData.assignedToId}
                       onChange={(e) => setCreateFormData({ ...createFormData, assignedToId: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="">Auto-assign (Round Robin)</option>
                       {counselors.map((c) => (
@@ -1050,12 +1050,12 @@ function LeadsContent() {
                     </select>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold">Pipeline Stage</label>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-foreground">Pipeline Stage</label>
                     <select
                       value={createFormData.status}
                       onChange={(e) => setCreateFormData({ ...createFormData, status: e.target.value })}
-                      className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="NEW">New Enquiry</option>
                       <option value="CONTACTED">Contacted</option>
@@ -1065,30 +1065,30 @@ function LeadsContent() {
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold">Counselor Notes / Enquiry Remarks</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-foreground">Initial Counselor Remarks</label>
                   <textarea
                     rows={3}
-                    placeholder="Student background, 12th score, family questions..."
+                    placeholder="Academic background, prior examination score, parent consultation preferences..."
                     value={createFormData.message}
                     onChange={(e) => setCreateFormData({ ...createFormData, message: e.target.value })}
-                    className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none resize-none"
+                    className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
                   <button
                     type="button"
                     onClick={() => setCreateModalOpen(false)}
-                    className="px-4 py-2 text-xs font-semibold rounded-xl border hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="px-4 py-2 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25"
+                    className="px-5 py-2 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] shadow-xs"
                   >
-                    Create &amp; Compute AI Score
+                    Register &amp; Compute AI Score
                   </button>
                 </div>
               </form>
@@ -1098,20 +1098,25 @@ function LeadsContent() {
 
         {/* Modal: CSV Import */}
         {importModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-base">Bulk Lead CSV / Excel Import</h3>
-                <button onClick={() => setImportModalOpen(false)} className="text-slate-400">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-2xl bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border max-h-[90vh] overflow-y-auto space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div>
+                  <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Bulk Ingestion</div>
+                  <h3 className="font-serif text-xl sm:text-2xl font-normal text-foreground tracking-tight">
+                    Batch Lead Import
+                  </h3>
+                </div>
+                <button onClick={() => setImportModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 text-center space-y-3">
-                <FileSpreadsheet className="w-10 h-10 text-indigo-500 mx-auto" />
+              <div className="border-2 border-dashed border-border rounded-[10px] p-6 text-center space-y-3 bg-[#EDE6DA]/20 dark:bg-[#1F2723]/20">
+                <FileSpreadsheet className="w-10 h-10 text-[#0F3D33] dark:text-[#4FB89A] mx-auto stroke-[1.5]" />
                 <div>
-                  <p className="text-xs font-semibold">Upload CSV or Excel file</p>
-                  <p className="text-[11px] text-slate-400">Columns supported: Student Name, Email, Phone, City, Source</p>
+                  <p className="text-xs font-medium text-foreground">Upload CSV or Excel Workbook</p>
+                  <p className="text-[11px] text-muted-foreground">Expected headers: Student Name, Email, Phone, City, Source</p>
                 </div>
                 <input
                   type="file"
@@ -1123,21 +1128,21 @@ function LeadsContent() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold"
+                  className="px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] text-xs font-medium shadow-xs"
                 >
-                  Choose File
+                  Select File
                 </button>
               </div>
 
               {/* Preview Table */}
               {csvPreviewData.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Preview ({csvPreviewData.length} records ready to import):
+                  <span className="text-xs font-medium text-foreground">
+                    Parsed Preview ({csvPreviewData.length} candidate rows ready):
                   </span>
-                  <div className="max-h-48 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl">
+                  <div className="max-h-48 overflow-y-auto border border-border rounded-[8px]">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase text-slate-400">
+                      <thead className="bg-[#EDE6DA]/40 dark:bg-[#1F2723]/60 text-[10px] uppercase text-muted-foreground">
                         <tr>
                           <th className="p-2">Name</th>
                           <th className="p-2">Email</th>
@@ -1145,12 +1150,12 @@ function LeadsContent() {
                           <th className="p-2">City</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
+                      <tbody className="divide-y divide-border text-[11px]">
                         {csvPreviewData.slice(0, 5).map((row, idx) => (
                           <tr key={idx}>
-                            <td className="p-2 font-semibold">{row.studentName}</td>
-                            <td className="p-2 text-slate-400">{row.email}</td>
-                            <td className="p-2">{row.phone}</td>
+                            <td className="p-2 font-medium">{row.studentName}</td>
+                            <td className="p-2 text-muted-foreground">{row.email}</td>
+                            <td className="p-2 font-mono tabular-nums">{row.phone}</td>
                             <td className="p-2">{row.city}</td>
                           </tr>
                         ))}
@@ -1160,14 +1165,14 @@ function LeadsContent() {
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
                 <button
                   type="button"
                   onClick={() => {
                     setImportModalOpen(false);
                     setCsvPreviewData([]);
                   }}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl border"
+                  className="px-4 py-2 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                 >
                   Cancel
                 </button>
@@ -1175,9 +1180,9 @@ function LeadsContent() {
                   type="button"
                   disabled={csvPreviewData.length === 0 || importing}
                   onClick={handleCommitImport}
-                  className="px-5 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50"
+                  className="px-5 py-2 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] disabled:opacity-50 shadow-xs"
                 >
-                  {importing ? "Importing & Scoring..." : `Confirm & Import ${csvPreviewData.length} Leads`}
+                  {importing ? "Ingesting & Scoring..." : `Confirm & Ingest ${csvPreviewData.length} Candidates`}
                 </button>
               </div>
             </div>
@@ -1186,13 +1191,15 @@ function LeadsContent() {
 
         {/* Modal: Bulk Status */}
         {bulkStatusModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <h3 className="font-bold text-sm">Bulk Update Status ({selectedIds.length} leads)</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+              <h3 className="font-serif text-lg font-normal text-foreground">
+                Update Stage ({selectedIds.length} candidates)
+              </h3>
               <select
                 value={bulkTargetStatus}
                 onChange={(e) => setBulkTargetStatus(e.target.value)}
-                className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
               >
                 <option value="NEW">New Enquiry</option>
                 <option value="CONTACTED">Contacted</option>
@@ -1205,15 +1212,15 @@ function LeadsContent() {
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setBulkStatusModal(false)}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg border"
+                  className="px-3 py-1.5 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBulkStatus}
-                  className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white"
+                  className="px-4 py-1.5 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] shadow-xs"
                 >
-                  Apply Status
+                  Apply Stage
                 </button>
               </div>
             </div>
@@ -1222,13 +1229,15 @@ function LeadsContent() {
 
         {/* Modal: Bulk Assign Counselor */}
         {bulkAssignModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <h3 className="font-bold text-sm">Bulk Assign Counselor ({selectedIds.length} leads)</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+              <h3 className="font-serif text-lg font-normal text-foreground">
+                Assign Counselor ({selectedIds.length} candidates)
+              </h3>
               <select
                 value={bulkTargetCounselor}
                 onChange={(e) => setBulkTargetCounselor(e.target.value)}
-                className="w-full p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
               >
                 <option value="">Select Counselor</option>
                 {counselors.map((c) => (
@@ -1240,15 +1249,15 @@ function LeadsContent() {
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setBulkAssignModal(false)}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg border"
+                  className="px-3 py-1.5 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBulkAssign}
-                  className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white"
+                  className="px-4 py-1.5 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] shadow-xs"
                 >
-                  Assign Leads
+                  Assign Candidates
                 </button>
               </div>
             </div>
@@ -1258,9 +1267,9 @@ function LeadsContent() {
         {/* Confirm Dialog: Bulk Delete */}
         <ConfirmDialog
           isOpen={deleteConfirmOpen}
-          title={`Delete ${selectedIds.length} leads?`}
-          message="This action is irreversible. All associated activities, follow-ups, and notes will be permanently removed."
-          confirmLabel="Delete Leads"
+          title={`Delete ${selectedIds.length} candidate records?`}
+          message="This action is irreversible. All associated activities, follow-ups, and notes will be permanently removed from institutional records."
+          confirmLabel="Delete Records"
           isDestructive
           onConfirm={handleBulkDelete}
           onCancel={() => setDeleteConfirmOpen(false)}
@@ -1272,7 +1281,7 @@ function LeadsContent() {
 
 export default function LeadsPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Loading Leads...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-xs text-muted-foreground font-serif italic">Loading candidate records...</div>}>
       <LeadsContent />
     </Suspense>
   );

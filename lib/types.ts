@@ -65,17 +65,17 @@ export const STATUS_LABELS: Record<LeadStatus, string> = {
 };
 
 export const STATUS_COLORS: Record<LeadStatus, { bg: string; text: string; border: string; dot: string }> = {
-  NEW: { bg: "bg-blue-500/10", text: "text-blue-600 dark:text-blue-400", border: "border-blue-500/20", dot: "bg-blue-500" },
-  CONTACTED: { bg: "bg-sky-500/10", text: "text-sky-600 dark:text-sky-400", border: "border-sky-500/20", dot: "bg-sky-500" },
-  INTERESTED: { bg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", border: "border-amber-500/20", dot: "bg-amber-500" },
-  CAMPUS_VISIT: { bg: "bg-purple-500/10", text: "text-purple-600 dark:text-purple-400", border: "border-purple-500/20", dot: "bg-purple-500" },
-  APPLICATION_SUBMITTED: { bg: "bg-indigo-500/10", text: "text-indigo-600 dark:text-indigo-400", border: "border-indigo-500/20", dot: "bg-indigo-500" },
-  ADMITTED: { bg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", border: "border-emerald-500/20", dot: "bg-emerald-500" },
-  LOST: { bg: "bg-rose-500/10", text: "text-rose-600 dark:text-rose-400", border: "border-rose-500/20", dot: "bg-rose-500" },
+  NEW: { bg: "bg-[#5B7083]/10", text: "text-[#5B7083] dark:text-[#8CA0B2]", border: "border-[#5B7083]/20", dot: "bg-[#5B7083]" },
+  CONTACTED: { bg: "bg-[#E0A030]/10", text: "text-[#B87B14] dark:text-[#E0A030]", border: "border-[#E0A030]/25", dot: "bg-[#E0A030]" },
+  INTERESTED: { bg: "bg-[#E0A030]/15", text: "text-[#A26908] dark:text-[#E8AF44]", border: "border-[#E0A030]/30", dot: "bg-[#E0A030]" },
+  CAMPUS_VISIT: { bg: "bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15", text: "text-[#0F3D33] dark:text-[#4FB89A]", border: "border-[#0F3D33]/20 dark:border-[#4FB89A]/30", dot: "bg-[#0F3D33] dark:bg-[#4FB89A]" },
+  APPLICATION_SUBMITTED: { bg: "bg-[#E0A030]/15 dark:bg-[#E0A030]/20", text: "text-[#945E00] dark:text-[#F3BA54]", border: "border-[#E0A030]/30", dot: "bg-[#E0A030]" },
+  ADMITTED: { bg: "bg-[#0F3D33]/15 dark:bg-[#4FB89A]/20", text: "text-[#0F3D33] dark:text-[#4FB89A]", border: "border-[#0F3D33]/30 dark:border-[#4FB89A]/40", dot: "bg-[#0F3D33] dark:bg-[#4FB89A]" },
+  LOST: { bg: "bg-[#6B665C]/10 dark:bg-[#6B665C]/20", text: "text-[#6B665C] dark:text-[#A8A296]", border: "border-[#6B665C]/20", dot: "bg-[#6B665C]" },
 };
 
 export const SCORE_COLORS: Record<ScoreCategory, { bg: string; text: string; badge: string }> = {
-  HOT: { bg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", badge: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white" },
-  WARM: { bg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", badge: "bg-gradient-to-r from-amber-500 to-orange-500 text-white" },
-  COLD: { bg: "bg-slate-500/10", text: "text-slate-600 dark:text-slate-400", badge: "bg-slate-500 text-white" },
+  HOT: { bg: "bg-[#C4552F]/10", text: "text-[#C4552F] dark:text-[#E27652]", badge: "bg-[#C4552F] text-white font-mono" },
+  WARM: { bg: "bg-[#E0A030]/15", text: "text-[#B87B14] dark:text-[#E0A030]", badge: "bg-[#E0A030] text-[#1B1A17] font-mono font-semibold" },
+  COLD: { bg: "bg-[#5B7083]/10", text: "text-[#5B7083] dark:text-[#8CA0B2]", badge: "bg-[#5B7083] text-white font-mono" },
 };

@@ -40,6 +40,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     loadNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleMarkAllRead = async () => {
@@ -75,30 +76,37 @@ export default function NotificationsPage() {
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Notifications &amp; Activity Alerts
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+              Admissions Dispatch
+            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+              Institutional Alerts &amp; Notices
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Urgent counselor tasks, hot lead alerts, and autonomous SLA triggers
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Real-time counselor task deadlines, high intent candidate alerts, and SLA notifications.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center p-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+            <div className="flex items-center p-1 rounded-[8px] bg-card border border-border shadow-xs">
               <button
                 onClick={() => setFilter("ALL")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                  filter === "ALL" ? "bg-indigo-600 text-white" : "text-slate-500 hover:text-slate-900"
+                className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors ${
+                  filter === "ALL"
+                    ? "bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#4FB89A] dark:text-[#0F1412]"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                All Alerts
+                All Notices
               </button>
               <button
                 onClick={() => setFilter("UNREAD")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                  filter === "UNREAD" ? "bg-indigo-600 text-white" : "text-slate-500 hover:text-slate-900"
+                className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors ${
+                  filter === "UNREAD"
+                    ? "bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#4FB89A] dark:text-[#0F1412]"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Unread Only
@@ -107,7 +115,7 @@ export default function NotificationsPage() {
 
             <button
               onClick={handleMarkAllRead}
-              className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors shadow-xs"
             >
               Mark All Read
             </button>
@@ -116,53 +124,56 @@ export default function NotificationsPage() {
 
         {/* Notifications List */}
         {loading ? (
-          <div className="py-24 text-center text-xs text-slate-400">Loading notifications...</div>
+          <div className="py-24 text-center space-y-3">
+            <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
+            <p className="font-serif italic text-xs text-muted-foreground">Checking institutional dispatch...</p>
+          </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-3">
-            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
-            <h3 className="font-bold text-sm">You are all caught up!</h3>
-            <p className="text-xs text-slate-400">No unread notifications at this time.</p>
+          <div className="p-12 rounded-[12px] bg-card border border-border text-center space-y-3">
+            <CheckCircle2 className="w-10 h-10 text-[#0F3D33] dark:text-[#4FB89A] mx-auto stroke-[1.5]" />
+            <h3 className="font-serif text-lg font-normal text-foreground">You are all caught up</h3>
+            <p className="text-xs text-muted-foreground">No unread notices or pending alerts in your dispatch queue.</p>
           </div>
         ) : (
-          <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="rounded-[12px] bg-card border border-border shadow-xs divide-y divide-border">
             {filtered.map((item) => (
               <div
                 key={item.id}
                 onClick={() => handleMarkRead(item.id)}
-                className={`p-5 flex items-start justify-between gap-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors ${
-                  !item.isRead ? "bg-indigo-50/30 dark:bg-indigo-950/15" : ""
+                className={`p-5 flex items-start justify-between gap-4 hover:bg-[#EDE6DA]/30 dark:hover:bg-[#1F2723]/30 transition-colors cursor-pointer ${
+                  !item.isRead ? "bg-[#EDE6DA]/20 dark:bg-[#1F2723]/25" : ""
                 }`}
               >
                 <div className="flex items-start gap-4">
                   <div
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+                    className={`w-10 h-10 rounded-[8px] flex items-center justify-center shrink-0 border ${
                       item.type === "HIGH_SCORE"
-                        ? "bg-emerald-500/10 text-emerald-600"
+                        ? "bg-[#C4552F]/10 text-[#C4552F] border-[#C4552F]/20"
                         : item.type === "FOLLOW_UP"
-                        ? "bg-amber-500/10 text-amber-600"
-                        : "bg-indigo-500/10 text-indigo-600"
+                        ? "bg-[#E0A030]/15 text-[#9E6C16] dark:text-[#E0A030] border-[#E0A030]/25"
+                        : "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border-[#0F3D33]/20"
                     }`}
                   >
                     {item.type === "HIGH_SCORE" ? (
-                      <Flame className="w-5 h-5" />
+                      <Flame className="w-4 h-4 stroke-[1.5]" />
                     ) : item.type === "FOLLOW_UP" ? (
-                      <Calendar className="w-5 h-5" />
+                      <Calendar className="w-4 h-4 stroke-[1.5]" />
                     ) : (
-                      <Bell className="w-5 h-5" />
+                      <Bell className="w-4 h-4 stroke-[1.5]" />
                     )}
                   </div>
 
                   <div className="space-y-1 text-xs">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-bold text-slate-900 dark:text-white">{item.title}</h4>
+                      <h4 className="font-serif text-base font-normal text-foreground">{item.title}</h4>
                       {!item.isRead && (
-                        <span className="w-2 h-2 rounded-full bg-indigo-600 shrink-0" />
+                        <span className="w-2 h-2 rounded-full bg-accent shrink-0" title="Unread notice" />
                       )}
                     </div>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
+                    <p className="text-muted-foreground leading-relaxed max-w-xl">
                       {item.message}
                     </p>
-                    <span className="text-[10px] text-slate-400 block pt-0.5">
+                    <span className="text-[10px] font-mono text-muted-foreground block pt-0.5">
                       {timeAgo(item.createdAt)}
                     </span>
                   </div>
@@ -171,8 +182,8 @@ export default function NotificationsPage() {
                 {item.link && (
                   <Link
                     href={item.link}
-                    className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-indigo-600 transition-colors shrink-0"
-                    title="View related lead"
+                    className="p-2 rounded-[8px] border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] transition-colors shrink-0"
+                    title="Open related record"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </Link>

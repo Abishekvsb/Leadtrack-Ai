@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { useToast } from "@/components/toast-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { LeadScoreStamp } from "@/components/ui/design-system";
 import {
   ArrowLeft,
   Mail,
@@ -27,12 +28,12 @@ import {
   BookOpen,
   Pin,
   PhoneCall,
-  Flame,
   HelpCircle,
   X,
   ExternalLink,
   Loader2,
   GitMerge,
+  GraduationCap,
 } from "lucide-react";
 import { STATUS_COLORS, STATUS_LABELS, SCORE_COLORS, LeadStatus, ScoreCategory } from "@/lib/types";
 import { formatCurrency, formatDate, formatDateTime, timeAgo } from "@/lib/utils";
@@ -50,7 +51,7 @@ export default function LeadDetailPage() {
   const params = useParams();
   const id = params?.id as string;
   const router = useRouter();
-  const { success, error, info } = useToast();
+  const { success, error } = useToast();
 
   const [lead, setLead] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -114,6 +115,7 @@ export default function LeadDetailPage() {
 
   useEffect(() => {
     loadLead();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   // Load aux templates, courses, team
@@ -137,28 +139,52 @@ export default function LeadDetailPage() {
           const uJson = await uRes.json();
           if (uJson.success) setCounselors(uJson.data.users || []);
         }
-      } catch {}
+      } catch (err) {
+        console.error("Aux loading failed", err);
+      }
     }
     loadAux();
   }, []);
 
   // Check for duplicates
-  const checkForDuplicates = async (email: string, phone: string, excludeId: string) => {
+  const checkForDuplicates = async (email: string, phone: string, currentId: string) => {
     try {
-      const res = await fetch("/api/leads/check-duplicate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, phone, excludeId }),
-      });
-      const data = await res.json();
-      if (data.success && data.hasDuplicate) {
-        setDuplicateLead(data.data.duplicate);
+      const q = new URLSearchParams({ email, phone, excludeId: currentId });
+      const res = await fetch(`/api/leads/check-duplicate?${q.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data?.duplicate) {
+          setDuplicateLead(data.data.duplicate);
+        }
       }
     } catch {}
   };
 
-  // Status Stepper Change
-  const handleStatusChange = async (newStatus: string) => {
+  // Merge duplicate
+  const handleMerge = async () => {
+    if (!duplicateLead) return;
+    try {
+      const res = await fetch("/api/leads/merge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ primaryLeadId: lead.id, duplicateLeadId: duplicateLead.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        success("Candidate records merged successfully!");
+        setDuplicateModalOpen(false);
+        setDuplicateLead(null);
+        loadLead();
+      } else {
+        error(data.error);
+      }
+    } catch {
+      error("Merge operation failed");
+    }
+  };
+
+  // Status Change
+  const handleStatusChange = async (newStatus: LeadStatus) => {
     try {
       const res = await fetch(`/api/leads/${id}`, {
         method: "PATCH",
@@ -167,8 +193,8 @@ export default function LeadDetailPage() {
       });
       const data = await res.json();
       if (data.success) {
-        success(`Lead moved to ${STATUS_LABELS[newStatus as LeadStatus] || newStatus}`);
-        loadLead();
+        success(`Admissions stage advanced to: ${STATUS_LABELS[newStatus]}`);
+        setLead(data.data.lead);
       } else {
         error(data.error);
       }
@@ -181,6 +207,7 @@ export default function LeadDetailPage() {
   const handleAddNote = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!noteContent.trim()) return;
+
     setSubmittingNote(true);
     try {
       const res = await fetch(`/api/leads/${id}/notes`, {
@@ -190,13 +217,15 @@ export default function LeadDetailPage() {
       });
       const data = await res.json();
       if (data.success) {
-        success("Counselor note saved");
+        success("Counselor observation added to dossier");
         setNoteContent("");
         setNoteIsPinned(false);
         loadLead();
+      } else {
+        error(data.error);
       }
     } catch {
-      error("Failed to add note");
+      error("Failed to post note");
     } finally {
       setSubmittingNote(false);
     }
@@ -211,12 +240,12 @@ export default function LeadDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "CALL_LOGGED",
-          title: `Call: ${callOutcome}`,
-          description: callNotes || "Outbound phone consultation completed.",
+          title: `Call Logged: ${callOutcome}`,
+          description: callNotes || "Outbound phone consultation recorded by counselor.",
         }),
       });
       if (res.ok) {
-        success("Call recorded in timeline");
+        success("Phone consultation logged in dossier");
         setCallModalOpen(false);
         setCallNotes("");
         loadLead();
@@ -229,16 +258,12 @@ export default function LeadDetailPage() {
   // Schedule Follow-Up
   const handleScheduleFollowUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fuDate) {
-      error("Please pick a scheduled date");
-      return;
-    }
     try {
-      const res = await fetch("/api/follow-ups", {
+      const res = await fetch(`/api/follow-ups`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          leadId: id,
+          leadId: lead.id,
           scheduledAt: fuDate,
           type: fuType,
           priority: fuPriority,
@@ -249,84 +274,59 @@ export default function LeadDetailPage() {
         success("Follow-up task scheduled");
         setFollowUpModalOpen(false);
         setFuNotes("");
+        setFuDate("");
         loadLead();
       }
     } catch {
-      error("Failed to schedule task");
+      error("Failed to schedule follow-up");
     }
   };
 
-  // Upload Document
+  // Attach Document
   const handleUploadDoc = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!docName.trim()) return;
     try {
       const res = await fetch(`/api/leads/${id}/documents`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: docName,
-          fileType: docType,
-          fileSize: "1.4 MB",
+          category: docType,
+          fileUrl: "https://leadtrack.institution.edu/docs/sample.pdf",
+          fileSize: "1.2 MB",
         }),
       });
       if (res.ok) {
-        success("Document metadata registered");
+        success("Academic document attached to dossier");
         setDocModalOpen(false);
         setDocName("");
         loadLead();
       }
     } catch {
-      error("Failed to add document");
+      error("Failed to attach document");
     }
   };
 
-  // Merge Duplicate Leads
-  const handleMerge = async () => {
-    if (!duplicateLead) return;
-    try {
-      const res = await fetch("/api/leads/merge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          targetLeadId: lead.id,
-          sourceLeadId: duplicateLead.id,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        success("Duplicate enquiry records successfully merged!");
-        setDuplicateModalOpen(false);
-        setDuplicateLead(null);
-        loadLead();
-      } else {
-        error(data.error);
-      }
-    } catch {
-      error("Merge failed");
-    }
-  };
-
-  // Template selection in email modal
+  // Email Template Select
   const handleSelectTemplate = (templateId: string) => {
     setSelectedTemplateId(templateId);
     const tmpl = templates.find((t) => t.id === templateId);
     if (tmpl) {
-      let subj = tmpl.subject || "";
-      let body = tmpl.body || "";
-      // Replace variables
-      subj = subj.replace(/{{name}}/g, lead.studentName).replace(/{{course}}/g, lead.course?.name || "Program");
-      body = body
-        .replace(/{{name}}/g, lead.studentName)
-        .replace(/{{course}}/g, lead.course?.name || "Program")
-        .replace(/{{counselor}}/g, lead.assignedTo?.name || "Admissions Office")
-        .replace(/{{institution}}/g, lead.institution?.name || "Admissions Office");
-      setEmailSubject(subj);
-      setEmailBody(body);
+      setEmailSubject(
+        tmpl.subject
+          .replace("{{studentName}}", lead.studentName)
+          .replace("{{courseName}}", lead.course?.name || "our program")
+      );
+      setEmailBody(
+        tmpl.body
+          .replace(/{{studentName}}/g, lead.studentName)
+          .replace(/{{courseName}}/g, lead.course?.name || "your requested program")
+          .replace(/{{counselorName}}/g, lead.assignedTo?.name || "Admissions Committee")
+      );
     }
   };
 
-  // Send Email Action
+  // Send Email
   const handleSendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -336,7 +336,7 @@ export default function LeadDetailPage() {
         body: JSON.stringify({
           type: "EMAIL_SENT",
           title: `Email Dispatched: ${emailSubject}`,
-          description: emailBody.slice(0, 150) + "...",
+          description: emailBody.slice(0, 200) + "...",
         }),
       });
       success(`Email dispatched to ${lead.email}`);
@@ -351,8 +351,8 @@ export default function LeadDetailPage() {
     return (
       <DashboardLayout>
         <div className="py-24 text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto" />
-          <p className="text-xs text-slate-400">Loading student dossier...</p>
+          <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
+          <p className="font-serif italic text-xs text-muted-foreground">Retrieving candidate dossier...</p>
         </div>
       </DashboardLayout>
     );
@@ -371,61 +371,59 @@ export default function LeadDetailPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 pb-16">
+      <div className="space-y-6 pb-16 max-w-7xl mx-auto">
         {/* Top Back Navigation Bar */}
         <div className="flex items-center justify-between">
           <Link
             href="/leads"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Leads Registry</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Admissions Registry</span>
           </Link>
 
           {/* Duplicate Banner Alert */}
           {duplicateLead && (
             <button
               onClick={() => setDuplicateModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-400 text-xs font-semibold hover:bg-amber-500/20 transition-all animate-pulse"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#E0A030]/15 border border-[#E0A030]/30 text-[#9E6C16] dark:text-[#E0A030] text-xs font-medium hover:bg-[#E0A030]/25 transition-all"
             >
               <GitMerge className="w-3.5 h-3.5" />
-              <span>Potential Duplicate Detected: {duplicateLead.studentName} (Click to Merge)</span>
+              <span>Duplicate Record Detected: {duplicateLead.studentName} (Click to Merge)</span>
             </button>
           )}
         </div>
 
-        {/* Lead Header Profile & Quick Action Bar */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        {/* Lead Header Profile & Quick Action Bar (Student Card Dossier Header) */}
+        <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-extrabold text-lg flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/25">
+            <div className="w-14 h-14 rounded-[10px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-serif text-xl flex items-center justify-center shrink-0 border border-[#0F3D33] dark:border-[#4FB89A] shadow-xs">
               {lead.studentName.slice(0, 2).toUpperCase()}
             </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-display text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="font-serif text-2xl sm:text-3xl font-normal text-foreground tracking-tight">
                   {lead.studentName}
                 </h1>
-                <span
-                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${statusInfo.bg} ${statusInfo.text} ${statusInfo.border}`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dot}`} />
-                  {STATUS_LABELS[lead.status as LeadStatus] || lead.status}
+                <span className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium">
+                  <span className={`w-2 h-2 rounded-full ${statusInfo.dot}`} />
+                  <span>{STATUS_LABELS[lead.status as LeadStatus] || lead.status}</span>
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[11px] font-medium">
+                <span className="px-2 py-0.5 rounded-[4px] bg-[#EDE6DA] dark:bg-[#1F2723] text-muted-foreground text-[10px] font-mono uppercase border border-border">
                   via {lead.leadSource}
                 </span>
               </div>
-              <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                 <span className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5" />
+                  <MapPin className="w-3.5 h-3.5 text-muted-foreground/80" />
                   {lead.city} {lead.state ? `, ${lead.state}` : ""}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <BookOpen className="w-3.5 h-3.5" />
+                  <BookOpen className="w-3.5 h-3.5 text-muted-foreground/80" />
                   {lead.course?.name || "General Degree Enquiry"}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5" />
+                  <User className="w-3.5 h-3.5 text-muted-foreground/80" />
                   Counselor: {lead.assignedTo?.name || "Unassigned"}
                 </span>
               </div>
@@ -434,58 +432,58 @@ export default function LeadDetailPage() {
 
           {/* One-Click Action Buttons */}
           <div className="flex items-center gap-2 flex-wrap w-full lg:w-auto">
-            {/* 1-Click WhatsApp */}
+            {/* WhatsApp */}
             <a
               href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
                 `Hello ${lead.studentName}! This is ${lead.assignedTo?.name || "Admissions"} from ${lead.institution?.name || "our admissions office"} regarding your enquiry for ${lead.course?.name || "our programs"}.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
             </a>
 
-            {/* 1-Click Call */}
+            {/* Log Call */}
             <button
               onClick={() => setCallModalOpen(true)}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition-all"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
             >
-              <PhoneCall className="w-3.5 h-3.5" />
+              <PhoneCall className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Log Call</span>
             </button>
 
-            {/* 1-Click Email */}
+            {/* Send Email */}
             <button
               onClick={() => {
                 if (templates.length > 0) handleSelectTemplate(templates[0].id);
                 setEmailModalOpen(true);
               }}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md shadow-indigo-500/20 transition-all"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
             >
-              <Mail className="w-3.5 h-3.5" />
-              <span>Send Email</span>
+              <Mail className="w-3.5 h-3.5 text-muted-foreground" />
+              <span>Email</span>
             </button>
 
-            {/* Schedule Follow-up */}
+            {/* Schedule Task */}
             <button
               onClick={() => setFollowUpModalOpen(true)}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-colors"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
             >
-              <Calendar className="w-3.5 h-3.5" />
+              <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Task</span>
             </button>
           </div>
         </div>
 
         {/* Status Stepper Progression */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-3">
+        <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-slate-500 uppercase tracking-wider">
-              Admission Pipeline Stage
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              Admission Pipeline Progression
             </span>
-            <span className="text-slate-400">Click any stage to transition lead</span>
+            <span className="text-muted-foreground text-[11px]">Click any step to advance candidate stage</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
@@ -497,18 +495,18 @@ export default function LeadDetailPage() {
                 <button
                   key={st}
                   onClick={() => handleStatusChange(st)}
-                  className={`p-3 rounded-2xl text-left border transition-all text-xs flex flex-col justify-between h-20 ${
+                  className={`p-3 rounded-[8px] text-left border transition-all text-xs flex flex-col justify-between h-20 ${
                     isCurrent
-                      ? "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/25"
+                      ? "bg-[#0F3D33] text-[#F6F2EA] border-[#0F3D33] dark:bg-[#4FB89A] dark:text-[#0F1412] dark:border-[#4FB89A] shadow-xs"
                       : isPast
-                      ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
-                      : "bg-slate-50 dark:bg-slate-800/40 border-slate-200/70 dark:border-slate-700/60 text-slate-500 hover:border-indigo-400"
+                      ? "bg-[#EDE6DA]/40 dark:bg-[#1F2723]/50 border-border text-foreground"
+                      : "bg-card border-border text-muted-foreground hover:border-[#0F3D33]/40"
                   }`}
                 >
-                  <span className="font-bold text-[10px] uppercase opacity-75">Step 0{idx + 1}</span>
-                  <span className="font-semibold truncate">{STATUS_LABELS[st]}</span>
-                  {isPast && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 self-end" />}
-                  {isCurrent && <span className="text-[10px] font-bold self-end underline">Active</span>}
+                  <span className="font-mono text-[10px] uppercase opacity-75">Step 0{idx + 1}</span>
+                  <span className="font-medium truncate">{STATUS_LABELS[st]}</span>
+                  {isPast && <CheckCircle2 className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A] self-end" />}
+                  {isCurrent && <span className="font-mono text-[9px] uppercase tracking-widest self-end">Current</span>}
                 </button>
               );
             })}
@@ -517,148 +515,124 @@ export default function LeadDetailPage() {
 
         {/* AI Lead Intelligence & Next Best Action Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* AI Score Gauge Card */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
+          {/* AI Score Official Stamp Card */}
+          <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                AI Lead Intent Score
+              <span className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-accent" />
+                <span>AI Readiness Evaluation</span>
               </span>
               <button
                 onClick={() => setScoreModalOpen(true)}
-                className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                className="text-xs text-[#0F3D33] dark:text-[#4FB89A] hover:underline flex items-center gap-1 font-medium"
               >
-                <span>Why this score?</span>
+                <span>Scoring logic</span>
                 <HelpCircle className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="my-4 flex items-center justify-around">
-              {/* Score Gauge Circle */}
-              <div className="relative w-28 h-28 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-slate-100 dark:text-slate-800"
-                    strokeWidth="3.5"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    className={
-                      lead.score >= 75
-                        ? "text-emerald-500"
-                        : lead.score >= 45
-                        ? "text-amber-500"
-                        : "text-slate-400"
-                    }
-                    strokeDasharray={`${lead.score}, 100`}
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                <div className="absolute flex flex-col items-center">
-                  <span className="text-3xl font-extrabold tracking-tight">{lead.score}</span>
-                  <span className="text-[10px] text-slate-400 font-medium">/ 100</span>
-                </div>
-              </div>
+            <div className="my-5 flex items-center justify-around gap-4">
+              {/* Prominent Lead Score Stamp */}
+              <LeadScoreStamp score={lead.score} category={lead.scoreCategory} />
 
               <div className="space-y-2 text-xs">
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Category</span>
-                  <p className={`font-bold text-sm ${scoreInfo.text}`}>{lead.scoreCategory}</p>
-                </div>
-                <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Conversion Likelihood</span>
-                  <p className="font-bold text-sm text-slate-900 dark:text-white">
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Conversion Index</span>
+                  <p className="font-mono text-base font-bold text-foreground tabular-nums">
                     {lead.conversionProbability}%
                   </p>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Engagement Level</span>
-                  <p className="font-bold text-sm text-slate-900 dark:text-white">{lead.engagementLevel}</p>
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Engagement</span>
+                  <p className="font-medium text-xs text-foreground uppercase tracking-wider">
+                    {lead.engagementLevel}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Activity Count</span>
+                  <p className="font-mono text-xs text-foreground tabular-nums">
+                    {lead.activities?.length || 0} events
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-[11px] text-slate-600 dark:text-slate-400">
-              Evaluated across {lead.activities?.length || 0} interaction logs, source authority, and program demand.
+            <div className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-[11px] text-muted-foreground leading-relaxed">
+              Synthesized from inbound channel reputation, student inquiries, academic preferences, and counselor touchpoints.
             </div>
           </div>
 
-          {/* Next Best Action Card */}
-          <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-gradient-to-tr from-indigo-900 via-indigo-950 to-purple-950 text-white shadow-xl flex flex-col justify-between">
+          {/* Next Best Action Card (Institutional Academic Brief) */}
+          <div className="lg:col-span-2 p-6 sm:p-7 rounded-[12px] bg-[#0F3D33] dark:bg-[#171D1A] text-[#F6F2EA] dark:text-[#ECE8DF] border border-[#26302B] shadow-academic-floating flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-200 text-xs font-semibold border border-indigo-500/30">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                <span>AI Recommendation Engine</span>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] bg-[#E0A030]/20 text-accent text-[11px] font-mono uppercase tracking-wider border border-[#E0A030]/30">
+                <Sparkles className="w-3 h-3 text-accent" />
+                <span>Admissions Copilot Advisory</span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold">Recommended Next Best Action</h3>
-              <p className="text-indigo-100 text-sm leading-relaxed max-w-2xl">
+              <h3 className="font-serif text-xl sm:text-2xl font-normal text-white tracking-tight">
+                Recommended Next Step
+              </h3>
+              <p className="font-serif italic text-base sm:text-lg text-[#F6F2EA]/90 leading-relaxed max-w-2xl">
                 &ldquo;{lead.nextBestAction}&rdquo;
               </p>
             </div>
 
-            <div className="pt-6 flex items-center justify-between border-t border-indigo-800/60 text-xs text-indigo-300">
-              <span>Counselor SLA: Within 4 hours of enquiry</span>
+            <div className="pt-5 flex items-center justify-between border-t border-white/10 text-xs text-[#F6F2EA]/70 mt-4">
+              <span>Counselor Turnaround Target: 4 hrs</span>
               <button
                 onClick={() => setCallModalOpen(true)}
-                className="px-4 py-2 rounded-xl bg-white text-indigo-900 font-bold hover:bg-indigo-50 transition-colors shadow-md"
+                className="px-4 py-2 rounded-[8px] bg-[#E0A030] text-[#1B1A17] font-medium text-xs hover:bg-[#C98B22] transition-colors shadow-xs"
               >
-                Execute Action Now →
+                Execute Consultation →
               </button>
             </div>
           </div>
         </div>
 
-        {/* Detailed Tabs / Panels: Overview, Notes, Timeline, Documents, Tasks */}
+        {/* Two-Column Dossier Spread: Profile / Documents vs Notes & Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Student Details & Guardian Info */}
+          {/* Left Column: Student Dossier Profile Card */}
           <div className="space-y-6">
             {/* Student Info Box */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
-              <h3 className="font-bold text-sm text-slate-900 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800">
-                Profile &amp; Contact Information
-              </h3>
+            <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
+              <div className="pb-3 border-b border-border">
+                <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Identity Record</div>
+                <h3 className="font-serif text-base font-normal text-foreground">Candidate &amp; Family Dossier</h3>
+              </div>
 
-              <div className="space-y-3 text-xs">
+              <div className="space-y-3.5 text-xs">
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Full Name</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">{lead.studentName}</p>
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Full Name</span>
+                  <p className="font-medium text-foreground mt-0.5">{lead.studentName}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Primary Phone</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">{lead.phone}</p>
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Primary Contact Phone</span>
+                  <p className="font-mono text-xs text-foreground mt-0.5 tabular-nums">{lead.phone}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Email Address</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">{lead.email}</p>
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Email Address</span>
+                  <p className="font-mono text-xs text-foreground mt-0.5">{lead.email}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Parent / Guardian Name</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
-                    {lead.parentName || "Not provided"}
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Parent / Guardian Name</span>
+                  <p className="font-medium text-foreground mt-0.5">{lead.parentName || "Not on file"}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Parent Contact Phone</span>
+                  <p className="font-mono text-xs text-foreground mt-0.5 tabular-nums">
+                    {lead.parentPhone || "Not on file"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">Parent Phone</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
-                    {lead.parentPhone || "Not provided"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-slate-400 text-[10px] uppercase font-bold">City &amp; State</span>
-                  <p className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                  <span className="text-muted-foreground text-[10px] uppercase font-mono">Location</span>
+                  <p className="font-medium text-foreground mt-0.5">
                     {lead.city} {lead.state ? `, ${lead.state}` : ""}
                   </p>
                 </div>
                 {lead.message && (
                   <div>
-                    <span className="text-slate-400 text-[10px] uppercase font-bold">Student Message</span>
-                    <p className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                    <span className="text-muted-foreground text-[10px] uppercase font-mono">Initial Enquiry Message</span>
+                    <p className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-foreground mt-1 text-xs leading-relaxed">
                       {lead.message}
                     </p>
                   </div>
@@ -667,12 +641,15 @@ export default function LeadDetailPage() {
             </div>
 
             {/* Documents Box */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-sm">Application Documents</h3>
+            <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div>
+                  <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Credentials</div>
+                  <h3 className="font-serif text-base font-normal text-foreground">Academic Records</h3>
+                </div>
                 <button
                   onClick={() => setDocModalOpen(true)}
-                  className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline flex items-center gap-1"
+                  className="text-xs text-[#0F3D33] dark:text-[#4FB89A] font-medium hover:underline flex items-center gap-1"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Attach</span>
@@ -681,18 +658,20 @@ export default function LeadDetailPage() {
 
               <div className="space-y-2">
                 {(lead.documents || []).length === 0 ? (
-                  <p className="text-xs text-slate-400 py-3 text-center">No documents uploaded yet.</p>
+                  <p className="text-xs text-muted-foreground py-4 text-center font-serif italic">
+                    No academic transcripts or documents uploaded.
+                  </p>
                 ) : (
                   lead.documents.map((doc: any) => (
                     <div
                       key={doc.id}
-                      className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs"
+                      className="p-3 rounded-[8px] bg-[#EDE6DA]/20 dark:bg-[#1F2723]/20 border border-border flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center gap-2.5 truncate">
-                        <FileText className="w-4 h-4 text-indigo-500 shrink-0" />
-                        <span className="font-semibold truncate">{doc.name}</span>
+                        <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <span className="font-medium text-foreground truncate">{doc.name}</span>
                       </div>
-                      <span className="text-[10px] text-slate-400">{doc.fileSize}</span>
+                      <span className="text-[10px] font-mono text-muted-foreground">{doc.fileSize}</span>
                     </div>
                   ))
                 )}
@@ -703,69 +682,74 @@ export default function LeadDetailPage() {
           {/* Center & Right Columns: Notes & Live Activity Timeline */}
           <div className="lg:col-span-2 space-y-6">
             {/* Counselor Discussion Notes */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
-              <h3 className="font-bold text-sm">Counselor Discussion Notes</h3>
+            <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
+              <div className="pb-3 border-b border-border">
+                <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Admissions Notes</div>
+                <h3 className="font-serif text-base font-normal text-foreground">Counselor Observations &amp; Dialogue</h3>
+              </div>
 
               {/* Add Note Form */}
               <form onSubmit={handleAddNote} className="space-y-3">
                 <textarea
                   rows={3}
                   required
-                  placeholder="Record call summary, scholarship queries, student preferences, or parent questions..."
+                  placeholder="Record consultation takeaways, scholarship eligibility, parent concerns, or candidate interests..."
                   value={noteContent}
                   onChange={(e) => setNoteContent(e.target.value)}
-                  className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs outline-none focus:border-indigo-500 resize-none"
+                  className="w-full p-3.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground text-xs outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
                 />
 
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={noteIsPinned}
                       onChange={(e) => setNoteIsPinned(e.target.checked)}
-                      className="rounded border-slate-300 text-indigo-600"
+                      className="rounded-[4px] border-border text-[#0F3D33] focus:ring-[#0F3D33]"
                     />
-                    <span>Pin note to top</span>
+                    <span>Pin observation to top</span>
                   </label>
 
                   <button
                     type="submit"
                     disabled={submittingNote || !noteContent.trim()}
-                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition-colors disabled:opacity-50"
+                    className="px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs hover:bg-[#165447] dark:hover:bg-[#63C7AA] transition-colors disabled:opacity-50 shadow-xs"
                   >
-                    {submittingNote ? "Saving..." : "Post Note"}
+                    {submittingNote ? "Saving..." : "Record Note"}
                   </button>
                 </div>
               </form>
 
               {/* Existing Notes Feed */}
-              <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              <div className="space-y-3 pt-3 border-t border-border">
                 {(lead.notes || []).length === 0 ? (
-                  <p className="text-xs text-slate-400 py-3 text-center">No counselor notes yet.</p>
+                  <p className="text-xs text-muted-foreground py-4 text-center font-serif italic">
+                    No counselor observations recorded yet.
+                  </p>
                 ) : (
                   lead.notes.map((note: any) => (
                     <div
                       key={note.id}
-                      className={`p-4 rounded-2xl text-xs space-y-2 border ${
+                      className={`p-4 rounded-[8px] text-xs space-y-2 border ${
                         note.isPinned
-                          ? "bg-indigo-50/60 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-800/60"
-                          : "bg-slate-50 dark:bg-slate-800/40 border-slate-200/60 dark:border-slate-800/60"
+                          ? "bg-[#EDE6DA]/40 dark:bg-[#1F2723]/60 border-[#E0A030]/50"
+                          : "bg-background/40 border-border"
                       }`}
                     >
-                      <div className="flex items-center justify-between text-slate-500">
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span className="font-medium text-foreground">
                           {note.author?.name || "Counselor"}
                         </span>
                         <div className="flex items-center gap-2">
                           {note.isPinned && (
-                            <span className="flex items-center gap-1 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold">
+                            <span className="flex items-center gap-1 text-[10px] text-accent font-mono uppercase tracking-wider">
                               <Pin className="w-3 h-3" /> Pinned
                             </span>
                           )}
-                          <span className="text-[10px] text-slate-400">{timeAgo(note.createdAt)}</span>
+                          <span className="text-[10px] font-mono text-muted-foreground">{timeAgo(note.createdAt)}</span>
                         </div>
                       </div>
-                      <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+                      <p className="text-foreground whitespace-pre-wrap leading-relaxed">
                         {note.content}
                       </p>
                     </div>
@@ -775,19 +759,22 @@ export default function LeadDetailPage() {
             </div>
 
             {/* Activity History Timeline */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
-              <h3 className="font-bold text-sm">Lifecycle Activity Timeline</h3>
+            <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
+              <div className="pb-3 border-b border-border">
+                <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Audit Log</div>
+                <h3 className="font-serif text-base font-normal text-foreground">Lifecycle Engagement History</h3>
+              </div>
 
-              <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
+              <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-border">
                 {(lead.activities || []).map((act: any) => (
                   <div key={act.id} className="relative space-y-1">
-                    <span className="absolute -left-6 top-1 w-3 h-3 rounded-full bg-indigo-600 ring-4 ring-white dark:ring-slate-900" />
+                    <span className="absolute -left-6 top-1.5 w-2.5 h-2.5 rounded-full bg-[#0F3D33] dark:bg-[#4FB89A] ring-4 ring-card" />
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-slate-100">{act.title}</span>
-                      <span className="text-[10px] text-slate-400">{timeAgo(act.createdAt)}</span>
+                      <span className="font-medium text-foreground">{act.title}</span>
+                      <span className="text-[10px] font-mono tabular-nums text-muted-foreground">{timeAgo(act.createdAt)}</span>
                     </div>
                     {act.description && (
-                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
                         {act.description}
                       </p>
                     )}
@@ -800,14 +787,14 @@ export default function LeadDetailPage() {
 
         {/* Modal: Why This Score? Breakdown */}
         {scoreModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
-                  <h3 className="font-bold text-base">Mathematical AI Score Breakdown</h3>
+                  <Sparkles className="w-4 h-4 text-accent" />
+                  <h3 className="font-serif text-lg font-normal text-foreground">Mathematical Scoring Breakdown</h3>
                 </div>
-                <button onClick={() => setScoreModalOpen(false)} className="text-slate-400">
+                <button onClick={() => setScoreModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -816,15 +803,15 @@ export default function LeadDetailPage() {
                 {Object.entries(scoreBreakdown).map(([key, factor]: [string, any]) => (
                   <div
                     key={key}
-                    className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-1"
+                    className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-1"
                   >
-                    <div className="flex items-center justify-between font-bold">
-                      <span className="capitalize">{key.replace(/([A-Z])/g, " $1")}</span>
-                      <span className="text-indigo-600 dark:text-indigo-400">
+                    <div className="flex items-center justify-between font-medium">
+                      <span className="capitalize text-foreground">{key.replace(/([A-Z])/g, " $1")}</span>
+                      <span className="font-mono text-[#0F3D33] dark:text-[#4FB89A]">
                         {factor.score !== undefined ? `${factor.score} / ${factor.max} pts` : factor}
                       </span>
                     </div>
-                    {factor.reason && <p className="text-slate-500 text-[11px]">{factor.reason}</p>}
+                    {factor.reason && <p className="text-muted-foreground text-[11px]">{factor.reason}</p>}
                   </div>
                 ))}
               </div>
@@ -832,9 +819,9 @@ export default function LeadDetailPage() {
               <div className="pt-2 text-right">
                 <button
                   onClick={() => setScoreModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold"
+                  className="px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] text-xs font-medium"
                 >
-                  Got It
+                  Close Analysis
                 </button>
               </div>
             </div>
@@ -843,22 +830,24 @@ export default function LeadDetailPage() {
 
         {/* Modal: Log Outbound Call */}
         {callModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-sm">Log Phone Call with {lead.studentName}</h3>
-                <button onClick={() => setCallModalOpen(false)} className="text-slate-400">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-border">
+                <h3 className="font-serif text-base font-normal text-foreground">
+                  Consultation Call with {lead.studentName}
+                </h3>
+                <button onClick={() => setCallModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <form onSubmit={handleLogCall} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="font-semibold">Call Outcome</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Call Outcome</label>
                   <select
                     value={callOutcome}
                     onChange={(e) => setCallOutcome(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                   >
                     <option value="Connected - Expressed Keen Interest">Connected - Expressed Keen Interest</option>
                     <option value="Connected - Campus Visit Booked">Connected - Campus Visit Booked</option>
@@ -869,14 +858,14 @@ export default function LeadDetailPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="font-semibold">Discussion Notes</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Discussion Notes</label>
                   <textarea
                     rows={3}
-                    placeholder="Briefly describe what was discussed during the call..."
+                    placeholder="Brief summary of candidate queries, concerns, or next commitments..."
                     value={callNotes}
                     onChange={(e) => setCallNotes(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none resize-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
                   />
                 </div>
 
@@ -884,15 +873,15 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setCallModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
                   >
-                    Save Call Log
+                    Save Call Record
                   </button>
                 </div>
               </form>
@@ -902,24 +891,26 @@ export default function LeadDetailPage() {
 
         {/* Modal: Send Email */}
         {emailModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-sm">Send Email to {lead.studentName}</h3>
-                <button onClick={() => setEmailModalOpen(false)} className="text-slate-400">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-border">
+                <h3 className="font-serif text-base font-normal text-foreground">
+                  Dispatch Email to {lead.studentName}
+                </h3>
+                <button onClick={() => setEmailModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <form onSubmit={handleSendEmail} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="font-semibold">Quick Template</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Institutional Template</label>
                   <select
                     value={selectedTemplateId}
                     onChange={(e) => handleSelectTemplate(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                   >
-                    <option value="">Custom Email</option>
+                    <option value="">Custom Message</option>
                     {templates.map((t) => (
                       <option key={t.id} value={t.id}>
                         {t.name} ({t.type})
@@ -928,25 +919,25 @@ export default function LeadDetailPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="font-semibold">Subject Line</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Subject Line</label>
                   <input
                     type="text"
                     required
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="font-semibold">Email Body</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Message Body</label>
                   <textarea
                     rows={6}
                     required
                     value={emailBody}
                     onChange={(e) => setEmailBody(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none resize-none font-mono text-[11px]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none resize-none font-mono text-[11px]"
                   />
                 </div>
 
@@ -954,15 +945,15 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setEmailModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
                   >
-                    Dispatch Email
+                    Send Message
                   </button>
                 </div>
               </form>
@@ -972,34 +963,34 @@ export default function LeadDetailPage() {
 
         {/* Modal: Schedule Follow-Up */}
         {followUpModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-sm">Schedule Follow-up Task</h3>
-                <button onClick={() => setFollowUpModalOpen(false)} className="text-slate-400">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-border">
+                <h3 className="font-serif text-base font-normal text-foreground">Schedule Task</h3>
+                <button onClick={() => setFollowUpModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <form onSubmit={handleScheduleFollowUp} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="font-semibold">Date &amp; Time *</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Scheduled Date &amp; Time *</label>
                   <input
                     type="datetime-local"
                     required
                     value={fuDate}
                     onChange={(e) => setFuDate(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="font-semibold">Type</label>
+                  <div className="space-y-1.5">
+                    <label className="font-medium text-foreground">Action Type</label>
                     <select
                       value={fuType}
                       onChange={(e) => setFuType(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="CALL">Phone Call</option>
                       <option value="WHATSAPP">WhatsApp</option>
@@ -1009,12 +1000,12 @@ export default function LeadDetailPage() {
                     </select>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="font-semibold">Priority</label>
+                  <div className="space-y-1.5">
+                    <label className="font-medium text-foreground">Priority Level</label>
                     <select
                       value={fuPriority}
                       onChange={(e) => setFuPriority(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -1024,14 +1015,14 @@ export default function LeadDetailPage() {
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="font-semibold">Task Objective / Instructions</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Task Directive / Instructions</label>
                   <textarea
                     rows={3}
-                    placeholder="e.g. Call regarding scholarship document submission..."
+                    placeholder="e.g. Inquire about entrance exam verification and scholarship documents..."
                     value={fuNotes}
                     onChange={(e) => setFuNotes(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none resize-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
                   />
                 </div>
 
@@ -1039,13 +1030,13 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setFollowUpModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
                   >
                     Save Task
                   </button>
@@ -1057,27 +1048,27 @@ export default function LeadDetailPage() {
 
         {/* Modal: Document Attachment */}
         {docModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <h3 className="font-bold text-sm">Register Document Attachment</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+              <h3 className="font-serif text-base font-normal text-foreground">Register Academic Record</h3>
               <form onSubmit={handleUploadDoc} className="space-y-3 text-xs">
-                <div className="space-y-1">
-                  <label className="font-semibold">Document Title *</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Record Title *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. 12th Grade Marksheet"
+                    placeholder="e.g. Higher Secondary Certificate"
                     value={docName}
                     onChange={(e) => setDocName(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="font-semibold">Document Category</label>
+                <div className="space-y-1.5">
+                  <label className="font-medium text-foreground">Document Type</label>
                   <select
                     value={docType}
                     onChange={(e) => setDocType(e.target.value)}
-                    className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                   >
                     <option value="12th Marksheet PDF">12th Marksheet PDF</option>
                     <option value="Entrance Score Card">Entrance Score Card</option>
@@ -1090,15 +1081,15 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setDocModalOpen(false)}
-                    className="px-3 py-1.5 rounded-lg border"
+                    className="px-3 py-1.5 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-indigo-600 text-white font-semibold"
+                    className="px-4 py-1.5 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
                   >
-                    Save Document
+                    Register Document
                   </button>
                 </div>
               </form>
@@ -1108,28 +1099,27 @@ export default function LeadDetailPage() {
 
         {/* Modal: Merge Duplicate Leads */}
         {duplicateModalOpen && duplicateLead && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-5">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border space-y-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-[8px] bg-[#E0A030]/15 text-accent flex items-center justify-center shrink-0 border border-[#E0A030]/30">
                   <GitMerge className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base">Duplicate Lead Merge Assistant</h3>
-                  <p className="text-xs text-slate-400">Consolidate redundant student enquiries into one clean record</p>
+                  <h3 className="font-serif text-lg font-normal text-foreground">Duplicate Lead Merge Assistant</h3>
+                  <p className="text-xs text-muted-foreground">Consolidate redundant candidate records into a single official file</p>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-xs space-y-2">
-                <p className="font-bold text-slate-800 dark:text-slate-200">
-                  Target (Keep): {lead.studentName} ({lead.email})
+              <div className="p-4 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-xs space-y-2">
+                <p className="font-medium text-foreground">
+                  Target (Preserve): {lead.studentName} ({lead.email})
                 </p>
-                <p className="font-bold text-slate-500 dark:text-slate-400">
+                <p className="font-medium text-muted-foreground">
                   Source (Merge &amp; Archive): {duplicateLead.studentName} ({duplicateLead.email})
                 </p>
-                <p className="text-[11px] text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700">
-                  All activity history, counselor notes, and follow-up tasks from the duplicate will be automatically transferred
-                  to this lead.
+                <p className="text-[11px] text-muted-foreground pt-2 border-t border-border">
+                  All activity history, counselor notes, and follow-up tasks will be transferred to this primary dossier.
                 </p>
               </div>
 
@@ -1137,16 +1127,16 @@ export default function LeadDetailPage() {
                 <button
                   type="button"
                   onClick={() => setDuplicateModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-xs font-semibold"
+                  className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleMerge}
-                  className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md"
+                  className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-xs"
                 >
-                  Confirm &amp; Merge Records
+                  Confirm &amp; Merge
                 </button>
               </div>
             </div>

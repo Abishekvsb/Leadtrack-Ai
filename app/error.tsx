@@ -16,33 +16,33 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-6 py-12 text-slate-900 dark:text-slate-100">
-      <div className="max-w-md w-full text-center space-y-6">
-        <div className="w-16 h-16 rounded-3xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto shadow-xl shadow-rose-500/10">
-          <AlertTriangle className="w-8 h-8" />
+    <div className="min-h-screen flex items-center justify-center bg-[#F6F2EA] dark:bg-[#0F1412] px-6 py-12 text-[#1B1A17] dark:text-[#ECE8DF]">
+      <div className="max-w-md w-full bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] rounded-xl p-8 sm:p-10 shadow-xs text-center space-y-6">
+        <div className="w-14 h-14 rounded-lg bg-[#C4552F]/10 border border-[#C4552F]/25 text-[#C4552F] flex items-center justify-center mx-auto shadow-2xs">
+          <AlertTriangle className="w-7 h-7" />
         </div>
 
         <div className="space-y-2">
-          <span className="font-mono text-5xl font-extrabold text-rose-600 dark:text-rose-400">500</span>
-          <h1 className="font-display text-2xl font-bold">Something Went Wrong</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm mx-auto">
-            An unexpected error occurred during request processing. Our system has logged this event in the audit trail.
+          <span className="font-mono text-4xl sm:text-5xl font-bold text-[#C4552F] tracking-tight">500</span>
+          <h1 className="font-serif text-2xl font-bold text-[#1B1A17] dark:text-[#ECE8DF]">Execution Disruption</h1>
+          <p className="text-xs sm:text-sm text-[#6B665C] dark:text-[#959187] leading-relaxed max-w-sm mx-auto font-sans">
+            An unexpected error occurred during request processing. This incident has been logged into the institutional audit ledger.
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2 font-sans">
           <button
             onClick={() => reset()}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#3ea688] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs transition-colors shadow-2xs"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Try Again</span>
+            <span>Retry Transaction</span>
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border border-[#E4DDD0] dark:border-[#26302B] bg-[#FAF7F0] dark:bg-[#1E2622] text-[#1B1A17] dark:text-[#ECE8DF] hover:bg-[#E4DDD0]/60 dark:hover:bg-[#26302B] font-medium text-xs transition-colors"
           >
-            <Home className="w-3.5 h-3.5" />
+            <Home className="w-3.5 h-3.5 text-[#6B665C]" />
             <span>Homepage</span>
           </Link>
         </div>

@@ -54,35 +54,35 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         {toasts.map((t) => {
-          let bg = "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100";
-          let icon = <Info className="w-5 h-5 text-blue-500 shrink-0" />;
+          let borderColor = "border-border";
+          let icon = <Info className="w-4 h-4 text-[#5B7083] shrink-0 stroke-[1.5]" />;
 
           if (t.type === "success") {
-            bg = "bg-white dark:bg-slate-900 border-emerald-500/30 text-slate-900 dark:text-slate-100";
-            icon = <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />;
+            borderColor = "border-[#0F3D33]/40 dark:border-[#4FB89A]/40";
+            icon = <CheckCircle2 className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A] shrink-0 stroke-[1.5]" />;
           } else if (t.type === "error") {
-            bg = "bg-white dark:bg-slate-900 border-rose-500/30 text-slate-900 dark:text-slate-100";
-            icon = <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />;
+            borderColor = "border-[#C4552F]/40";
+            icon = <AlertCircle className="w-4 h-4 text-[#C4552F] shrink-0 stroke-[1.5]" />;
           } else if (t.type === "warning") {
-            bg = "bg-white dark:bg-slate-900 border-amber-500/30 text-slate-900 dark:text-slate-100";
-            icon = <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />;
+            borderColor = "border-[#E0A030]/40";
+            icon = <AlertTriangle className="w-4 h-4 text-[#E0A030] shrink-0 stroke-[1.5]" />;
           }
 
           return (
             <div
               key={t.id}
-              className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-xl border backdrop-blur-md transition-all animate-in slide-in-from-bottom-2 ${bg}`}
+              className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-[10px] shadow-academic-floating border bg-card text-card-foreground transition-all animate-fade-up ${borderColor}`}
             >
-              {icon}
-              <div className="flex-1 text-sm">
-                {t.title && <p className="font-semibold">{t.title}</p>}
-                <p className="text-slate-600 dark:text-slate-300">{t.message}</p>
+              <div className="mt-0.5">{icon}</div>
+              <div className="flex-1 text-xs">
+                {t.title && <p className="font-medium text-foreground">{t.title}</p>}
+                <p className="text-muted-foreground leading-relaxed">{t.message}</p>
               </div>
               <button
                 onClick={() => removeToast(t.id)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded-[4px]"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5 stroke-[1.5]" />
               </button>
             </div>
           );

@@ -62,6 +62,7 @@ export default function TeamPage() {
 
   useEffect(() => {
     loadTeam();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleToggleStatus = async (user: any) => {
@@ -74,7 +75,7 @@ export default function TeamPage() {
       });
       const data = await res.json();
       if (data.success) {
-        success(`User status changed to ${newStatus}`);
+        success(`Staff status changed to ${newStatus}`);
         setUsers((prev) =>
           prev.map((u) => (u.id === user.id ? { ...u, status: newStatus } : u))
         );
@@ -93,7 +94,7 @@ export default function TeamPage() {
       });
       const data = await res.json();
       if (data.success) {
-        success(`User role updated to ${newRole}`);
+        success(`Institutional role updated to ${newRole}`);
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
         );
@@ -119,7 +120,7 @@ export default function TeamPage() {
       });
       const data = await res.json();
       if (data.success) {
-        success("Invite link generated successfully!");
+        success("Invitation link generated successfully!");
         setGeneratedInviteUrl(data.data.invite.inviteUrl);
         loadTeam();
       } else {
@@ -135,7 +136,7 @@ export default function TeamPage() {
   const handleCopyLink = (url: string) => {
     navigator.clipboard.writeText(url);
     setCopied(true);
-    success("Invite link copied to clipboard!");
+    success("Invitation link copied to clipboard!");
     setTimeout(() => setCopied(false), 2500);
   };
 
@@ -146,7 +147,7 @@ export default function TeamPage() {
       });
       const data = await res.json();
       if (data.success) {
-        success("Invite revoked");
+        success("Invitation revoked");
         setInvites((prev) => prev.filter((i) => i.id !== inviteId));
       } else {
         error(data.error || "Failed to revoke invite");
@@ -158,15 +159,18 @@ export default function TeamPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 pb-12">
+      <div className="space-y-8 pb-12 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
           <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Admissions Staff &amp; Counselors
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+              Faculty &amp; Admissions Personnel
+            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+              Admissions Staff Roster
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Invite counselors, manage role privileges, and monitor caseloads
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              Accredit counselor roles, govern permission privileges, and supervise candidate caseloads.
             </p>
           </div>
 
@@ -176,95 +180,103 @@ export default function TeamPage() {
               setEmail("");
               setInviteModalOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md shadow-indigo-500/25 transition-all self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors self-start sm:self-auto"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Invite Team Member</span>
+            <span>Accredit Faculty</span>
           </button>
         </div>
 
         {/* Team Grid */}
         {loading ? (
-          <div className="py-24 text-center text-xs text-slate-400">Loading team members...</div>
+          <div className="py-24 text-center space-y-3">
+            <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
+            <p className="font-serif italic text-xs text-muted-foreground">Loading admissions faculty roster...</p>
+          </div>
         ) : users.length === 0 ? (
-          <div className="p-12 text-center rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 flex items-center justify-center mx-auto">
-              <Users className="w-6 h-6" />
+          <div className="p-12 text-center rounded-[12px] border border-dashed border-border bg-card space-y-4">
+            <div className="w-12 h-12 rounded-[10px] bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border border-[#0F3D33]/20 flex items-center justify-center mx-auto">
+              <Users className="w-6 h-6 stroke-[1.5]" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white">No team members yet</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
-                Invite your admissions counselors and managers. They will receive a secure token to set their password.
+              <h3 className="font-serif text-lg font-normal text-foreground">No faculty members registered</h3>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
+                Accredit admissions counselors and coordinators. They will receive a credentialing link to set up their profile.
               </p>
             </div>
             <button
               onClick={() => setInviteModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white font-semibold text-xs shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-xs"
             >
               <UserPlus className="w-4 h-4" />
-              <span>Send First Invite</span>
+              <span>Issue First Invitation</span>
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Active Staff ({users.length})</h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+                Active Faculty &amp; Staff ({users.length})
+              </h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {users.map((u) => (
                 <div
                   key={u.id}
-                  className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4 flex flex-col justify-between"
+                  className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-md">
+                        <div className="w-11 h-11 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-serif text-base flex items-center justify-center shrink-0 border border-[#0F3D33] dark:border-[#4FB89A] shadow-xs">
                           {getInitials(u.name)}
                         </div>
                         <div>
-                          <h3 className="font-bold text-sm text-slate-900 dark:text-white">{u.name}</h3>
-                          <p className="text-[11px] text-slate-400">{u.email}</p>
-                          {u.phone && <p className="text-[10px] text-slate-400 mt-0.5">{u.phone}</p>}
+                          <h3 className="font-serif text-base font-normal text-foreground">{u.name}</h3>
+                          <p className="text-[11px] font-mono text-muted-foreground">{u.email}</p>
+                          {u.phone && <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{u.phone}</p>}
                         </div>
                       </div>
 
                       <button
                         onClick={() => handleToggleStatus(u)}
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border transition-colors ${
+                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase border transition-colors ${
                           u.status === "ACTIVE"
-                            ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                            : "bg-slate-200 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400"
+                            ? "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border-[#0F3D33]/20"
+                            : "bg-[#EDE6DA] text-muted-foreground border-border dark:bg-[#1F2723]"
                         }`}
                       >
-                        {u.status}
+                        <span className={`w-1.5 h-1.5 rounded-full ${u.status === "ACTIVE" ? "bg-[#0F3D33] dark:bg-[#4FB89A]" : "bg-muted-foreground"}`} />
+                        <span>{u.status}</span>
                       </button>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-center text-xs pt-1">
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50">
-                        <span className="text-[10px] text-slate-400 block">Assigned Leads</span>
-                        <span className="font-bold text-slate-800 dark:text-slate-200">
+                      <div className="p-2.5 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border">
+                        <span className="text-[10px] font-mono text-muted-foreground uppercase block">Candidate Caseload</span>
+                        <span className="font-mono font-bold text-foreground tabular-nums">
                           {u._count?.leads || 0}
                         </span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50">
-                        <span className="text-[10px] text-slate-400 block">Tasks Handled</span>
-                        <span className="font-bold text-slate-800 dark:text-slate-200">
+                      <div className="p-2.5 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border">
+                        <span className="text-[10px] font-mono text-muted-foreground uppercase block">Resolved Tasks</span>
+                        <span className="font-mono font-bold text-foreground tabular-nums">
                           {u._count?.followUps || 0}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Role:</span>
+                  <div className="pt-3 border-t border-border flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground text-xs">Institutional Privilege:</span>
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                      className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-semibold text-xs outline-none"
+                      className="p-1.5 rounded-[6px] bg-background/50 border border-border font-medium text-xs text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="COUNSELOR">Counselor</option>
                       <option value="MANAGER">Manager</option>
-                      <option value="ADMIN">Admin</option>
+                      <option value="ADMIN">Dean / Admin</option>
                     </select>
                   </div>
                 </div>
@@ -275,16 +287,15 @@ export default function TeamPage() {
 
         {/* Pending Invites Section */}
         {invites.length > 0 && (
-          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">Pending Team Invitations</h2>
-                <p className="text-xs text-slate-400">Staff members invited who have not yet activated their password</p>
-              </div>
+          <div className="space-y-4 pt-4 border-t border-border">
+            <div>
+              <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Security Invitations</div>
+              <h2 className="font-serif text-lg font-normal text-foreground">Pending Credential Invitations</h2>
+              <p className="text-xs text-muted-foreground">Staff invited who have not completed credential activation</p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="rounded-[12px] border border-border bg-card overflow-hidden">
+              <div className="divide-y divide-border">
                 {invites.map((inv) => {
                   const isExpired = new Date(inv.expiresAt) < new Date();
                   const isUsed = !!inv.usedAt;
@@ -294,23 +305,23 @@ export default function TeamPage() {
                       className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 flex items-center justify-center font-bold">
-                          <Mail className="w-4 h-4" />
+                        <div className="w-9 h-9 rounded-[8px] bg-[#EDE6DA]/50 dark:bg-[#1F2723] text-foreground border border-border flex items-center justify-center font-bold">
+                          <Mail className="w-4 h-4 text-muted-foreground" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">{inv.email}</span>
-                            <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-semibold text-slate-600 dark:text-slate-400">
+                            <span className="font-medium text-foreground">{inv.email}</span>
+                            <span className="px-2 py-0.5 rounded-[4px] bg-[#EDE6DA] dark:bg-[#1F2723] text-[10px] font-mono uppercase text-muted-foreground border border-border">
                               {inv.role}
                             </span>
                           </div>
-                          <span className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                          <span className="text-[11px] font-mono text-muted-foreground flex items-center gap-1 mt-0.5">
                             <Clock className="w-3 h-3" />
                             {isUsed
                               ? "Activated"
                               : isExpired
                               ? "Expired"
-                              : `Expires ${formatDate(inv.expiresAt)}`}
+                              : `Valid until ${formatDate(inv.expiresAt)}`}
                           </span>
                         </div>
                       </div>
@@ -322,16 +333,16 @@ export default function TeamPage() {
                               const baseUrl = window.location.origin;
                               handleCopyLink(`${baseUrl}/invite/${inv.token}`);
                             }}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-xs"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] border border-border bg-card hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs text-foreground transition-colors"
                           >
-                            <Copy className="w-3.5 h-3.5" />
-                            <span>Copy Link</span>
+                            <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+                            <span>Copy Token Link</span>
                           </button>
                         )}
                         {!isUsed && (
                           <button
                             onClick={() => handleRevokeInvite(inv.id)}
-                            className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg"
+                            className="p-1.5 text-muted-foreground hover:text-[#C4552F] rounded-[6px]"
                             title="Revoke invitation"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -348,13 +359,16 @@ export default function TeamPage() {
 
         {/* Modal: Invite Team Member */}
         {inviteModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="font-bold text-base">Invite Team Member</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+            <div className="w-full max-w-md bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div>
+                  <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Staff Accreditation</div>
+                  <h3 className="font-serif text-lg font-normal text-foreground">Issue Faculty Invitation</h3>
+                </div>
                 <button
                   onClick={() => setInviteModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -362,39 +376,39 @@ export default function TeamPage() {
 
               {!generatedInviteUrl ? (
                 <form onSubmit={handleCreateInvite} className="space-y-4 text-xs">
-                  <p className="text-slate-500 dark:text-slate-400">
-                    Generate an invitation link. The counselor or manager will use this link to set their own secure password and join your workspace.
+                  <p className="text-muted-foreground leading-relaxed">
+                    Generate an institutional accreditation link. The counselor or manager will utilize this link to configure their credentials securely.
                   </p>
 
-                  <div className="space-y-1">
-                    <label className="font-semibold text-slate-700 dark:text-slate-300">Staff Email *</label>
+                  <div className="space-y-1.5">
+                    <label className="font-medium text-foreground">Official Email Address *</label>
                     <input
                       type="email"
                       required
                       placeholder="counselor@institution.edu"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="font-semibold text-slate-700 dark:text-slate-300">Assigned Role</label>
+                  <div className="space-y-1.5">
+                    <label className="font-medium text-foreground">Assigned Role</label>
                     <select
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none font-medium"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
                     >
                       <option value="COUNSELOR">Admissions Counselor (Manage Assigned Leads)</option>
                       <option value="MANAGER">Admissions Manager (Manage Team &amp; Pipeline)</option>
-                      <option value="ADMIN">Administrator (Full System Access)</option>
+                      <option value="ADMIN">Dean / Administrator (Full System Authority)</option>
                     </select>
                   </div>
 
                   <button
                     type="submit"
                     disabled={inviting}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50 mt-2"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors disabled:opacity-50 mt-2"
                   >
                     {inviting ? (
                       <>
@@ -404,33 +418,33 @@ export default function TeamPage() {
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Generate Invitation Link</span>
+                        <span>Generate Accreditation Link</span>
                       </>
                     )}
                   </button>
                 </form>
               ) : (
                 <div className="space-y-4 text-xs">
-                  <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+                  <div className="p-3.5 rounded-[8px] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 border border-[#0F3D33]/20 dark:border-[#4FB89A]/30 text-foreground flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A] mt-0.5 shrink-0" />
                     <div>
-                      <span className="font-semibold block">Invitation Link Created!</span>
-                      <span>Send this link to <strong className="font-mono">{email}</strong> to complete their onboarding:</span>
+                      <span className="font-medium block">Accreditation Link Generated</span>
+                      <span className="text-muted-foreground">Deliver this token to <strong className="font-mono text-foreground">{email}</strong> to finalize onboard accreditation:</span>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-700 dark:text-slate-300">Invite Link (Valid for 7 days)</label>
+                    <label className="font-medium text-foreground">Token URL (Valid for 7 Days)</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         readOnly
                         value={generatedInviteUrl}
-                        className="flex-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[11px] text-slate-600 dark:text-slate-300 outline-none"
+                        className="flex-1 p-2.5 rounded-[8px] bg-background/50 border border-border font-mono text-[11px] text-foreground outline-none"
                       />
                       <button
                         onClick={() => handleCopyLink(generatedInviteUrl)}
-                        className="px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shrink-0 flex items-center gap-1.5 shadow-sm"
+                        className="px-3.5 py-2.5 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shrink-0 flex items-center gap-1.5 shadow-xs"
                       >
                         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                         <span>{copied ? "Copied" : "Copy"}</span>
@@ -441,9 +455,9 @@ export default function TeamPage() {
                   <div className="pt-2 flex justify-end">
                     <button
                       onClick={() => setInviteModalOpen(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold text-xs"
+                      className="px-4 py-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs"
                     >
-                      Done
+                      Dismiss
                     </button>
                   </div>
                 </div>

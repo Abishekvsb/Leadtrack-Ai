@@ -3,17 +3,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
-  Bot,
   Send,
   Sparkles,
   X,
   Square,
   Loader2,
   PhoneCall,
-  ExternalLink,
-  Calendar,
   User,
-  ArrowRight,
+  Compass,
+  GraduationCap,
 } from "lucide-react";
 
 interface AiAssistantModalProps {
@@ -29,9 +27,9 @@ interface Message {
 const SUGGESTED_CHIPS = [
   "Which leads should I call today?",
   "Show overdue follow-ups",
-  "Which source gives the best leads?",
-  "What is my conversion rate this month?",
-  "How do I import leads?",
+  "Which source yields the highest conversion?",
+  "Analyze current admissions intake",
+  "How do I import lead batches?",
 ];
 
 export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
@@ -39,7 +37,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
     {
       role: "assistant",
       content:
-        "👋 Hello! I am your **LeadTrack AI Counselor Copilot**. I can check your pipeline, identify today's calls, analyze drop-offs, and guide you through app workflows. What would you like to explore?",
+        "Greetings. I am your **Admissions Advisory Copilot**. I query the active database to review counselor queues, diagnose drop-offs, and recommend priority outreach. How may I assist your team today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -126,7 +124,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           ...prev,
           {
             role: "assistant",
-            content: "I encountered a network issue answering that query. Please try again.",
+            content: "A network exception occurred while querying the intelligence engine. Please retry.",
           },
         ]);
       }
@@ -138,7 +136,6 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
 
   // Render markdown-like links and bolding safely
   const renderMessageContent = (text: string) => {
-    // Replace markdown links [Label](url) with interactive Next.js links or anchor tags
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     const parts = [];
     let lastIndex = 0;
@@ -155,7 +152,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           key={match.index}
           href={url}
           onClick={onClose}
-          className="text-indigo-600 dark:text-indigo-400 font-semibold underline underline-offset-2 hover:text-indigo-700"
+          className="text-[#0F3D33] dark:text-[#4FB89A] font-semibold underline underline-offset-2 hover:opacity-80"
         >
           {label}
         </Link>
@@ -181,49 +178,49 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
 
   const formatInlineMarkdown = (str: string) => {
     return str
-      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong class='font-semibold'>$1</strong>")
       .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-      .replace(/`([^`]+)`/g, "<code class='bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-mono text-[11px]'>$1</code>");
+      .replace(/`([^`]+)`/g, "<code class='bg-[#FAF7F0] dark:bg-[#1E2622] px-1 py-0.5 rounded font-mono text-[11px] border border-[#E4DDD0] dark:border-[#26302B]'>$1</code>");
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-stretch sm:justify-end bg-black/40 backdrop-blur-xs animate-in fade-in">
-      {/* Mobile: Full-screen bottom sheet (rounded-t-3xl, h-[92vh]), Desktop: Right sidebar (max-w-lg, h-full) */}
-      <div className="w-full sm:max-w-lg bg-white dark:bg-slate-900 h-[92vh] sm:h-full rounded-t-3xl sm:rounded-none shadow-2xl flex flex-col border-t sm:border-t-0 sm:border-l border-slate-200 dark:border-slate-800 animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-stretch sm:justify-end bg-black/40 backdrop-blur-2xs animate-in fade-in">
+      {/* Side panel styled as an academic notebook docket */}
+      <div className="w-full sm:max-w-md md:max-w-lg bg-[#FAF7F0] dark:bg-[#0F1412] h-[92vh] sm:h-full rounded-t-2xl sm:rounded-none shadow-2xl flex flex-col border-t sm:border-t-0 sm:border-l border-[#E4DDD0] dark:border-[#26302B] animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 overflow-hidden font-sans">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-indigo-50/70 via-purple-50/50 to-slate-50 dark:from-slate-900 dark:via-indigo-950/20 dark:to-slate-900 shrink-0">
+        <div className="flex items-center justify-between p-4 border-b border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/25">
-              <Bot className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-lg bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-[#F6F2EA] dark:text-[#0F1412] shadow-2xs">
+              <Compass className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-sm text-slate-900 dark:text-white">AI Counselor Copilot</h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+                <h3 className="font-serif font-bold text-sm text-[#1B1A17] dark:text-[#ECE8DF]">Admissions Copilot</h3>
+                <span className="text-[9px] px-1.5 py-0.2 rounded font-mono uppercase bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] border border-[#0F3D33]/25 dark:border-[#4FB89A]/30 font-medium">
                   Live DB
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Grounded in your active admissions pipeline
+              <p className="text-[11px] text-[#6B665C] dark:text-[#959187] font-sans">
+                Synchronized with institutional recruitment pipeline
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-lg text-[#6B665C] hover:text-[#1B1A17] dark:text-[#959187] dark:hover:text-[#ECE8DF] hover:bg-[#FAF7F0] dark:hover:bg-[#1E2622] transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Suggested Question Chips */}
-        <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
+        <div className="p-2.5 border-b border-[#E4DDD0] dark:border-[#26302B] bg-white/70 dark:bg-[#131916] flex gap-2 overflow-x-auto no-scrollbar shrink-0">
           {SUGGESTED_CHIPS.map((chip) => (
             <button
               key={chip}
               disabled={loading}
               onClick={() => handleSend(chip)}
-              className="text-[11px] min-h-[38px] px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all whitespace-nowrap shrink-0 shadow-2xs font-medium disabled:opacity-50 inline-flex items-center"
+              className="text-[11px] min-h-[34px] px-3 py-1 rounded-lg bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] hover:border-[#0F3D33] dark:hover:border-[#4FB89A] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors whitespace-nowrap shrink-0 font-medium disabled:opacity-50 inline-flex items-center"
             >
               {chip}
             </button>
@@ -238,38 +235,38 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
               className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               {msg.role === "assistant" && (
-                <div className="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                  <Bot className="w-3.5 h-3.5" />
+                <div className="w-6 h-6 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center shrink-0 mt-0.5">
+                  <GraduationCap className="w-3.5 h-3.5" />
                 </div>
               )}
 
               <div
-                className={`max-w-[85%] rounded-2xl p-4 shadow-xs ${
+                className={`max-w-[85%] rounded-xl p-3.5 shadow-xs ${
                   msg.role === "user"
-                    ? "bg-indigo-600 text-white rounded-br-xs"
-                    : "bg-slate-100/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-xs border border-slate-200/50 dark:border-slate-700/50"
+                    ? "bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium"
+                    : "bg-white dark:bg-[#171D1A] text-[#1B1A17] dark:text-[#ECE8DF] border border-[#E4DDD0] dark:border-[#26302B]"
                 }`}
               >
                 {renderMessageContent(msg.content)}
 
                 {/* Quick Action Chips when assistant provides actionable links */}
                 {msg.role === "assistant" && (
-                  <div className="mt-3 pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex flex-wrap gap-2 text-[11px]">
+                  <div className="mt-3 pt-2 border-t border-[#E4DDD0]/60 dark:border-[#26302B] flex flex-wrap gap-2 text-[11px]">
                     <Link
                       href="/follow-ups"
                       onClick={onClose}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 font-medium"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] font-medium transition-colors"
                     >
-                      <PhoneCall className="w-3 h-3 text-indigo-500" />
+                      <PhoneCall className="w-3 h-3 text-[#E0A030]" />
                       <span>Today&apos;s Calls</span>
                     </Link>
                     <Link
                       href="/leads"
                       onClick={onClose}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 font-medium"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] font-medium transition-colors"
                     >
-                      <User className="w-3 h-3 text-emerald-500" />
-                      <span>All Leads</span>
+                      <User className="w-3 h-3 text-[#0F3D33] dark:text-[#4FB89A]" />
+                      <span>Admissions Queue</span>
                     </Link>
                   </div>
                 )}
@@ -278,13 +275,13 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           ))}
 
           {loading && (
-            <div className="flex gap-3 justify-start items-center">
-              <div className="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Bot className="w-3.5 h-3.5" />
+            <div className="flex gap-2.5 justify-start items-center">
+              <div className="w-6 h-6 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center shrink-0">
+                <GraduationCap className="w-3.5 h-3.5" />
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
-                <span>Copilot is analyzing live database...</span>
+              <div className="p-2.5 rounded-lg bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] flex items-center gap-2 text-xs text-[#6B665C] dark:text-[#959187]">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0F3D33] dark:text-[#4FB89A]" />
+                <span className="font-mono text-[11px]">Consulting repository indices...</span>
               </div>
             </div>
           )}
@@ -293,15 +290,15 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
         </div>
 
         {/* Input & Stop Button */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 space-y-2">
+        <div className="p-3.5 border-t border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] shrink-0 space-y-2">
           {loading && (
             <div className="flex justify-center">
               <button
                 onClick={handleStop}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 text-rose-600 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#1E2622] hover:bg-[#C4552F]/10 text-[#C4552F] text-xs font-mono border border-[#E4DDD0] dark:border-[#26302B] transition-colors"
               >
                 <Square className="w-3 h-3 fill-current" />
-                <span>Stop Generating</span>
+                <span>Halt Generation</span>
               </button>
             </div>
           )}
@@ -317,13 +314,13 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Copilot about leads, calls, or app features..."
-              className="flex-1 min-h-[44px] p-3 text-xs sm:text-sm rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+              placeholder="Inquire regarding cohort yield, candidate logs, or app SOP..."
+              className="flex-1 min-h-[42px] px-3.5 py-2 text-xs sm:text-sm rounded-lg bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] placeholder-[#6B665C]/60 dark:placeholder-[#959187]/60 focus:border-[#0F3D33] dark:focus:border-[#4FB89A] outline-none transition-colors"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25 transition-all disabled:opacity-40 shrink-0"
+              className="min-h-[42px] min-w-[42px] flex items-center justify-center p-2.5 rounded-lg bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#3ea688] text-[#F6F2EA] dark:text-[#0F1412] shadow-xs transition-colors disabled:opacity-40 shrink-0"
               title="Send question"
             >
               <Send className="w-4 h-4" />

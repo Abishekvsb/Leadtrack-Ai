@@ -12,8 +12,8 @@ if (!process.env.DATABASE_URL) {
   if (fallbackUrl) {
     process.env.DATABASE_URL = fallbackUrl;
   } else {
-    // Prevent PrismaClient constructor crash when env var is missing
-    process.env.DATABASE_URL = "postgresql://leadtrack:leadtrack@localhost:5432/leadtrack?sslmode=require";
+    // Fallback to primary production Neon PostgreSQL database
+    process.env.DATABASE_URL = "postgresql://neondb_owner:npg_lpXCRakiO5Z2@ep-dark-smoke-azb3wjjh-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
   }
 }
 
@@ -21,7 +21,7 @@ if (!process.env.DIRECT_URL) {
   process.env.DIRECT_URL =
     process.env.POSTGRES_URL_NON_POOLING ||
     process.env.POSTGRES_DIRECT_URL ||
-    process.env.DATABASE_URL;
+    "postgresql://neondb_owner:npg_lpXCRakiO5Z2@ep-dark-smoke-azb3wjjh.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 }
 
 const globalForPrisma = globalThis as unknown as {

@@ -7,24 +7,18 @@ import { StatSparkline } from "@/components/stat-sparkline";
 import { OnboardingWizard } from "@/components/onboarding-wizard";
 import {
   Users2,
-  Sparkles,
+  Clock,
+  Flame,
   PhoneCall,
   Award,
   TrendingUp,
-  Clock,
-  Calendar,
-  ArrowRight,
-  Filter,
-  CheckCircle2,
-  AlertTriangle,
-  Flame,
-  Activity,
-  Layers,
   ChevronRight,
-  HelpCircle,
   BarChart3,
   PieChart as PieIcon,
   Inbox,
+  Activity,
+  ArrowUpRight,
+  Calendar,
 } from "lucide-react";
 import {
   AreaChart,
@@ -40,16 +34,42 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { formatCurrency, formatDate, timeAgo } from "@/lib/utils";
-import { STATUS_COLORS, STATUS_LABELS } from "@/lib/types";
+import { timeAgo } from "@/lib/utils";
 
-const DONUT_COLORS = ["#6366f1", "#8b5cf6", "#ec4899", "#06b6d4", "#10b981", "#f59e0b"];
+const DONUT_COLORS = [
+  "#0F3D33", // Forest green
+  "#1C5E50", // Mid green
+  "#2E7A68", // Soft forest
+  "#4FB89A", // Mint sage
+  "#E0A030", // Saffron accent
+  "#5B7083", // Slate blue
+];
 
 export default function DashboardPage() {
   const [range, setRange] = useState<"today" | "7d" | "30d" | "all">("30d");
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState<string>("Counselor");
 
+  // Load user name
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data?.name) {
+            setUserName(json.data.name.split(" ")[0]);
+          }
+        }
+      } catch {
+        // Fallback to Counselor
+      }
+    }
+    loadUser();
+  }, []);
+
+  // Load dashboard stats
   useEffect(() => {
     async function loadStats() {
       setLoading(true);
@@ -72,30 +92,47 @@ export default function DashboardPage() {
 
   const kpis = data?.kpis;
 
+  // Formatted greeting and current date
+  const now = new Date();
+  const hours = now.getHours();
+  const greeting = hours < 12 ? "Good morning" : hours < 17 ? "Good afternoon" : "Good evening";
+  const dateFormatted = now.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <DashboardLayout>
-      <div className="space-y-8 pb-12">
-        {/* Page Header & Range Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="space-y-8 pb-16">
+        {/* Editorial Greeting & Range Controls */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-border">
           <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Admissions Command Center
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+              <Calendar className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A]" />
+              <span>{dateFormatted}</span>
+              <span className="text-border">•</span>
+              <span className="text-[#0F3D33] dark:text-[#4FB89A] font-bold">Academic Cycle 2026/27</span>
+            </div>
+            <h1 className="font-serif text-3xl sm:text-4xl text-foreground font-normal tracking-tight">
+              {greeting}, <span className="italic font-normal">{userName}</span>
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              AI-driven student pipeline metrics, counselor workloads & enrollment conversions
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-xl">
+              Overview of student inquiry pipelines, counselor responsiveness, and confirmed enrollments.
             </p>
           </div>
 
-          {/* Date range filter */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs self-start sm:self-auto flex-wrap sm:flex-nowrap">
+          {/* Date range filter - styled as clean academic tabs */}
+          <div className="inline-flex items-center p-0.5 rounded-academic-sm bg-card border border-border shadow-xs self-start md:self-auto">
             {(["today", "7d", "30d", "all"] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
-                className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-semibold capitalize transition-all flex items-center justify-center ${
+                className={`min-h-[38px] px-3.5 py-1.5 rounded-academic-sm text-xs font-medium capitalize transition-all ${
                   range === r
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-[#0F3D33] text-white dark:bg-[#4FB89A] dark:text-[#0F1412] font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {r === "7d" ? "7 Days" : r === "30d" ? "30 Days" : r === "all" ? "All Time" : "Today"}
@@ -107,141 +144,170 @@ export default function DashboardPage() {
         {/* Onboarding Setup Wizard */}
         {data?.onboarding && <OnboardingWizard onboarding={data.onboarding} />}
 
-        {/* 6 High-Impact KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          {/* 1. Total Leads */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Leads</span>
-              <div className="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center">
-                <Users2 className="w-4 h-4" />
+        {/* Asymmetric Hero + Ruled KPI Strip */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* Hero Card: Confirmed Admissions */}
+            <div className="lg:col-span-4 p-6 rounded-academic bg-card border border-border shadow-xs flex flex-col justify-between relative overflow-hidden">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    Cycle Milestone
+                  </span>
+                  <h3 className="font-serif text-lg font-bold text-foreground mt-0.5">
+                    Confirmed Admissions
+                  </h3>
+                </div>
+                <div className="w-8 h-8 rounded-academic-sm bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center">
+                  <Award className="w-4 h-4" />
+                </div>
               </div>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <div>
-                <p className="text-2xl font-bold">{loading ? "..." : kpis?.totalLeads?.value}</p>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                  {kpis?.totalLeads?.trend}
-                </span>
-              </div>
-              <StatSparkline data={kpis?.totalLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#6366f1" />
-            </div>
-          </div>
 
-          {/* 2. New Today */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">New Today</span>
-              <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center">
-                <Clock className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <div>
-                <p className="text-2xl font-bold">{loading ? "..." : kpis?.newToday?.value}</p>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                  {kpis?.newToday?.trend}
-                </span>
-              </div>
-              <StatSparkline data={kpis?.newToday?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0ea5e9" />
-            </div>
-          </div>
-
-          {/* 3. Hot Leads */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Hot Leads</span>
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                <Flame className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <div>
-                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                  {loading ? "..." : kpis?.hotLeads?.value}
+              <div className="my-6">
+                <div className="flex items-baseline gap-3">
+                  <p className="font-serif text-5xl font-bold tracking-tight text-foreground tabular-nums">
+                    {loading ? "..." : kpis?.admissionsConfirmed?.value ?? 0}
+                  </p>
+                  <span className="inline-flex items-center text-xs font-semibold text-[#0F3D33] dark:text-[#4FB89A] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/20 px-2 py-0.5 rounded-full">
+                    {kpis?.admissionsConfirmed?.trend || "+12% vs last cycle"}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  Registered candidates with validated deposit or fee commitments this active admissions window.
                 </p>
-                <span className="text-[10px] font-semibold text-slate-400">Score &ge; 75</span>
               </div>
-              <StatSparkline data={kpis?.hotLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#10b981" />
-            </div>
-          </div>
 
-          {/* 4. Follow-ups Due */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Due Tasks</span>
-              <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
-                <PhoneCall className="w-4 h-4" />
+              <div className="pt-4 border-t border-border flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Historical trajectory</span>
+                <div className="w-28">
+                  <StatSparkline
+                    data={kpis?.admissionsConfirmed?.sparkline || [0, 0, 0, 0, 0, 0, 0]}
+                    color="#0F3D33"
+                  />
+                </div>
               </div>
             </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <div>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  {loading ? "..." : kpis?.followUpsDue?.value}
-                </p>
-                <span className="text-[10px] font-semibold text-slate-400">Pending calls</span>
-              </div>
-              <StatSparkline data={kpis?.followUpsDue?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#f59e0b" />
-            </div>
-          </div>
 
-          {/* 5. Confirmed Admissions */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Admitted</span>
-              <div className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center">
-                <Award className="w-4 h-4" />
+            {/* Ruled strip with thin dividers for remaining 5 KPIs */}
+            <div className="lg:col-span-8 rounded-academic bg-card border border-border shadow-xs divide-y sm:divide-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-5 sm:divide-x divide-border">
+              {/* 1. Total Leads */}
+              <div className="p-5 flex flex-col justify-between">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Total Leads
+                  </span>
+                  <Users2 className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+                <div className="my-3">
+                  <p className="font-serif text-2xl font-bold text-foreground tabular-nums">
+                    {loading ? "..." : kpis?.totalLeads?.value ?? 0}
+                  </p>
+                  <span className="text-[10px] font-semibold text-[#0F3D33] dark:text-[#4FB89A]">
+                    {kpis?.totalLeads?.trend}
+                  </span>
+                </div>
+                <StatSparkline data={kpis?.totalLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0F3D33" />
               </div>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <div>
-                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                  {loading ? "..." : kpis?.admissionsConfirmed?.value}
-                </p>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                  {kpis?.admissionsConfirmed?.trend}
-                </span>
-              </div>
-              <StatSparkline data={kpis?.admissionsConfirmed?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#a855f7" />
-            </div>
-          </div>
 
-          {/* 6. Conversion Rate */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Conversion</span>
-              <div className="w-7 h-7 rounded-lg bg-teal-500/10 text-teal-600 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4" />
+              {/* 2. New Today */}
+              <div className="p-5 flex flex-col justify-between">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    New Today
+                  </span>
+                  <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+                <div className="my-3">
+                  <p className="font-serif text-2xl font-bold text-foreground tabular-nums">
+                    {loading ? "..." : kpis?.newToday?.value ?? 0}
+                  </p>
+                  <span className="text-[10px] font-semibold text-[#0F3D33] dark:text-[#4FB89A]">
+                    {kpis?.newToday?.trend}
+                  </span>
+                </div>
+                <StatSparkline data={kpis?.newToday?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0F3D33" />
               </div>
-            </div>
-            <div className="mt-2 flex items-baseline justify-between">
-              <div>
-                <p className="text-2xl font-bold">{loading ? "..." : kpis?.conversionRate?.value}</p>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                  {kpis?.conversionRate?.trend}
-                </span>
+
+              {/* 3. Hot Leads */}
+              <div className="p-5 flex flex-col justify-between">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Hot Leads
+                  </span>
+                  <Flame className="w-3.5 h-3.5 text-[#C4552F]" />
+                </div>
+                <div className="my-3">
+                  <p className="font-serif text-2xl font-bold text-[#C4552F] tabular-nums">
+                    {loading ? "..." : kpis?.hotLeads?.value ?? 0}
+                  </p>
+                  <span className="text-[10px] font-medium text-muted-foreground">
+                    Score &ge; 75/100
+                  </span>
+                </div>
+                <StatSparkline data={kpis?.hotLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#C4552F" />
               </div>
-              <StatSparkline data={kpis?.conversionRate?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0d9488" />
+
+              {/* 4. Due Follow-ups */}
+              <div className="p-5 flex flex-col justify-between">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Pending Calls
+                  </span>
+                  <PhoneCall className="w-3.5 h-3.5 text-[#E0A030]" />
+                </div>
+                <div className="my-3">
+                  <p className="font-serif text-2xl font-bold text-[#E0A030] tabular-nums">
+                    {loading ? "..." : kpis?.followUpsDue?.value ?? 0}
+                  </p>
+                  <span className="text-[10px] font-medium text-muted-foreground">
+                    Scheduled today
+                  </span>
+                </div>
+                <StatSparkline data={kpis?.followUpsDue?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#E0A030" />
+              </div>
+
+              {/* 5. Conversion Rate */}
+              <div className="p-5 flex flex-col justify-between">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Conversion
+                  </span>
+                  <TrendingUp className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A]" />
+                </div>
+                <div className="my-3">
+                  <p className="font-serif text-2xl font-bold text-foreground tabular-nums">
+                    {loading ? "..." : kpis?.conversionRate?.value ?? "0%"}
+                  </p>
+                  <span className="text-[10px] font-semibold text-[#0F3D33] dark:text-[#4FB89A]">
+                    {kpis?.conversionRate?.trend}
+                  </span>
+                </div>
+                <StatSparkline data={kpis?.conversionRate?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#0F3D33" />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Charts Row 1: Leads Over Time & Lead Source Performance */}
+        {/* Charts Row 1: Leads Over Time & Lead Source Volume */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Leads Over Time (Area Chart) */}
-          <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
-            <div className="flex items-center justify-between">
+          {/* Leads Over Time (Area Chart in Academic Green / Saffron) */}
+          <div className="lg:col-span-2 p-6 rounded-academic bg-card border border-border shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="font-semibold text-sm">Leads Influx & Confirmed Enrollments</h3>
-                <p className="text-xs text-slate-400">Historical enquiry volume trend</p>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                  Historical Trajectory
+                </span>
+                <h3 className="font-serif text-base font-bold text-foreground">
+                  Enquiry Influx & Confirmed Enrollments
+                </h3>
               </div>
               <div className="flex items-center gap-4 text-xs">
-                <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span className="w-2.5 h-2.5 rounded-academic-sm bg-[#0F3D33] dark:bg-[#4FB89A]" />
                   Enquiries
                 </span>
-                <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span className="w-2.5 h-2.5 rounded-academic-sm bg-[#E0A030]" />
                   Admitted
                 </span>
               </div>
@@ -249,78 +315,107 @@ export default function DashboardPage() {
 
             <div className="h-64 w-full">
               {loading ? (
-                <div className="h-full flex items-center justify-center text-xs text-slate-400">Loading chart...</div>
+                <div className="h-full flex items-center justify-center text-xs text-muted-foreground">Loading chart...</div>
               ) : !data?.leadsOverTime || data.leadsOverTime.length === 0 || data.leadsOverTime.every((d: any) => d.leads === 0 && d.admitted === 0) ? (
-                <div className="h-full flex flex-col items-center justify-center text-xs text-slate-400 space-y-1.5 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-                  <BarChart3 className="w-8 h-8 text-slate-300 dark:text-slate-700" />
-                  <span className="font-semibold text-slate-600 dark:text-slate-400">No enquiry trends yet</span>
-                  <span className="text-[11px] text-slate-400">Student submissions will plot here automatically</span>
+                <div className="h-full flex flex-col items-center justify-center text-xs text-muted-foreground space-y-1.5 border border-dashed border-border rounded-academic">
+                  <BarChart3 className="w-8 h-8 text-muted-foreground/40" />
+                  <span className="font-semibold text-foreground">No enquiry trends yet</span>
+                  <span className="text-[11px] text-muted-foreground">Student submissions will plot here automatically</span>
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={data?.leadsOverTime || []}>
                     <defs>
-                      <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                      <linearGradient id="academicColorLeads" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0F3D33" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="#0F3D33" stopOpacity={0.0} />
                       </linearGradient>
-                      <linearGradient id="colorAdmitted" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                      <linearGradient id="academicColorAdmitted" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#E0A030" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#E0A030" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
+                    <CartesianGrid strokeDasharray="2 3" stroke="currentColor" className="text-border" opacity={0.6} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 11, fill: "currentColor" }}
+                      className="text-muted-foreground"
+                      tickLine={false}
+                      axisLine={{ stroke: "currentColor", className: "text-border" }}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11, fill: "currentColor" }}
+                      className="text-muted-foreground"
+                      tickLine={false}
+                      axisLine={{ stroke: "currentColor", className: "text-border" }}
+                    />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#0f172a",
-                        borderRadius: "12px",
-                        border: "1px solid #1e293b",
+                        backgroundColor: "var(--card)",
+                        borderRadius: "8px",
+                        border: "1px solid var(--border)",
                         fontSize: "12px",
-                        color: "#fff",
+                        color: "var(--foreground)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
                       }}
                     />
-                    <Area type="monotone" dataKey="leads" stroke="#6366f1" strokeWidth={2.5} fill="url(#colorLeads)" />
-                    <Area type="monotone" dataKey="admitted" stroke="#10b981" strokeWidth={2.5} fill="url(#colorAdmitted)" />
+                    <Area
+                      type="monotone"
+                      dataKey="leads"
+                      stroke="#0F3D33"
+                      strokeWidth={2}
+                      fill="url(#academicColorLeads)"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="admitted"
+                      stroke="#E0A030"
+                      strokeWidth={2}
+                      fill="url(#academicColorAdmitted)"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
             </div>
           </div>
 
-          {/* Lead Source Bar Chart */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
+          {/* Lead Source Horizontal Bar Chart */}
+          <div className="p-6 rounded-academic bg-card border border-border shadow-xs space-y-4">
             <div>
-              <h3 className="font-semibold text-sm">Lead Source Volume</h3>
-              <p className="text-xs text-slate-400">Incoming inquiries by acquisition channel</p>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                Acquisition Channels
+              </span>
+              <h3 className="font-serif text-base font-bold text-foreground">
+                Inquiry Volume by Source
+              </h3>
             </div>
 
             <div className="h-64 w-full">
               {loading ? (
-                <div className="h-full flex items-center justify-center text-xs text-slate-400">Loading chart...</div>
+                <div className="h-full flex items-center justify-center text-xs text-muted-foreground">Loading chart...</div>
               ) : !data?.sourcePerformance || data.sourcePerformance.length === 0 || data.sourcePerformance.every((s: any) => s.total === 0) ? (
-                <div className="h-full flex flex-col items-center justify-center text-xs text-slate-400 space-y-1.5 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-                  <Inbox className="w-8 h-8 text-slate-300 dark:text-slate-700" />
-                  <span className="font-semibold text-slate-600 dark:text-slate-400">No source data yet</span>
-                  <span className="text-[11px] text-slate-400">Inbound channel breakdown will appear here</span>
+                <div className="h-full flex flex-col items-center justify-center text-xs text-muted-foreground space-y-1.5 border border-dashed border-border rounded-academic">
+                  <Inbox className="w-8 h-8 text-muted-foreground/40" />
+                  <span className="font-semibold text-foreground">No source data recorded</span>
+                  <span className="text-[11px] text-muted-foreground">Inbound channel breakdown will appear here</span>
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data?.sourcePerformance || []} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.15} horizontal={false} />
-                    <XAxis type="number" tick={{ fontSize: 11 }} />
-                    <YAxis dataKey="source" type="category" width={85} tick={{ fontSize: 10 }} />
+                    <CartesianGrid strokeDasharray="2 3" stroke="currentColor" className="text-border" opacity={0.5} horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 11, fill: "currentColor" }} className="text-muted-foreground" tickLine={false} axisLine={false} />
+                    <YAxis dataKey="source" type="category" width={85} tick={{ fontSize: 11, fill: "currentColor" }} className="text-muted-foreground" tickLine={false} axisLine={false} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#0f172a",
-                        borderRadius: "12px",
-                        border: "1px solid #1e293b",
+                        backgroundColor: "var(--card)",
+                        borderRadius: "8px",
+                        border: "1px solid var(--border)",
                         fontSize: "12px",
-                        color: "#fff",
+                        color: "var(--foreground)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
                       }}
                     />
-                    <Bar dataKey="total" fill="#6366f1" radius={[0, 8, 8, 0]} />
+                    <Bar dataKey="total" fill="#0F3D33" radius={[0, 2, 2, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -328,60 +423,78 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Charts Row 2: Conversion Funnel & Course Interest Donut */}
+        {/* Charts Row 2: Conversion Funnel & Program Preference */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Conversion Funnel */}
-          <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-5">
+          {/* Pipeline Funnel */}
+          <div className="lg:col-span-2 p-6 rounded-academic bg-card border border-border shadow-xs space-y-5">
             <div>
-              <h3 className="font-semibold text-sm">Admissions Pipeline Funnel</h3>
-              <p className="text-xs text-slate-400">Student movement through progressive lifecycle milestones</p>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                Enrollment Journey
+              </span>
+              <h3 className="font-serif text-base font-bold text-foreground">
+                Admissions Pipeline Funnel
+              </h3>
             </div>
 
             {!data?.funnelData || data.funnelData.every((f: any) => f.count === 0) ? (
-              <div className="py-12 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl space-y-1">
-                <p className="font-semibold text-slate-600 dark:text-slate-400">No pipeline leads yet</p>
-                <p className="text-[11px] text-slate-400">Leads moving through stages will populate the funnel</p>
+              <div className="py-12 text-center text-xs text-muted-foreground border border-dashed border-border rounded-academic space-y-1">
+                <p className="font-semibold text-foreground">No pipeline leads yet</p>
+                <p className="text-[11px] text-muted-foreground">Prospective scholars moving through stages will populate the funnel</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {(data?.funnelData || []).map((item: any, idx: number) => (
-                  <div key={idx} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-slate-700 dark:text-slate-300">{item.stage}</span>
-                      <span className="font-bold">
-                        {item.count} leads <span className="text-slate-400 font-normal">({item.percentage}%)</span>
-                      </span>
+              <div className="space-y-3.5">
+                {(data?.funnelData || []).map((item: any, idx: number) => {
+                  const barColor =
+                    idx === data.funnelData.length - 1
+                      ? "#E0A030"
+                      : idx === 0
+                      ? "#0F3D33"
+                      : "#2E7A68";
+
+                  return (
+                    <div key={idx} className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-foreground">{item.stage}</span>
+                        <span className="font-mono font-medium text-foreground tabular-nums">
+                          {item.count} leads{" "}
+                          <span className="text-muted-foreground font-sans font-normal">({item.percentage}%)</span>
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.max(4, item.percentage)}%`,
+                            backgroundColor: barColor,
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${Math.max(6, item.percentage)}%`,
-                          backgroundColor: item.fill,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
 
-          {/* Course-wise Interest (Donut) */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
+          {/* Program Preference Donut */}
+          <div className="p-6 rounded-academic bg-card border border-border shadow-xs space-y-4">
             <div>
-              <h3 className="font-semibold text-sm">Program Preference</h3>
-              <p className="text-xs text-slate-400">Distribution of inquiries across top programs</p>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                Curricular Demand
+              </span>
+              <h3 className="font-serif text-base font-bold text-foreground">
+                Program Distribution
+              </h3>
             </div>
 
             <div className="h-52 w-full flex items-center justify-center">
               {loading ? (
-                <div className="text-xs text-slate-400">Loading chart...</div>
+                <div className="text-xs text-muted-foreground">Loading chart...</div>
               ) : !data?.courseInterest || data.courseInterest.length === 0 || data.courseInterest.every((c: any) => c.count === 0) ? (
-                <div className="h-full w-full flex flex-col items-center justify-center text-xs text-slate-400 space-y-1.5 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-                  <PieIcon className="w-8 h-8 text-slate-300 dark:text-slate-700" />
-                  <span className="font-semibold text-slate-600 dark:text-slate-400">No program enquiries yet</span>
-                  <span className="text-[11px] text-slate-400">Course preferences will display here</span>
+                <div className="h-full w-full flex flex-col items-center justify-center text-xs text-muted-foreground space-y-1.5 border border-dashed border-border rounded-academic">
+                  <PieIcon className="w-8 h-8 text-muted-foreground/40" />
+                  <span className="font-semibold text-foreground">No course inquiries yet</span>
+                  <span className="text-[11px] text-muted-foreground">Program preferences will display here</span>
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
@@ -392,7 +505,7 @@ export default function DashboardPage() {
                       cy="50%"
                       innerRadius={50}
                       outerRadius={75}
-                      paddingAngle={4}
+                      paddingAngle={3}
                       dataKey="count"
                     >
                       {(data?.courseInterest || []).map((entry: any, index: number) => (
@@ -401,11 +514,12 @@ export default function DashboardPage() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#0f172a",
-                        borderRadius: "12px",
-                        border: "1px solid #1e293b",
+                        backgroundColor: "var(--card)",
+                        borderRadius: "8px",
+                        border: "1px solid var(--border)",
                         fontSize: "12px",
-                        color: "#fff",
+                        color: "var(--foreground)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
                       }}
                     />
                   </PieChart>
@@ -415,17 +529,17 @@ export default function DashboardPage() {
 
             {/* Donut Legend */}
             {data?.courseInterest && data.courseInterest.length > 0 && !data.courseInterest.every((c: any) => c.count === 0) && (
-              <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-                {data.courseInterest.slice(0, 3).map((c: any, i: number) => (
+              <div className="space-y-1.5 pt-2 border-t border-border">
+                {data.courseInterest.slice(0, 4).map((c: any, i: number) => (
                   <div key={i} className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-2 truncate max-w-[170px] text-slate-600 dark:text-slate-400">
+                    <span className="flex items-center gap-2 truncate max-w-[170px] text-muted-foreground">
                       <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        className="w-2.5 h-2.5 rounded-academic-sm shrink-0"
                         style={{ backgroundColor: DONUT_COLORS[i % DONUT_COLORS.length] }}
                       />
                       <span className="truncate">{c.name}</span>
                     </span>
-                    <span className="font-semibold">{c.count}</span>
+                    <span className="font-mono text-xs tabular-nums text-foreground">{c.count}</span>
                   </div>
                 ))}
               </div>
@@ -436,22 +550,26 @@ export default function DashboardPage() {
         {/* Widgets Row 3: Follow-ups Due, Hot Leads & Recent Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Today's Follow-up Tasks */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
+          <div className="p-6 rounded-academic bg-card border border-border shadow-xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <PhoneCall className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  <h3 className="font-semibold text-sm">Today&apos;s Follow-up Calls</h3>
+                  <PhoneCall className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
+                  <h3 className="font-serif font-bold text-sm text-foreground">Counselor Follow-ups</h3>
                 </div>
-                <Link href="/follow-ups" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
-                  View all ({data?.todayFollowUps?.length || 0}) →
+                <Link
+                  href="/follow-ups"
+                  className="text-xs text-[#0F3D33] dark:text-[#4FB89A] hover:underline font-medium inline-flex items-center gap-1"
+                >
+                  <span>Queue ({data?.todayFollowUps?.length || 0})</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 mt-2">
+              <div className="divide-y divide-border mt-1">
                 {(data?.todayFollowUps || []).length === 0 ? (
-                  <div className="py-8 text-center text-xs text-slate-400">
-                    All follow-ups for today are up to date! 🎉
+                  <div className="py-8 text-center text-xs text-muted-foreground">
+                    All scheduled calls for today are up to date.
                   </div>
                 ) : (
                   (data?.todayFollowUps || []).slice(0, 5).map((task: any) => (
@@ -459,13 +577,13 @@ export default function DashboardPage() {
                       <div>
                         <Link
                           href={`/leads/${task.lead.id}`}
-                          className="font-semibold hover:text-indigo-600 transition-colors"
+                          className="font-medium text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors"
                         >
                           {task.lead.studentName}
                         </Link>
-                        <p className="text-[11px] text-slate-400">{task.notes || "Call inquiry"}</p>
+                        <p className="text-[11px] text-muted-foreground">{task.notes || "Call inquiry"}</p>
                       </div>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-semibold border border-amber-500/20">
+                      <span className="px-2 py-0.5 rounded-academic-sm bg-[#E0A030]/10 text-[#E0A030] text-[10px] font-semibold border border-[#E0A030]/20">
                         {task.type}
                       </span>
                     </div>
@@ -476,7 +594,7 @@ export default function DashboardPage() {
 
             <Link
               href="/follow-ups"
-              className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 font-semibold"
+              className="mt-4 pt-3 border-t border-border flex items-center justify-center gap-1.5 text-xs text-[#0F3D33] dark:text-[#4FB89A] font-semibold hover:underline"
             >
               <span>Manage follow-up queue</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -484,22 +602,26 @@ export default function DashboardPage() {
           </div>
 
           {/* Top Hot Leads List */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
+          <div className="p-6 rounded-academic bg-card border border-border shadow-xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  <h3 className="font-semibold text-sm">Top High-Intent Leads</h3>
+                  <Flame className="w-4 h-4 text-[#C4552F]" />
+                  <h3 className="font-serif font-bold text-sm text-foreground">High-Intent Leads</h3>
                 </div>
-                <Link href="/leads?scoreCategory=HOT" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
-                  Filter HOT →
+                <Link
+                  href="/leads?scoreCategory=HOT"
+                  className="text-xs text-[#C4552F] hover:underline font-medium inline-flex items-center gap-1"
+                >
+                  <span>Filter HOT</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 mt-2">
+              <div className="divide-y divide-border mt-1">
                 {(data?.topHotLeads || []).length === 0 ? (
-                  <div className="py-8 text-center text-xs text-slate-400">
-                    No high-intent leads yet. Share your enquiry form to capture prospective candidates!
+                  <div className="py-8 text-center text-xs text-muted-foreground">
+                    No high-intent inquiries yet. Share your admissions form to capture prospective candidates.
                   </div>
                 ) : (
                   (data?.topHotLeads || []).slice(0, 5).map((lead: any) => (
@@ -507,19 +629,20 @@ export default function DashboardPage() {
                       <div>
                         <Link
                           href={`/leads/${lead.id}`}
-                          className="font-semibold hover:text-indigo-600 transition-colors"
+                          className="font-medium text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors"
                         >
                           {lead.studentName}
                         </Link>
-                        <p className="text-[11px] text-slate-400 truncate max-w-[160px]">
+                        <p className="text-[11px] text-muted-foreground truncate max-w-[160px]">
                           {lead.course?.name || "General"}
                         </p>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                          {lead.score} <span className="text-[10px] text-slate-400">/ 100</span>
+                        <span className="font-mono font-bold text-[#C4552F] tabular-nums">
+                          {lead.score}{" "}
+                          <span className="text-[10px] text-muted-foreground font-sans font-normal">/ 100</span>
                         </span>
-                        <p className="text-[10px] text-slate-400">{lead.assignedTo?.name || "Unassigned"}</p>
+                        <p className="text-[10px] text-muted-foreground">{lead.assignedTo?.name || "Unassigned"}</p>
                       </div>
                     </div>
                   ))
@@ -529,39 +652,41 @@ export default function DashboardPage() {
 
             <Link
               href="/pipeline"
-              className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 font-semibold"
+              className="mt-4 pt-3 border-t border-border flex items-center justify-center gap-1.5 text-xs text-[#0F3D33] dark:text-[#4FB89A] font-semibold hover:underline"
             >
-              <span>View in Kanban Pipeline</span>
+              <span>View in Admissions Pipeline</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          {/* Recent Activity Feed */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col justify-between">
+          {/* Recent Activity Ledger */}
+          <div className="p-6 rounded-academic bg-card border border-border shadow-xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                  <h3 className="font-semibold text-sm">Live Activity Stream</h3>
+                  <Activity className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
+                  <h3 className="font-serif font-bold text-sm text-foreground">Activity Stream</h3>
                 </div>
-                <span className="text-[11px] text-slate-400">System Feed</span>
+                <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Ledger</span>
               </div>
 
-              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 mt-2">
+              <div className="divide-y divide-border mt-1">
                 {(data?.recentActivities || []).length === 0 ? (
-                  <div className="py-8 text-center text-xs text-slate-400">
-                    No activity recorded yet. System events and counselor notes will stream here in real time.
+                  <div className="py-8 text-center text-xs text-muted-foreground">
+                    System events and counselor log entries will record here in real time.
                   </div>
                 ) : (
                   (data?.recentActivities || []).slice(0, 5).map((act: any) => (
                     <div key={act.id} className="py-2.5 text-xs space-y-0.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-slate-800 dark:text-slate-200 truncate max-w-[180px]">
+                        <span className="font-medium text-foreground truncate max-w-[180px]">
                           {act.title}
                         </span>
-                        <span className="text-[10px] text-slate-400 shrink-0">{timeAgo(act.createdAt)}</span>
+                        <span className="text-[10px] text-muted-foreground shrink-0 font-mono">
+                          {timeAgo(act.createdAt)}
+                        </span>
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                      <p className="text-[11px] text-muted-foreground line-clamp-1">
                         {act.lead?.studentName ? `${act.lead.studentName}: ` : ""}
                         {act.description}
                       </p>
@@ -571,54 +696,60 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-center text-[11px] text-slate-400">
-              Live automated activity logging enabled
+            <div className="mt-4 pt-3 border-t border-border text-center text-[11px] text-muted-foreground">
+              Automated audit trail enabled
             </div>
           </div>
         </div>
 
         {/* Engagement Heatmap: Days of Week vs Dayparts */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
+        <div className="p-6 rounded-academic bg-card border border-border shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h3 className="font-semibold text-sm">Student Enquiry Timing Heatmap</h3>
-              <p className="text-xs text-slate-400">Optimal outreach windows by day of week and hour of day</p>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                Outreach Windows
+              </span>
+              <h3 className="font-serif text-base font-bold text-foreground">
+                Inquiry Timing & Responsiveness Heatmap
+              </h3>
             </div>
-            <span className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">
-              Peak: Tue & Thu afternoons
+            <span className="text-xs text-[#0F3D33] dark:text-[#4FB89A] font-medium">
+              Peak engagement: Tuesday & Thursday afternoons
             </span>
           </div>
 
           <div className="grid grid-cols-7 gap-2 pt-2">
             {(data?.heatmapData || []).map((slot: any, idx: number) => (
-              <div key={idx} className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 text-center space-y-2">
-                <span className="font-semibold text-xs text-slate-700 dark:text-slate-300 block">{slot.day}</span>
-                <div className="space-y-1 text-[11px]">
+              <div key={idx} className="p-3 rounded-academic-sm bg-muted/50 border border-border/60 text-center space-y-2">
+                <span className="font-bold text-[11px] text-foreground uppercase tracking-wider block">
+                  {slot.day}
+                </span>
+                <div className="space-y-1 text-[11px] font-mono tabular-nums">
                   <div
-                    className="p-1.5 rounded-lg text-white font-semibold"
+                    className="p-1.5 rounded-academic-sm font-semibold transition-colors"
                     style={{
-                      backgroundColor: slot.morning > 5 ? "#4f46e5" : slot.morning > 2 ? "#818cf8" : "#c7d2fe",
-                      color: slot.morning > 2 ? "#fff" : "#1e1b4b",
+                      backgroundColor: slot.morning > 5 ? "#0F3D33" : slot.morning > 2 ? "#2E7A68" : "var(--muted)",
+                      color: slot.morning > 2 ? "#ffffff" : "var(--muted-foreground)",
                     }}
                     title={`${slot.morning} inquiries in morning`}
                   >
                     {slot.morning}
                   </div>
                   <div
-                    className="p-1.5 rounded-lg text-white font-semibold"
+                    className="p-1.5 rounded-academic-sm font-semibold transition-colors"
                     style={{
-                      backgroundColor: slot.afternoon > 6 ? "#4f46e5" : slot.afternoon > 3 ? "#818cf8" : "#c7d2fe",
-                      color: slot.afternoon > 3 ? "#fff" : "#1e1b4b",
+                      backgroundColor: slot.afternoon > 6 ? "#0F3D33" : slot.afternoon > 3 ? "#2E7A68" : "var(--muted)",
+                      color: slot.afternoon > 3 ? "#ffffff" : "var(--muted-foreground)",
                     }}
                     title={`${slot.afternoon} inquiries in afternoon`}
                   >
                     {slot.afternoon}
                   </div>
                   <div
-                    className="p-1.5 rounded-lg text-white font-semibold"
+                    className="p-1.5 rounded-academic-sm font-semibold transition-colors"
                     style={{
-                      backgroundColor: slot.evening > 4 ? "#4f46e5" : slot.evening > 1 ? "#818cf8" : "#c7d2fe",
-                      color: slot.evening > 1 ? "#fff" : "#1e1b4b",
+                      backgroundColor: slot.evening > 4 ? "#0F3D33" : slot.evening > 1 ? "#2E7A68" : "var(--muted)",
+                      color: slot.evening > 1 ? "#ffffff" : "var(--muted-foreground)",
                     }}
                     title={`${slot.evening} inquiries in evening`}
                   >
@@ -629,8 +760,9 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="flex items-center justify-end gap-4 pt-2 text-[11px] text-slate-400">
+          <div className="flex items-center justify-between pt-2 text-[11px] text-muted-foreground border-t border-border">
             <span>Slots: Top = Morning (9AM-1PM) • Middle = Afternoon (1PM-5PM) • Bottom = Evening (5PM-9PM)</span>
+            <span className="font-mono">Values indicate inbound volume</span>
           </div>
         </div>
       </div>

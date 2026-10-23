@@ -9,7 +9,7 @@ interface SparklineProps {
   height?: number;
 }
 
-export function StatSparkline({ data, color = "#6366f1", width = 80, height = 28 }: SparklineProps) {
+export function StatSparkline({ data, color = "#0F3D33", width = 80, height = 24 }: SparklineProps) {
   if (!data || data.length < 2) return null;
 
   const min = Math.min(...data);
@@ -26,7 +26,15 @@ export function StatSparkline({ data, color = "#6366f1", width = 80, height = 28
 
   return (
     <svg width={width} height={height} className="overflow-visible">
-      <polyline fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+      <polyline
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        points={points}
+      />
     </svg>
   );
 }
+

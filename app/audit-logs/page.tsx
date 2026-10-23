@@ -11,10 +11,10 @@ import {
   Clock,
   Terminal,
   Loader2,
-  ChevronRight,
-  ShieldAlert,
+  FileText,
+  Lock,
 } from "lucide-react";
-import { formatDateTime, timeAgo } from "@/lib/utils";
+import { formatDateTime } from "@/lib/utils";
 
 export default function AuditLogsPage() {
   const { error } = useToast();
@@ -40,7 +40,7 @@ export default function AuditLogsPage() {
       }
     }
     loadLogs();
-  }, []);
+  }, [error]);
 
   const filtered = logs.filter((log) => {
     if (filterAction !== "ALL" && log.action !== filterAction) return false;
@@ -56,106 +56,138 @@ export default function AuditLogsPage() {
     return true;
   });
 
+  const getActionBadgeClass = (action: string) => {
+    switch (action) {
+      case "DELETE_LEAD":
+        return "bg-[#C4552F]/10 text-[#C4552F] border-[#C4552F]/25";
+      case "CREATE_LEAD":
+      case "LOGIN":
+        return "bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] border-[#0F3D33]/25 dark:border-[#4FB89A]/30";
+      case "UPDATE_LEAD":
+      case "UPDATE_SETTINGS":
+        return "bg-[#E0A030]/10 text-[#B87A14] dark:text-[#E0A030] border-[#E0A030]/30";
+      default:
+        return "bg-[#FAF7F0] dark:bg-[#1E2622] text-[#6B665C] dark:text-[#959187] border-[#E4DDD0] dark:border-[#26302B]";
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E4DDD0] dark:border-[#26302B] pb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold border border-indigo-500/20 mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] text-[#0F3D33] dark:text-[#4FB89A] text-[11px] font-mono uppercase tracking-wider border border-[#E4DDD0] dark:border-[#26302B] mb-2.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Institutional Governance &amp; Security Compliance</span>
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Audit Trail &amp; System Event Logs
+            <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF]">
+              Audit Trail &amp; Ledger
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Immutable historical record of every login, lead modification, bulk assignment &amp; setting change
+            <p className="text-xs sm:text-sm text-[#6B665C] dark:text-[#959187] mt-1 max-w-2xl font-sans">
+              Immutable archival record of authentications, record revisions, bulk assignments, and system credential modifications.
             </p>
+          </div>
+          <div className="text-right">
+            <span className="font-mono text-[11px] text-[#6B665C] dark:text-[#959187]">
+              Records logged: <span className="font-semibold text-[#1B1A17] dark:text-[#ECE8DF]">{filtered.length}</span>
+            </span>
           </div>
         </div>
 
         {/* Filter bar */}
-        <div className="p-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs flex flex-col sm:flex-row items-center gap-3">
+        <div className="p-3.5 rounded-xl bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] shadow-xs flex flex-col sm:flex-row items-center gap-3">
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B665C] dark:text-[#959187]" />
             <input
               type="text"
-              placeholder="Search by action, user, or IP address..."
+              placeholder="Search by action, staff name, or IP address..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none"
+              className="w-full pl-9 pr-4 py-2 text-xs rounded-lg bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] placeholder-[#6B665C]/60 dark:placeholder-[#959187]/60 outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] transition-colors font-sans"
             />
           </div>
 
-          <select
-            value={filterAction}
-            onChange={(e) => setFilterAction(e.target.value)}
-            className="w-full sm:w-auto px-4 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none font-semibold"
-          >
-            <option value="ALL">All Event Types</option>
-            <option value="LOGIN">LOGIN</option>
-            <option value="CREATE_LEAD">CREATE_LEAD</option>
-            <option value="UPDATE_LEAD">UPDATE_LEAD</option>
-            <option value="DELETE_LEAD">DELETE_LEAD</option>
-            <option value="UPDATE_SETTINGS">UPDATE_SETTINGS</option>
-            <option value="PASSWORD_RESET">PASSWORD_RESET</option>
-          </select>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Filter className="w-3.5 h-3.5 text-[#6B665C] dark:text-[#959187] hidden sm:block" />
+            <select
+              value={filterAction}
+              onChange={(e) => setFilterAction(e.target.value)}
+              className="w-full sm:w-auto px-3 py-2 text-xs rounded-lg bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] outline-none font-mono font-medium focus:border-[#0F3D33] dark:focus:border-[#4FB89A] transition-colors"
+            >
+              <option value="ALL">All Event Types</option>
+              <option value="LOGIN">LOGIN</option>
+              <option value="CREATE_LEAD">CREATE_LEAD</option>
+              <option value="UPDATE_LEAD">UPDATE_LEAD</option>
+              <option value="DELETE_LEAD">DELETE_LEAD</option>
+              <option value="UPDATE_SETTINGS">UPDATE_SETTINGS</option>
+              <option value="PASSWORD_RESET">PASSWORD_RESET</option>
+            </select>
+          </div>
         </div>
 
         {/* Audit Log Table */}
-        <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-xs overflow-hidden">
+        <div className="rounded-xl bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs font-sans">
               <thead>
-                <tr className="bg-slate-50/50 dark:bg-slate-800/30 text-[11px] font-semibold uppercase text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                  <th className="p-4">Timestamp</th>
-                  <th className="p-4">Staff Member</th>
-                  <th className="p-4">Action</th>
-                  <th className="p-4">Target Entity</th>
-                  <th className="p-4">IP Address</th>
-                  <th className="p-4">Details / Metadata</th>
+                <tr className="bg-[#FAF7F0] dark:bg-[#131916] text-[10px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187] border-b border-[#E4DDD0] dark:border-[#26302B]">
+                  <th className="py-3 px-4 font-semibold">Timestamp</th>
+                  <th className="py-3 px-4 font-semibold">Staff Member</th>
+                  <th className="py-3 px-4 font-semibold">Action</th>
+                  <th className="py-3 px-4 font-semibold">Entity</th>
+                  <th className="py-3 px-4 font-semibold">IP Address</th>
+                  <th className="py-3 px-4 font-semibold">Details &amp; Metadata</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-[#E4DDD0]/60 dark:divide-[#26302B]">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="py-16 text-center text-slate-400">
-                      Loading audit logs...
+                    <td colSpan={6} className="py-16 text-center text-[#6B665C] dark:text-[#959187]">
+                      <div className="inline-flex items-center gap-2 font-mono text-xs">
+                        <Loader2 className="w-4 h-4 animate-spin text-[#0F3D33] dark:text-[#4FB89A]" />
+                        <span>Retrieving ledger entries...</span>
+                      </div>
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-16 text-center text-slate-400">
-                      No matching audit records.
+                    <td colSpan={6} className="py-16 text-center text-[#6B665C] dark:text-[#959187]">
+                      <div className="max-w-xs mx-auto space-y-2">
+                        <FileText className="w-8 h-8 text-[#6B665C]/40 mx-auto" />
+                        <p className="font-serif text-sm font-semibold text-[#1B1A17] dark:text-[#ECE8DF]">No matching records</p>
+                        <p className="text-xs">Adjust your search query or event filter to inspect historical logs.</p>
+                      </div>
                     </td>
                   </tr>
                 ) : (
                   filtered.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                      <td className="p-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">
+                    <tr key={log.id} className="hover:bg-[#FAF7F0]/60 dark:hover:bg-[#1E2622]/40 transition-colors">
+                      <td className="py-3 px-4 font-mono text-[11px] text-[#6B665C] dark:text-[#959187] whitespace-nowrap">
                         {formatDateTime(log.createdAt)}
                       </td>
-                      <td className="p-4">
+                      <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-slate-900 dark:text-slate-100">
+                          <span className="font-medium text-[#1B1A17] dark:text-[#ECE8DF]">
                             {log.user?.name || "System Automation"}
                           </span>
-                          <span className="text-[10px] text-slate-400 uppercase font-mono">
+                          <span className="text-[9px] px-1.5 py-0.2 rounded font-mono uppercase bg-[#FAF7F0] dark:bg-[#1E2622] text-[#6B665C] dark:text-[#959187] border border-[#E4DDD0] dark:border-[#26302B]">
                             {log.user?.role || "SYSTEM"}
                           </span>
                         </div>
                       </td>
-                      <td className="p-4">
-                        <span className="px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-mono text-[10px] font-bold border border-indigo-200 dark:border-indigo-800">
+                      <td className="py-3 px-4">
+                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-medium border ${getActionBadgeClass(log.action)}`}>
                           {log.action}
                         </span>
                       </td>
-                      <td className="p-4 font-medium text-slate-600 dark:text-slate-300">
+                      <td className="py-3 px-4 font-medium text-[#1B1A17] dark:text-[#ECE8DF]">
                         {log.entityType}
                       </td>
-                      <td className="p-4 font-mono text-[11px] text-slate-400">{log.ipAddress || "—"}</td>
-                      <td className="p-4 max-w-xs truncate font-mono text-[11px] text-slate-500">
+                      <td className="py-3 px-4 font-mono text-[11px] text-[#6B665C] dark:text-[#959187]">
+                        {log.ipAddress || "—"}
+                      </td>
+                      <td className="py-3 px-4 max-w-xs truncate font-mono text-[11px] text-[#6B665C] dark:text-[#959187]">
                         {log.details || "—"}
                       </td>
                     </tr>

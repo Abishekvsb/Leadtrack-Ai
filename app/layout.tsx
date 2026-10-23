@@ -1,18 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/toast-context";
 
-const inter = Inter({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-fraunces",
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const instrument = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-instrument",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -20,7 +26,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#4f46e5",
+  themeColor: "#0F3D33",
 };
 
 export const metadata: Metadata = {
@@ -44,8 +50,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jakarta.variable}`}>
-      <body className="font-sans antialiased min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-500 selection:text-white">
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${instrument.variable} ${jetbrains.variable}`}
+    >
+      <body className="font-sans antialiased min-h-screen bg-background text-foreground selection:bg-[#E0A030]/25 selection:text-foreground">
         <ThemeProvider>
           <ToastProvider>
             {children}
@@ -55,3 +65,4 @@ export default function RootLayout({
     </html>
   );
 }
+
