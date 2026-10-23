@@ -38,6 +38,35 @@ export async function getTodaysFollowUps(session: UserSession): Promise<CopilotT
   };
 }
 
+export async function getTomorrowsFollowUps(session: UserSession): Promise<CopilotToolResult> {
+  const now = new Date();
+  const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+  const tomorrowEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 23, 59, 59, 999);
+
+  const where: any = {
+    status: "PENDING",
+    scheduledAt: { gte: tomorrowStart, lte: tomorrowEnd },
+  };
+  if (session.role === "COUNSELOR") {
+    where.assignedToId = session.id;
+  }
+
+  const tasks = await prisma.followUp.findMany({
+    where,
+    orderBy: { scheduledAt: "asc" },
+    include: {
+      lead: { select: { id: true, studentName: true, phone: true, score: true, scoreCategory: true } },
+    },
+    take: 15,
+  });
+
+  return {
+    toolName: "getTomorrowsFollowUps",
+    data: tasks,
+    summary: `Found ${tasks.length} follow-up task(s) scheduled for tomorrow.`,
+  };
+}
+
 export async function getHotLeads(session: UserSession): Promise<CopilotToolResult> {
   const where: any = {
     scoreCategory: "HOT",
@@ -359,7 +388,9 @@ export function isUnrelatedQuery(query: string): boolean {
     "enquiry", "inquiry", "course", "fee", "program", "score", "hot", "warm", "cold",
     "automation", "template", "analytics", "roi", "team", "settings", "how", "what",
     "who", "which", "overdue", "status", "bottleneck", "audit", "b.tech", "mba", "drop",
-    "convert", "conversion", "today", "yesterday", "week", "month", "help", "guide"
+    "convert", "conversion", "today", "yesterday", "week", "month", "help", "guide",
+    "naalaikku", "tomorrow", "innikku", "yaarukku", "pannanum", "pesanum", "evvalavu",
+    "ethana", "epdi", "panradhu", "serkkai", "manavargal"
   ];
 
   // If query is long and has zero allowed keywords, flag as unrelated
@@ -399,15 +430,50 @@ export async function executeRuleBasedCopilot(query: string, session: UserSessio
     );
   }
 
+  // Tomorrow's calls / Naalaikku calls (Tanglish)
+  if (q.includes("naalaikku") || q.includes("tomorrow") || (q.includes("yaarukku") && q.includes("naalaikku"))) {
+    const res = await getTomorrowsFollowUps(session);
+    const tasks = res.data;
+    if (tasks.length === 0) {
+      return (
+        "📞 **Tomorrow's Follow-up Calls (நாளைக்கான அழைப்புகள்):**\n\n" +
+        "You have **0 scheduled follow-up calls** for tomorrow.\n\n" +
+        "• There is no follow-up data scheduled for tomorrow yet in the database.\n" +
+        "• Next step: Open the **[Leads Queue](/leads)** to schedule upcoming candidate calls or check today's pending tasks."
+      );
+    }
+    return (
+      `📞 **Tomorrow's Scheduled Calls (${tasks.length}):**\n\n` +
+      tasks
+        .map(
+          (t: any, i: number) =>
+            `${i + 1}. **[${t.lead.studentName}](/leads/${t.lead.id})** (AI Score: **${t.lead.score}/100**)\n` +
+            `   • Phone: \`${t.lead.phone}\`\n` +
+            `   • Scheduled: *${formatDate(t.scheduledAt)}*\n` +
+            `   • Note: ${t.notes || "Follow-up discussion"}\n` +
+            `   • [Open Lead Dossier](/leads/${t.lead.id})`
+        )
+        .join("\n\n")
+    );
+  }
+
   // Today's calls
-  if (q.includes("call today") || q.includes("today") || (q.includes("who") && q.includes("call"))) {
+  if (
+    q.includes("call today") ||
+    q.includes("today") ||
+    (q.includes("who") && q.includes("call")) ||
+    q.includes("yaarukku") ||
+    q.includes("call pannanum") ||
+    q.includes("innikku")
+  ) {
     const res = await getTodaysFollowUps(session);
     const tasks = res.data;
     if (tasks.length === 0) {
       return (
         "📞 **Today's Follow-up Calls:**\n\nYou have **0 pending follow-up calls** scheduled for today! 🎉\n\n" +
-        "• To schedule new calls, open any candidate from the **[Leads Queue](/leads)**.\n" +
-        "• Or check **[Overdue Tasks](/follow-ups)** to clear backlogged follow-ups."
+        "• There is no follow-up data yet in the database.\n" +
+        "• Next step: Navigate to the **[Leads Queue](/leads)** to add or import leads, or schedule outreach tasks.\n" +
+        "• You can also share the **[Public Enquiry Portal](/enquire)** to capture student inquiries."
       );
     }
     return (
@@ -430,7 +496,11 @@ export async function executeRuleBasedCopilot(query: string, session: UserSessio
     const res = await getOverdueFollowUps(session);
     const tasks = res.data;
     if (tasks.length === 0) {
-      return "✅ **No Overdue Tasks:** All counselor follow-ups are up to date! Great job staying within response SLAs.";
+      return (
+        "✅ **Overdue Follow-ups:**\n\n" +
+        "There are **0 overdue follow-up tasks** found in the database. All counselor follow-ups are up to date! Great job staying within response SLAs.\n\n" +
+        "• Next step: Add or assign leads from the **[Leads Queue](/leads)** or check scheduled follow-ups in **[Follow-ups](/follow-ups)**."
+      );
     }
     return (
       `⚠️ **Overdue Follow-ups Requiring Immediate Outreach (${tasks.length}):**\n\n` +
@@ -451,8 +521,8 @@ export async function executeRuleBasedCopilot(query: string, session: UserSessio
     const leads = res.data;
     if (leads.length === 0) {
       return (
-        "🔥 **Hot Leads (Score >= 75):**\n\nThere are currently **0 leads categorized as HOT**.\n\n" +
-        "As candidates interact with WhatsApp messages, visit campus, or submit applications, their scores will automatically elevate into this tier."
+        "🔥 **Hot Leads (Score >= 75):**\n\nThere are currently **0 leads categorized as HOT** in the database.\n\n" +
+        "• Next step: Add student inquiries or share your **[Public Enquiry Portal](/enquire)** to start scoring leads."
       );
     }
     return (
@@ -475,7 +545,11 @@ export async function executeRuleBasedCopilot(query: string, session: UserSessio
     const res = await getSourcePerformance(session);
     const sources = res.data;
     if (sources.length === 0) {
-      return "📊 **Source Performance:** No lead sources recorded yet. Share your enquiry form to capture prospective students.";
+      return (
+        "📊 **Source Performance:**\n\n" +
+        "There is no lead source data recorded yet in the database.\n\n" +
+        "• Next step: Share your **[Public Enquiry Form](/enquire)** across websites and campaigns or import existing lead spreadsheets via **[Leads Queue > Import CSV](/leads)**."
+      );
     }
     const topSource = sources[0];
     return (

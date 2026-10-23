@@ -321,7 +321,7 @@ export default function FollowUpsPage() {
                             setSelectedTask(task);
                             setModalMode("complete");
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition-colors"
+                          className="min-h-[44px] px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition-colors flex items-center justify-center"
                         >
                           Complete
                         </button>
@@ -330,7 +330,7 @@ export default function FollowUpsPage() {
                             setSelectedTask(task);
                             setModalMode("reschedule");
                           }}
-                          className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors"
+                          className="min-h-[44px] px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors flex items-center justify-center"
                         >
                           Reschedule
                         </button>
@@ -338,7 +338,8 @@ export default function FollowUpsPage() {
                     )}
                     <Link
                       href={`/leads/${task.lead.id}`}
-                      className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 text-slate-400 hover:text-slate-800"
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors"
+                      title="View Lead Dossier"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Link>

@@ -210,7 +210,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -223,7 +223,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
               key={chip}
               disabled={loading}
               onClick={() => handleSend(chip)}
-              className="text-[11px] px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all whitespace-nowrap shrink-0 shadow-2xs font-medium disabled:opacity-50"
+              className="text-[11px] min-h-[38px] px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all whitespace-nowrap shrink-0 shadow-2xs font-medium disabled:opacity-50 inline-flex items-center"
             >
               {chip}
             </button>
@@ -318,12 +318,12 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask Copilot about leads, calls, or app features..."
-              className="flex-1 p-3 text-xs sm:text-sm rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+              className="flex-1 min-h-[44px] p-3 text-xs sm:text-sm rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="p-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25 transition-all disabled:opacity-40 shrink-0"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center p-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25 transition-all disabled:opacity-40 shrink-0"
               title="Send question"
             >
               <Send className="w-4 h-4" />

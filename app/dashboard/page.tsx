@@ -87,12 +87,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Date range filter */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs self-start sm:self-auto">
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs self-start sm:self-auto flex-wrap sm:flex-nowrap">
             {(["today", "7d", "30d", "all"] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all ${
+                className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-semibold capitalize transition-all flex items-center justify-center ${
                   range === r
                     ? "bg-indigo-600 text-white shadow-sm"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"

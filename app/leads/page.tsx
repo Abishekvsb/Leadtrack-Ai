@@ -388,7 +388,7 @@ function LeadsContent() {
             {/* Import Button */}
             <button
               onClick={() => setImportModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
             >
               <Upload className="w-3.5 h-3.5 text-slate-500" />
               <span>Import CSV</span>
@@ -398,7 +398,7 @@ function LeadsContent() {
             <div className="relative group">
               <button
                 onClick={() => handleExport("csv")}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-xs"
               >
                 <Download className="w-3.5 h-3.5 text-slate-500" />
                 <span>Export CSV</span>
@@ -408,7 +408,7 @@ function LeadsContent() {
             {/* Add Lead Button */}
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md shadow-indigo-500/25 transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-md shadow-indigo-500/25 transition-all"
             >
               <Plus className="w-4 h-4" />
               <span>Add New Lead</span>
@@ -830,7 +830,7 @@ function LeadsContent() {
                       <div className="flex items-center gap-2.5">
                         <button
                           onClick={() => handleToggleSelect(lead.id)}
-                          className="min-h-[36px] min-w-[36px] flex items-center justify-center -ml-1"
+                          className="min-h-[44px] min-w-[44px] flex items-center justify-center -ml-1"
                         >
                           {isSelected ? (
                             <CheckSquare className="w-5 h-5 text-indigo-600" />
@@ -914,14 +914,16 @@ function LeadsContent() {
               <button
                 disabled={pagination.page <= 1}
                 onClick={() => fetchLeads(pagination.page - 1)}
-                className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                title="Previous page"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 disabled={pagination.page >= pagination.totalPages}
                 onClick={() => fetchLeads(pagination.page + 1)}
-                className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors"
+                title="Next page"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
