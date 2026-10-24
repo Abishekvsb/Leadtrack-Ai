@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import confetti from "canvas-confetti";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { useToast } from "@/components/toast-context";
 import {
@@ -14,6 +15,7 @@ import {
   Filter,
   Plus,
   MoveRight,
+  Award,
 } from "lucide-react";
 import {
   DndContext,
@@ -61,15 +63,15 @@ function KanbanCard({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className={`p-3.5 rounded-[10px] bg-card border border-border shadow-xs hover:border-[#0F3D33]/40 dark:hover:border-[#4FB89A]/40 transition-all cursor-grab active:cursor-grabbing space-y-2.5 text-xs relative ${
-        isDragging ? "opacity-30 border-dashed border-[#0F3D33] dark:border-[#4FB89A]" : ""
-      } ${isOverlay ? "shadow-academic-floating ring-1 ring-[#0F3D33] dark:ring-[#4FB89A] scale-[1.02] bg-card" : ""}`}
+      className={`p-3.5 rounded-[12px] bg-card border border-border shadow-xs hover:border-[#FFC21A]/50 transition-all cursor-grab active:cursor-grabbing space-y-2.5 text-xs relative select-none ${
+        isDragging ? "opacity-30 border-2 border-dashed border-[#FFC21A]" : ""
+      } ${isOverlay ? "shadow-floating ring-2 ring-[#FFC21A] border-[#FFC21A] scale-[1.03] bg-card z-50" : ""}`}
     >
       <div className="flex items-start justify-between gap-2">
         <Link
           href={`/leads/${lead.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="font-serif text-sm font-normal text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors line-clamp-1 min-h-[22px] flex items-center"
+          className="font-heading text-sm font-bold text-foreground hover:text-[#D62828] dark:hover:text-[#FF5A5F] transition-colors line-clamp-1 min-h-[22px] flex items-center"
         >
           {lead.studentName}
         </Link>
@@ -81,10 +83,10 @@ function KanbanCard({
       </div>
 
       <div className="space-y-0.5 text-muted-foreground text-[11px]">
-        <p className="truncate font-medium text-foreground">
+        <p className="truncate font-semibold text-foreground">
           {lead.course?.code || "GEN"} • {lead.city || "Unspecified"}
         </p>
-        <p className="font-mono tabular-nums">{lead.phone}</p>
+        <p className="font-mono tabular-nums text-[10px]">{lead.phone}</p>
       </div>
 
       <div className="flex items-center justify-between pt-2 border-t border-border text-[10px] text-muted-foreground">
@@ -96,16 +98,16 @@ function KanbanCard({
             <button
               type="button"
               onClick={() => setShowMoveMenu(!showMoveMenu)}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 min-h-[36px] rounded-[6px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 min-h-[32px] rounded-[6px] border border-border bg-surface text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium transition-colors"
               title="Move to stage"
             >
               <span>Move</span>
-              <MoveRight className="w-3 h-3 text-muted-foreground" />
+              <MoveRight className="w-3 h-3 text-[#FFC21A]" />
             </button>
 
             {showMoveMenu && (
-              <div className="absolute right-0 bottom-full mb-1.5 w-48 rounded-[10px] bg-card border border-border shadow-academic-floating py-1.5 z-30 animate-in fade-in">
-                <p className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+              <div className="absolute right-0 bottom-full mb-1.5 w-48 rounded-[10px] bg-card border border-border shadow-floating py-1.5 z-30 animate-in fade-in">
+                <p className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground font-bold">
                   Move candidate to
                 </p>
                 {COLUMNS.filter((c) => c !== lead.status).map((col) => (
@@ -116,7 +118,7 @@ function KanbanCard({
                       setShowMoveMenu(false);
                       onMoveStatus(lead.id, col);
                     }}
-                    className="w-full text-left px-3 py-2 min-h-[40px] text-xs hover:bg-[#EDE6DA]/40 dark:hover:bg-[#1F2723] flex items-center gap-2 text-foreground"
+                    className="w-full text-left px-3 py-2 min-h-[36px] text-xs hover:bg-[#FFF9EE] dark:hover:bg-[#27191E] flex items-center gap-2 text-foreground font-medium"
                   >
                     <span className={`w-2 h-2 rounded-full ${STATUS_COLORS[col]?.dot || "bg-muted-foreground"}`} />
                     <span>{STATUS_LABELS[col]}</span>
@@ -146,31 +148,35 @@ function KanbanColumn({
   });
 
   const statusStyle = STATUS_COLORS[status] || STATUS_COLORS.NEW;
+  const isAdmitted = status === "ADMITTED";
 
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col rounded-[12px] p-3 bg-[#EDE6DA]/20 dark:bg-[#171D1A]/40 border border-border w-[84vw] sm:w-72 shrink-0 max-h-[80vh] transition-colors snap-start ${
-        isOver ? "bg-[#EDE6DA]/60 dark:bg-[#1F2723]/60 border-[#0F3D33] dark:border-[#4FB89A]" : ""
+      className={`flex flex-col rounded-[14px] p-3.5 bg-surface/80 border w-[84vw] sm:w-72 shrink-0 max-h-[80vh] transition-all duration-150 snap-start relative ${
+        isOver
+          ? "border-2 border-dashed border-[#FFC21A] bg-[#FFC21A]/10 ring-4 ring-[#FFC21A]/20 scale-[1.01]"
+          : "border-border"
       }`}
     >
       {/* Column Header */}
-      <div className="flex items-center justify-between px-2 py-2 mb-2 border-b border-border/60">
+      <div className="flex items-center justify-between px-2 py-2 mb-2 border-b border-border/70">
         <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full ${statusStyle.dot}`} />
-          <h3 className="font-serif text-xs font-normal text-foreground">
+          <span className={`w-2.5 h-2.5 rounded-full ${statusStyle.dot}`} />
+          <h3 className="font-heading text-xs font-bold text-foreground">
             {STATUS_LABELS[status]}
           </h3>
+          {isAdmitted && <Award className="w-3.5 h-3.5 text-[#FFC21A]" />}
         </div>
-        <span className="px-2 py-0.5 rounded-[4px] bg-card border border-border text-[10px] font-mono tabular-nums text-muted-foreground">
+        <span className="px-2 py-0.5 rounded-[6px] bg-card border border-border text-[10px] font-mono tabular-nums font-bold text-muted-foreground">
           {leads.length}
         </span>
       </div>
 
       {/* Leads Cards Container */}
-      <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+      <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 no-scrollbar">
         {leads.length === 0 ? (
-          <div className="py-12 text-center text-[11px] text-muted-foreground border border-dashed border-border rounded-[8px] font-serif italic">
+          <div className="py-12 text-center text-[11px] text-muted-foreground border-2 border-dashed border-border/80 rounded-[10px] font-medium">
             Stage empty
           </div>
         ) : (
@@ -223,6 +229,19 @@ export default function PipelinePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const triggerAdmittedCelebration = () => {
+    try {
+      confetti({
+        particleCount: 90,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ["#D62828", "#FFC21A", "#FFE08A", "#16A34A"],
+      });
+    } catch {
+      // ignore
+    }
+  };
+
   const handleDragStart = (event: any) => {
     const lead = event.active.data.current?.lead;
     setActiveLead(lead || null);
@@ -240,6 +259,11 @@ export default function PipelinePage() {
     // Check if status actually changed
     const currentLead = leads.find((l) => l.id === leadId);
     if (!currentLead || currentLead.status === targetStatus) return;
+
+    // Confetti celebration if admitted!
+    if (targetStatus === "ADMITTED") {
+      triggerAdmittedCelebration();
+    }
 
     // Optimistic UI update
     setLeads((prev) =>
@@ -270,6 +294,11 @@ export default function PipelinePage() {
   const handleMoveStatus = async (leadId: string, targetStatus: LeadStatus) => {
     const currentLead = leads.find((l) => l.id === leadId);
     if (!currentLead || currentLead.status === targetStatus) return;
+
+    // Confetti celebration if admitted!
+    if (targetStatus === "ADMITTED") {
+      triggerAdmittedCelebration();
+    }
 
     // Optimistic UI update
     setLeads((prev) =>
@@ -303,10 +332,10 @@ export default function PipelinePage() {
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Admissions Workflow
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
               Kanban Pipeline
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -317,7 +346,7 @@ export default function PipelinePage() {
           <div className="flex items-center gap-2">
             <Link
               href="/leads"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[10px] border border-border bg-surface text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-semibold transition-colors shadow-xs"
             >
               <span>Table Registry View</span>
             </Link>
@@ -327,12 +356,12 @@ export default function PipelinePage() {
         {/* Kanban Board Container with Horizontal Scroll & Touch Snap */}
         {loading ? (
           <div className="py-24 text-center space-y-3">
-            <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#D62828] dark:text-[#FF5A5F] mx-auto" />
             <p className="font-serif italic text-xs text-muted-foreground">Loading pipeline stages...</p>
           </div>
         ) : (
           <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth">
+            <div className="flex gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar">
               {COLUMNS.map((col) => {
                 const colLeads = leads.filter((l) => l.status === col);
                 return (

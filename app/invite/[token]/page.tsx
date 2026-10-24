@@ -98,7 +98,7 @@ export default function AcceptInvitePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-6 h-6 text-[#0F3D33] dark:text-[#4FB89A] animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#D62828] dark:text-[#FF5A5F] animate-spin" />
       </div>
     );
   }
@@ -111,7 +111,7 @@ export default function AcceptInvitePage() {
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="font-serif text-2xl font-bold text-foreground">
+            <h2 className="font-heading text-2xl font-bold text-foreground">
               Invitation Unavailable
             </h2>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
@@ -121,7 +121,7 @@ export default function AcceptInvitePage() {
           <div className="pt-2">
             <Link
               href="/login"
-              className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-academic-sm bg-[#0F3D33] hover:bg-[#0B2E26] dark:bg-[#4FB89A] dark:hover:bg-[#3FA387] text-white dark:text-[#0F1412] font-semibold text-xs transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
             >
               <span>Go to Sign In</span>
               <ArrowRight className="w-4 h-4" />
@@ -137,23 +137,23 @@ export default function AcceptInvitePage() {
       <div className="max-w-md w-full bg-card rounded-academic p-8 border border-border shadow-academic-floating space-y-6">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-9 h-9 rounded-academic-sm bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-white dark:text-[#0F1412]">
+            <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-white shadow-xs border border-[#FFC21A]/30">
               <GraduationCap className="w-5 h-5" />
             </div>
-            <span className="font-serif font-bold text-xl tracking-tight text-foreground">
+            <span className="font-heading font-bold text-xl tracking-tight text-foreground">
               LeadTrack AI
             </span>
           </Link>
 
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 border border-[#0F3D33]/20 dark:border-[#4FB89A]/30 text-[11px] font-medium text-[#0F3D33] dark:text-[#4FB89A]">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFC21A]/15 border border-[#FFC21A]/35 text-[11px] font-bold text-[#8A5A00] dark:text-[#FFD25A]">
             <Sparkles className="w-3 h-3" />
             <span>Official Team Invitation</span>
           </div>
 
-          <h2 className="font-serif text-2xl font-bold text-foreground">Complete Your Account Setup</h2>
+          <h2 className="font-heading text-2xl font-bold text-foreground">Complete Your Account Setup</h2>
           <p className="text-xs text-muted-foreground">
             You&apos;ve been invited by <span className="font-semibold text-foreground">{inviteData.invitedByName}</span> to join{" "}
-            <span className="font-semibold text-[#0F3D33] dark:text-[#4FB89A]">{inviteData.institutionName}</span> as an{" "}
+            <span className="font-semibold text-[#D62828] dark:text-[#FF5A5F]">{inviteData.institutionName}</span> as an{" "}
             <span className="font-semibold text-foreground">{inviteData.role}</span>.
           </p>
         </div>
@@ -165,7 +165,7 @@ export default function AcceptInvitePage() {
               type="email"
               disabled
               value={inviteData.email}
-              className="w-full px-3 py-2 text-xs rounded-academic-sm bg-muted border border-border text-muted-foreground cursor-not-allowed outline-none"
+              className="w-full px-3 py-2 text-xs rounded-[10px] bg-muted border border-border text-muted-foreground cursor-not-allowed outline-none"
             />
           </div>
 
@@ -179,7 +179,7 @@ export default function AcceptInvitePage() {
                 placeholder="Full Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-[10px] bg-background border border-border focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 outline-none text-foreground"
               />
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function AcceptInvitePage() {
                 placeholder="+91 98765 43210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-[10px] bg-background border border-border focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 outline-none text-foreground"
               />
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function AcceptInvitePage() {
                 placeholder="At least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-9 pr-9 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
+                className="w-full pl-9 pr-9 py-2 text-xs rounded-[10px] bg-background border border-border focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 outline-none text-foreground"
               />
               <button
                 type="button"
@@ -231,7 +231,7 @@ export default function AcceptInvitePage() {
                 placeholder="Re-enter password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-academic-sm bg-background border border-border focus:border-[#E0A030] focus:ring-1 focus:ring-[#E0A030] outline-none text-foreground"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-[10px] bg-background border border-border focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 outline-none text-foreground"
               />
             </div>
           </div>
@@ -239,7 +239,7 @@ export default function AcceptInvitePage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-academic-sm bg-[#0F3D33] hover:bg-[#0B2E26] dark:bg-[#4FB89A] dark:hover:bg-[#3FA387] text-white dark:text-[#0F1412] font-semibold text-xs transition-colors disabled:opacity-50 mt-2"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01] disabled:opacity-50 mt-2"
           >
             {submitting ? (
               <>

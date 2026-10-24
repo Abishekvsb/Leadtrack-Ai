@@ -58,14 +58,14 @@ function ResetPasswordForm() {
     <div className="max-w-md w-full bg-card rounded-[12px] p-7 sm:p-8 border border-border shadow-academic-floating space-y-6">
       <div className="text-center space-y-2">
         <Link href="/" className="inline-flex items-center gap-2.5 mb-1">
-          <div className="w-9 h-9 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-[#F6F2EA] dark:text-[#0F1412] shadow-xs">
+          <div className="w-9 h-9 rounded-[8px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-white shadow-xs border border-[#FFC21A]/30">
             <GraduationCap className="w-5 h-5 stroke-[1.5]" />
           </div>
-          <span className="font-serif text-xl font-normal tracking-tight text-foreground">
+          <span className="font-heading text-xl font-normal tracking-tight text-foreground">
             LeadTrack AI
           </span>
         </Link>
-        <h1 className="font-serif text-2xl font-normal text-foreground tracking-tight">Set New Password</h1>
+        <h1 className="font-heading text-2xl font-normal text-foreground tracking-tight">Set New Password</h1>
         <p className="text-xs text-muted-foreground leading-relaxed">
           Enter your updated institutional password below.
         </p>
@@ -79,11 +79,11 @@ function ResetPasswordForm() {
 
       {completed ? (
         <div className="p-5 rounded-[10px] bg-background border border-border text-center space-y-3">
-          <div className="w-10 h-10 rounded-[8px] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center mx-auto">
+          <div className="w-10 h-10 rounded-[8px] bg-[#D62828]/10 text-[#D62828] dark:text-[#FF5A5F] border border-[#D62828]/25 rounded-[10px] flex items-center justify-center mx-auto shadow-xs">
             <CheckCircle2 className="w-5 h-5 stroke-[1.5]" />
           </div>
           <div>
-            <h2 className="font-serif text-sm font-medium text-foreground">
+            <h2 className="font-heading text-sm font-medium text-foreground">
               Password Reset Complete
             </h2>
             <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
@@ -92,7 +92,7 @@ function ResetPasswordForm() {
           </div>
           <Link
             href="/login"
-            className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-[8px] bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-xs transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-[8px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
           >
             Sign In with New Password →
           </Link>
@@ -136,7 +136,7 @@ function ResetPasswordForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[8px] bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-xs transition-colors disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[8px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01] disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Password"}
           </button>

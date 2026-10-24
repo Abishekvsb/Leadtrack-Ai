@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
               Institutional Intelligence
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
               Admissions Analytics &amp; Yield Report
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -77,14 +77,14 @@ export default function AnalyticsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrintPDF}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors shadow-xs"
             >
               <Printer className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Print Dossier</span>
             </button>
             <button
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white font-semibold text-xs shadow-xs transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export CSV Yield</span>
@@ -96,15 +96,15 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Total Inquiries</span>
-            <p className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
               {loading ? "..." : data?.totalLeads}
             </p>
-            <p className="text-[11px] text-[#0F3D33] dark:text-[#4FB89A] font-medium">+18% intake growth</p>
+            <p className="text-[11px] text-[#D62828] dark:text-[#FF5A5F] font-medium">+18% intake growth</p>
           </div>
 
           <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Confirmed Admissions</span>
-            <p className="font-serif text-3xl sm:text-4xl font-normal text-[#0F3D33] dark:text-[#4FB89A] tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-normal text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
               {loading ? "..." : data?.admittedTotal}
             </p>
             <p className="text-[11px] text-muted-foreground font-mono">10.3% Conversion Rate</p>
@@ -112,7 +112,7 @@ export default function AnalyticsPage() {
 
           <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Average Intake Cycle</span>
-            <p className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
               {loading ? "..." : `${data?.avgDaysToConvert} Days`}
             </p>
             <p className="text-[11px] text-accent font-medium">Reduced 4.2 days with Copilot</p>
@@ -120,7 +120,7 @@ export default function AnalyticsPage() {
 
           <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">UN SDG 4 Compliance</span>
-            <p className="font-serif text-3xl sm:text-4xl font-normal text-[#0F3D33] dark:text-[#4FB89A] tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-normal text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
               100%
             </p>
             <p className="text-[11px] text-muted-foreground font-medium">Equitable access &amp; transparency</p>
@@ -132,10 +132,10 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div>
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Channel Performance</div>
-              <h3 className="font-serif text-base font-normal text-foreground">Lead Source Acquisition ROI Analysis</h3>
+              <h3 className="font-heading text-base font-normal text-foreground">Lead Source Acquisition ROI Analysis</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Marketing expenditure vs enrolled student tuition yield</p>
             </div>
-            <span className="text-xs text-[#0F3D33] dark:text-[#4FB89A] font-medium font-mono">
+            <span className="text-xs text-[#D62828] dark:text-[#FF5A5F] font-medium font-mono">
               Highest Yield: Referrals &amp; Walk-ins
             </span>
           </div>
@@ -155,17 +155,17 @@ export default function AnalyticsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {(data?.sourceROI || []).map((s: any, idx: number) => (
-                  <tr key={idx} className="hover:bg-[#EDE6DA]/30 dark:hover:bg-[#1F2723]/30 transition-colors">
+                  <tr key={idx} className="hover:bg-[#FFF9EE]/70 dark:hover:bg-[#27191E]/60 transition-colors">
                     <td className="py-3 font-medium text-foreground">{s.source}</td>
                     <td className="py-3 text-muted-foreground font-mono tabular-nums">{s.leads}</td>
-                    <td className="py-3 font-medium text-[#0F3D33] dark:text-[#4FB89A] font-mono tabular-nums">{s.admitted}</td>
+                    <td className="py-3 font-medium text-[#D62828] dark:text-[#FF5A5F] font-mono tabular-nums">{s.admitted}</td>
                     <td className="py-3 font-mono font-medium text-foreground tabular-nums">{s.conversionRate}%</td>
                     <td className="py-3 text-muted-foreground font-mono tabular-nums">{formatCurrency(s.cost)}</td>
                     <td className="py-3 font-medium text-foreground font-mono tabular-nums">
                       {formatCurrency(s.revenue)}
                     </td>
                     <td className="py-3 text-right">
-                      <span className="px-2 py-0.5 rounded-[4px] bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] font-mono text-[11px] border border-[#0F3D33]/20">
+                      <span className="px-2 py-0.5 rounded-[4px] bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] font-mono font-bold text-[11px] border border-[#FFC21A]/35">
                         +{s.roi}%
                       </span>
                     </td>
@@ -181,7 +181,7 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div>
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Faculty Leaderboard</div>
-              <h3 className="font-serif text-base font-normal text-foreground">Admissions Counselor Conversion Benchmarks</h3>
+              <h3 className="font-heading text-base font-normal text-foreground">Admissions Counselor Conversion Benchmarks</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Pipeline progression from assignment to enrolled matriculation</p>
             </div>
           </div>
@@ -190,11 +190,11 @@ export default function AnalyticsPage() {
             {(data?.counselorConversion || []).map((c: any) => (
               <div
                 key={c.id}
-                className="p-5 rounded-[10px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-3"
+                className="p-5 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-serif text-sm font-normal text-foreground">{c.name}</span>
-                  <span className="px-2 py-0.5 rounded-[4px] bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#4FB89A] dark:text-[#0F1412] font-mono font-bold text-xs">
+                  <span className="font-heading text-sm font-normal text-foreground">{c.name}</span>
+                  <span className="px-2 py-0.5 rounded-[4px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white font-mono font-bold text-xs shadow-xs">
                     {c.conversionRate}% Conv
                   </span>
                 </div>
@@ -210,7 +210,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="p-2.5 rounded-[8px] bg-card border border-border">
                     <span className="text-[10px] text-muted-foreground font-mono uppercase block">Admitted</span>
-                    <span className="font-mono font-bold text-[#0F3D33] dark:text-[#4FB89A] tabular-nums">{c.admitted}</span>
+                    <span className="font-mono font-bold text-[#D62828] dark:text-[#FF5A5F] tabular-nums">{c.admitted}</span>
                   </div>
                 </div>
               </div>
@@ -224,7 +224,7 @@ export default function AnalyticsPage() {
           <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
             <div className="pb-3 border-b border-border">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Capacity Planning</div>
-              <h3 className="font-serif text-base font-normal text-foreground">Program Seat Intake &amp; Fill Rate</h3>
+              <h3 className="font-heading text-base font-normal text-foreground">Program Seat Intake &amp; Fill Rate</h3>
             </div>
             <div className="space-y-4">
               {(data?.courseDemand || []).map((c: any) => (
@@ -235,9 +235,9 @@ export default function AnalyticsPage() {
                       {c.admitted} / {c.seats} seats ({c.occupancyRate}%)
                     </span>
                   </div>
-                  <div className="w-full h-2 rounded-[4px] bg-[#EDE6DA] dark:bg-[#1F2723] overflow-hidden">
+                  <div className="w-full h-2 rounded-[4px] bg-[#F8F2E6] dark:bg-[#1B1114] overflow-hidden">
                     <div
-                      className="h-full rounded-[4px] bg-[#0F3D33] dark:bg-[#4FB89A] transition-all"
+                      className="h-full rounded-[4px] bg-gradient-to-r from-[#D62828] via-[#FF5A5F] to-[#FFC21A] transition-all"
                       style={{ width: `${Math.min(100, Math.max(5, c.occupancyRate))}%` }}
                     />
                   </div>
@@ -250,13 +250,13 @@ export default function AnalyticsPage() {
           <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
             <div className="pb-3 border-b border-border">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Friction Diagnosis</div>
-              <h3 className="font-serif text-base font-normal text-foreground">Inquiry Drop-off Rationale</h3>
+              <h3 className="font-heading text-base font-normal text-foreground">Inquiry Drop-off Rationale</h3>
             </div>
             <div className="space-y-2.5">
               {(data?.dropOffAnalysis || []).map((item: any, idx: number) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border flex items-center justify-between text-xs"
+                  className="p-3 rounded-[8px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border flex items-center justify-between text-xs"
                 >
                   <span className="text-foreground truncate max-w-[280px]">
                     {item.reason}

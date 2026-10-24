@@ -381,7 +381,7 @@ function LeadsContent() {
             {/* Import Button */}
             <button
               onClick={() => setImportModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors"
             >
               <Upload className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Import CSV</span>
@@ -390,7 +390,7 @@ function LeadsContent() {
             {/* Export Button */}
             <button
               onClick={() => handleExport("csv")}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors"
             >
               <Download className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Export CSV</span>
@@ -399,7 +399,7 @@ function LeadsContent() {
             {/* Add Lead Button */}
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] text-xs font-medium transition-all shadow-xs"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white shadow-xs font-semibold text-xs font-medium transition-all shadow-xs"
             >
               <Plus className="w-4 h-4" />
               <span>New Candidate</span>
@@ -419,7 +419,7 @@ function LeadsContent() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && fetchLeads(1)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] focus:ring-1 focus:ring-[#0F3D33]/30 min-h-[40px] transition-all"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 focus:ring-1 focus:ring-[#FFC21A]/35 min-h-[40px] transition-all"
               />
             </div>
 
@@ -427,7 +427,7 @@ function LeadsContent() {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 min-h-[40px]"
             >
               <option value="ALL">All Pipeline Stages</option>
               <option value="NEW">New Enquiry</option>
@@ -443,7 +443,7 @@ function LeadsContent() {
             <select
               value={scoreCategory}
               onChange={(e) => setScoreCategory(e.target.value)}
-              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 min-h-[40px]"
             >
               <option value="ALL">All Score Bands</option>
               <option value="HOT">Hot Leads (80+)</option>
@@ -455,7 +455,7 @@ function LeadsContent() {
             <select
               value={leadSource}
               onChange={(e) => setLeadSource(e.target.value)}
-              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 min-h-[40px]"
             >
               <option value="ALL">All Inbound Sources</option>
               <option value="Website">Website</option>
@@ -472,7 +472,7 @@ function LeadsContent() {
             <select
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] min-h-[40px]"
+              className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 min-h-[40px]"
             >
               <option value="ALL">All Academic Programs</option>
               {courses.map((c) => (
@@ -498,7 +498,7 @@ function LeadsContent() {
                     setScoreCategory("ALL");
                     setSearch("");
                   }}
-                  className="text-[#0F3D33] dark:text-[#4FB89A] font-medium hover:underline inline-flex items-center gap-1"
+                  className="text-[#D62828] dark:text-[#FF5A5F] font-medium hover:underline inline-flex items-center gap-1"
                 >
                   <X className="w-3 h-3" />
                   <span>Clear filters</span>
@@ -517,7 +517,7 @@ function LeadsContent() {
               </button>
 
               {showColMenu && (
-                <div className="absolute right-0 mt-2 w-48 rounded-[10px] bg-card border border-border shadow-academic-floating p-3 z-30 space-y-2">
+                <div className="absolute right-0 mt-2 w-48 rounded-[10px] bg-card border border-border shadow-floating p-3 z-30 space-y-2">
                   <span className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider block">
                     Display Columns
                   </span>
@@ -529,7 +529,7 @@ function LeadsContent() {
                         onChange={(e) =>
                           setVisibleColumns({ ...visibleColumns, [col]: e.target.checked })
                         }
-                        className="rounded-[4px] border-border text-[#0F3D33] focus:ring-[#0F3D33]"
+                        className="rounded-[4px] border-border text-[#D62828] focus:ring-[#D62828]"
                       />
                       <span className="capitalize">{col}</span>
                     </label>
@@ -542,9 +542,9 @@ function LeadsContent() {
 
         {/* Bulk Actions Floating Bar */}
         {selectedIds.length > 0 && (
-          <div className="sticky top-20 z-20 flex items-center justify-between p-3.5 rounded-[10px] bg-[#0F3D33] dark:bg-[#171D1A] text-[#F6F2EA] dark:text-[#ECE8DF] border border-[#26302B] shadow-academic-floating animate-in slide-in-from-top-2">
+          <div className="sticky top-20 z-20 flex items-center justify-between p-3.5 rounded-[10px] bg-gradient-to-r from-[#8F1218] via-[#D62828] to-[#B81E1E] text-white border border-[#FFC21A]/30 shadow-floating shadow-floating animate-in slide-in-from-top-2">
             <div className="flex items-center gap-3 text-xs">
-              <span className="px-2.5 py-0.5 rounded-[6px] bg-[#165447] dark:bg-[#26302B] font-mono font-bold text-accent">
+              <span className="px-2.5 py-0.5 rounded-[6px] bg-white/20 font-mono font-bold text-[#FFC21A]">
                 {selectedIds.length}
               </span>
               <span>candidates selected</span>
@@ -553,13 +553,13 @@ function LeadsContent() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setBulkStatusModal(true)}
-                className="px-3 py-1.5 rounded-[8px] bg-[#165447] hover:bg-[#1F6E5D] dark:bg-[#26302B] dark:hover:bg-[#324039] text-xs font-medium transition-colors"
+                className="px-3 py-1.5 rounded-[8px] bg-white/15 hover:bg-white/25 text-white font-semibold text-xs font-medium transition-colors"
               >
                 Update Stage
               </button>
               <button
                 onClick={() => setBulkAssignModal(true)}
-                className="px-3 py-1.5 rounded-[8px] bg-[#165447] hover:bg-[#1F6E5D] dark:bg-[#26302B] dark:hover:bg-[#324039] text-xs font-medium transition-colors"
+                className="px-3 py-1.5 rounded-[8px] bg-white/15 hover:bg-white/25 text-white font-semibold text-xs font-medium transition-colors"
               >
                 Assign Counselor
               </button>
@@ -586,11 +586,11 @@ function LeadsContent() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-border bg-[#F6F2EA]/40 dark:bg-[#171D1A]/60 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                <tr className="border-b border-border bg-[#FFF9EE]/80 dark:bg-[#1B1114]/80 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
                   <th className="p-4 w-10 text-center">
                     <button onClick={handleSelectAll} className="focus:outline-none">
                       {selectedIds.length > 0 && selectedIds.length === leads.length ? (
-                        <CheckSquare className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
+                        <CheckSquare className="w-4 h-4 text-[#D62828] dark:text-[#FF5A5F]" />
                       ) : (
                         <Square className="w-4 h-4 text-muted-foreground" />
                       )}
@@ -657,7 +657,7 @@ function LeadsContent() {
                   <tr>
                     <td colSpan={9} className="py-20 text-center text-muted-foreground">
                       <div className="flex flex-col items-center gap-2">
-                        <Loader2 className="w-5 h-5 animate-spin text-[#0F3D33] dark:text-[#4FB89A]" />
+                        <Loader2 className="w-5 h-5 animate-spin text-[#D62828] dark:text-[#FF5A5F]" />
                         <span className="font-serif italic text-sm">Accessing admissions registry...</span>
                       </div>
                     </td>
@@ -681,14 +681,14 @@ function LeadsContent() {
                     return (
                       <tr
                         key={lead.id}
-                        className={`hover:bg-[#EDE6DA]/30 dark:hover:bg-[#1F2723]/30 transition-colors ${
-                          isSelected ? "bg-[#EDE6DA]/50 dark:bg-[#1F2723]/60" : ""
+                        className={`hover:bg-[#FFF9EE]/40 dark:hover:bg-[#27191E]/30 transition-colors ${
+                          isSelected ? "bg-[#FFF9EE]/90 dark:bg-[#27191E]/70" : ""
                         }`}
                       >
                         <td className="p-4 text-center">
                           <button onClick={() => handleToggleSelect(lead.id)} className="focus:outline-none">
                             {isSelected ? (
-                              <CheckSquare className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
+                              <CheckSquare className="w-4 h-4 text-[#D62828] dark:text-[#FF5A5F]" />
                             ) : (
                               <Square className="w-4 h-4 text-muted-foreground" />
                             )}
@@ -699,7 +699,7 @@ function LeadsContent() {
                           <td className="p-4">
                             <Link
                               href={`/leads/${lead.id}`}
-                              className="font-serif text-sm font-normal text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors"
+                              className="font-serif text-sm font-normal text-foreground hover:text-[#D62828] dark:hover:text-[#FF5A5F] transition-colors"
                             >
                               {lead.studentName}
                             </Link>
@@ -719,7 +719,7 @@ function LeadsContent() {
                             <p className="font-medium text-foreground truncate max-w-[170px]">
                               {lead.course?.name || "General Enquiry"}
                             </p>
-                            <span className="inline-block px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#EDE6DA] dark:bg-[#1F2723] text-muted-foreground border border-border">
+                            <span className="inline-block px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#F8F2E6] dark:bg-[#1B1114] text-muted-foreground border border-border">
                               {lead.leadSource}
                             </span>
                           </td>
@@ -773,7 +773,7 @@ function LeadsContent() {
                         <td className="p-4 text-right">
                           <Link
                             href={`/leads/${lead.id}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-[11px] transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-[11px] transition-colors"
                           >
                             <span>Dossier</span>
                             <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
@@ -791,7 +791,7 @@ function LeadsContent() {
           <div className="block md:hidden divide-y divide-border">
             {loading ? (
               <div className="p-8 text-center text-muted-foreground">
-                <Loader2 className="w-5 h-5 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto mb-2" />
+                <Loader2 className="w-5 h-5 animate-spin text-[#D62828] dark:text-[#FF5A5F] mx-auto mb-2" />
                 <span className="font-serif italic text-xs">Loading records...</span>
               </div>
             ) : leads.length === 0 ? (
@@ -810,7 +810,7 @@ function LeadsContent() {
                   <div
                     key={lead.id}
                     className={`p-4 space-y-3 transition-colors ${
-                      isSelected ? "bg-[#EDE6DA]/50 dark:bg-[#1F2723]/60" : ""
+                      isSelected ? "bg-[#FFF9EE]/90 dark:bg-[#27191E]/70" : ""
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -820,7 +820,7 @@ function LeadsContent() {
                           className="min-h-[44px] min-w-[44px] flex items-center justify-center -ml-1 focus:outline-none"
                         >
                           {isSelected ? (
-                            <CheckSquare className="w-5 h-5 text-[#0F3D33] dark:text-[#4FB89A]" />
+                            <CheckSquare className="w-5 h-5 text-[#D62828] dark:text-[#FF5A5F]" />
                           ) : (
                             <Square className="w-5 h-5 text-muted-foreground" />
                           )}
@@ -828,7 +828,7 @@ function LeadsContent() {
                         <div>
                           <Link
                             href={`/leads/${lead.id}`}
-                            className="font-serif text-base font-normal text-foreground hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors line-clamp-1"
+                            className="font-serif text-base font-normal text-foreground hover:text-[#D62828] dark:hover:text-[#FF5A5F] transition-colors line-clamp-1"
                           >
                             {lead.studentName}
                           </Link>
@@ -847,7 +847,7 @@ function LeadsContent() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/40 p-3 rounded-[8px] border border-border">
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 p-3 rounded-[8px] border border-border">
                       <div>
                         <span className="text-muted-foreground block text-[10px] uppercase font-mono tracking-wider">
                           Program &amp; Source
@@ -873,9 +873,9 @@ function LeadsContent() {
                         {lead.phone && (
                           <a
                             href={`tel:${lead.phone}`}
-                            className="min-h-[44px] flex items-center gap-1.5 text-foreground hover:text-[#0F3D33] font-mono tabular-nums"
+                            className="min-h-[44px] flex items-center gap-1.5 text-foreground hover:text-[#D62828] font-mono tabular-nums"
                           >
-                            <Phone className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A]" />
+                            <Phone className="w-3.5 h-3.5 text-[#D62828] dark:text-[#FF5A5F]" />
                             <span>{lead.phone}</span>
                           </a>
                         )}
@@ -883,7 +883,7 @@ function LeadsContent() {
 
                       <Link
                         href={`/leads/${lead.id}`}
-                        className="min-h-[44px] px-4 py-2 rounded-[8px] bg-card border border-border hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs flex items-center gap-1 text-foreground transition-colors"
+                        className="min-h-[44px] px-4 py-2 rounded-[8px] bg-card border border-border hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-xs flex items-center gap-1 text-foreground transition-colors"
                       >
                         <span>Open Dossier</span>
                         <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
@@ -906,7 +906,7 @@ function LeadsContent() {
               <button
                 disabled={pagination.page <= 1}
                 onClick={() => fetchLeads(pagination.page - 1)}
-                className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] disabled:opacity-40 transition-colors"
+                className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] disabled:opacity-40 transition-colors"
                 title="Previous page"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -914,7 +914,7 @@ function LeadsContent() {
               <button
                 disabled={pagination.page >= pagination.totalPages}
                 onClick={() => fetchLeads(pagination.page + 1)}
-                className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] disabled:opacity-40 transition-colors"
+                className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] disabled:opacity-40 transition-colors"
                 title="Next page"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -926,7 +926,7 @@ function LeadsContent() {
         {/* Modal: Create Lead */}
         {createModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-xl bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border max-h-[90vh] overflow-y-auto">
+            <div className="w-full max-w-xl bg-card rounded-[12px] p-6 sm:p-8 shadow-floating border border-border max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between pb-4 border-b border-border">
                 <div>
                   <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Registry Entry</div>
@@ -936,7 +936,7 @@ function LeadsContent() {
                 </div>
                 <button
                   onClick={() => setCreateModalOpen(false)}
-                  className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                  className="p-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -952,7 +952,7 @@ function LeadsContent() {
                       placeholder="e.g. Aarav Mehta"
                       value={createFormData.studentName}
                       onChange={(e) => setCreateFormData({ ...createFormData, studentName: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
 
@@ -965,7 +965,7 @@ function LeadsContent() {
                       placeholder="+91 98765 43210"
                       value={createFormData.phone}
                       onChange={(e) => setCreateFormData({ ...createFormData, phone: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 </div>
@@ -980,7 +980,7 @@ function LeadsContent() {
                       placeholder="student@gmail.com"
                       value={createFormData.email}
                       onChange={(e) => setCreateFormData({ ...createFormData, email: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
 
@@ -992,7 +992,7 @@ function LeadsContent() {
                       placeholder="e.g. Pune"
                       value={createFormData.city}
                       onChange={(e) => setCreateFormData({ ...createFormData, city: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 </div>
@@ -1003,7 +1003,7 @@ function LeadsContent() {
                     <select
                       value={createFormData.courseId}
                       onChange={(e) => setCreateFormData({ ...createFormData, courseId: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="">Select Degree Program</option>
                       {courses.map((c) => (
@@ -1019,7 +1019,7 @@ function LeadsContent() {
                     <select
                       value={createFormData.leadSource}
                       onChange={(e) => setCreateFormData({ ...createFormData, leadSource: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="Website">Website</option>
                       <option value="Instagram">Instagram</option>
@@ -1039,7 +1039,7 @@ function LeadsContent() {
                     <select
                       value={createFormData.assignedToId}
                       onChange={(e) => setCreateFormData({ ...createFormData, assignedToId: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="">Auto-assign (Round Robin)</option>
                       {counselors.map((c) => (
@@ -1055,7 +1055,7 @@ function LeadsContent() {
                     <select
                       value={createFormData.status}
                       onChange={(e) => setCreateFormData({ ...createFormData, status: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="NEW">New Enquiry</option>
                       <option value="CONTACTED">Contacted</option>
@@ -1072,7 +1072,7 @@ function LeadsContent() {
                     placeholder="Academic background, prior examination score, parent consultation preferences..."
                     value={createFormData.message}
                     onChange={(e) => setCreateFormData({ ...createFormData, message: e.target.value })}
-                    className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
+                    className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 resize-none"
                   />
                 </div>
 
@@ -1080,13 +1080,13 @@ function LeadsContent() {
                   <button
                     type="button"
                     onClick={() => setCreateModalOpen(false)}
-                    className="px-4 py-2 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                    className="px-4 py-2 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] shadow-xs"
+                    className="px-5 py-2 text-xs font-medium rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white shadow-xs font-semibold shadow-xs"
                   >
                     Register &amp; Compute AI Score
                   </button>
@@ -1099,7 +1099,7 @@ function LeadsContent() {
         {/* Modal: CSV Import */}
         {importModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-2xl bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border max-h-[90vh] overflow-y-auto space-y-4">
+            <div className="w-full max-w-2xl bg-card rounded-[12px] p-6 sm:p-8 shadow-floating border border-border max-h-[90vh] overflow-y-auto space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
                   <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Bulk Ingestion</div>
@@ -1112,8 +1112,8 @@ function LeadsContent() {
                 </button>
               </div>
 
-              <div className="border-2 border-dashed border-border rounded-[10px] p-6 text-center space-y-3 bg-[#EDE6DA]/20 dark:bg-[#1F2723]/20">
-                <FileSpreadsheet className="w-10 h-10 text-[#0F3D33] dark:text-[#4FB89A] mx-auto stroke-[1.5]" />
+              <div className="border-2 border-dashed border-border rounded-[10px] p-6 text-center space-y-3 bg-[#F8F2E6]/40 dark:bg-[#1B1114]/40">
+                <FileSpreadsheet className="w-10 h-10 text-[#D62828] dark:text-[#FF5A5F] mx-auto stroke-[1.5]" />
                 <div>
                   <p className="text-xs font-medium text-foreground">Upload CSV or Excel Workbook</p>
                   <p className="text-[11px] text-muted-foreground">Expected headers: Student Name, Email, Phone, City, Source</p>
@@ -1128,7 +1128,7 @@ function LeadsContent() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] text-xs font-medium shadow-xs"
+                  className="px-4 py-2 rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white shadow-xs font-semibold text-xs font-medium shadow-xs"
                 >
                   Select File
                 </button>
@@ -1142,7 +1142,7 @@ function LeadsContent() {
                   </span>
                   <div className="max-h-48 overflow-y-auto border border-border rounded-[8px]">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-[#EDE6DA]/40 dark:bg-[#1F2723]/60 text-[10px] uppercase text-muted-foreground">
+                      <thead className="bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 text-[10px] uppercase text-muted-foreground">
                         <tr>
                           <th className="p-2">Name</th>
                           <th className="p-2">Email</th>
@@ -1172,7 +1172,7 @@ function LeadsContent() {
                     setImportModalOpen(false);
                     setCsvPreviewData([]);
                   }}
-                  className="px-4 py-2 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                  className="px-4 py-2 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                 >
                   Cancel
                 </button>
@@ -1180,7 +1180,7 @@ function LeadsContent() {
                   type="button"
                   disabled={csvPreviewData.length === 0 || importing}
                   onClick={handleCommitImport}
-                  className="px-5 py-2 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] disabled:opacity-50 shadow-xs"
+                  className="px-5 py-2 text-xs font-medium rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white shadow-xs font-semibold disabled:opacity-50 shadow-xs"
                 >
                   {importing ? "Ingesting & Scoring..." : `Confirm & Ingest ${csvPreviewData.length} Candidates`}
                 </button>
@@ -1192,14 +1192,14 @@ function LeadsContent() {
         {/* Modal: Bulk Status */}
         {bulkStatusModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-floating border border-border space-y-4">
               <h3 className="font-serif text-lg font-normal text-foreground">
                 Update Stage ({selectedIds.length} candidates)
               </h3>
               <select
                 value={bulkTargetStatus}
                 onChange={(e) => setBulkTargetStatus(e.target.value)}
-                className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
               >
                 <option value="NEW">New Enquiry</option>
                 <option value="CONTACTED">Contacted</option>
@@ -1212,13 +1212,13 @@ function LeadsContent() {
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setBulkStatusModal(false)}
-                  className="px-3 py-1.5 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                  className="px-3 py-1.5 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBulkStatus}
-                  className="px-4 py-1.5 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] shadow-xs"
+                  className="px-4 py-1.5 text-xs font-medium rounded-[8px] bg-[#D62828] text-white font-semibold shadow-xs"
                 >
                   Apply Stage
                 </button>
@@ -1230,14 +1230,14 @@ function LeadsContent() {
         {/* Modal: Bulk Assign Counselor */}
         {bulkAssignModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-floating border border-border space-y-4">
               <h3 className="font-serif text-lg font-normal text-foreground">
                 Assign Counselor ({selectedIds.length} candidates)
               </h3>
               <select
                 value={bulkTargetCounselor}
                 onChange={(e) => setBulkTargetCounselor(e.target.value)}
-                className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
               >
                 <option value="">Select Counselor</option>
                 {counselors.map((c) => (
@@ -1249,13 +1249,13 @@ function LeadsContent() {
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   onClick={() => setBulkAssignModal(false)}
-                  className="px-3 py-1.5 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                  className="px-3 py-1.5 text-xs font-medium rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBulkAssign}
-                  className="px-4 py-1.5 text-xs font-medium rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] shadow-xs"
+                  className="px-4 py-1.5 text-xs font-medium rounded-[8px] bg-[#D62828] text-white font-semibold shadow-xs"
                 >
                   Assign Candidates
                 </button>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export default function CoursesRedirect() {
   const router = useRouter();
@@ -11,8 +12,11 @@ export default function CoursesRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-xs text-slate-400">
-      Loading Academic Programs & Courses...
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground gap-3">
+      <Loader2 className="w-6 h-6 animate-spin text-[#FFC21A]" />
+      <span className="font-heading font-medium text-xs text-muted-foreground">
+        Loading Academic Programs &amp; Courses...
+      </span>
     </div>
   );
 }

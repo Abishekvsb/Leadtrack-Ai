@@ -4,8 +4,8 @@
   "description": "Educational Admissions Management, AI Lead Scoring & Follow-up Automation",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#090d16",
-  "theme_color": "#4f46e5",
+  "background_color": "#120A0C",
+  "theme_color": "#D62828",
   "orientation": "portrait-primary",
   "icons": [
     {

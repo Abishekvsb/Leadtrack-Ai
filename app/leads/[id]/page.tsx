@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { useToast } from "@/components/toast-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { LeadScoreStamp } from "@/components/ui/design-system";
+import { LeadScoreStamp, ScoreDial } from "@/components/ui/design-system";
 import {
   ArrowLeft,
   Mail,
@@ -351,7 +351,7 @@ export default function LeadDetailPage() {
     return (
       <DashboardLayout>
         <div className="py-24 text-center space-y-3">
-          <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#D62828] dark:text-[#FF5A5F] mx-auto" />
           <p className="font-serif italic text-xs text-muted-foreground">Retrieving candidate dossier...</p>
         </div>
       </DashboardLayout>
@@ -386,9 +386,9 @@ export default function LeadDetailPage() {
           {duplicateLead && (
             <button
               onClick={() => setDuplicateModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#E0A030]/15 border border-[#E0A030]/30 text-[#9E6C16] dark:text-[#E0A030] text-xs font-medium hover:bg-[#E0A030]/25 transition-all"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#FFC21A]/15 border border-[#FFC21A]/35 text-[#8A5A00] dark:text-[#FFD25A] text-xs font-bold hover:bg-[#FFC21A]/25 transition-all"
             >
-              <GitMerge className="w-3.5 h-3.5" />
+              <GitMerge className="w-3.5 h-3.5 text-[#FFC21A]" />
               <span>Duplicate Record Detected: {duplicateLead.studentName} (Click to Merge)</span>
             </button>
           )}
@@ -397,19 +397,19 @@ export default function LeadDetailPage() {
         {/* Lead Header Profile & Quick Action Bar (Student Card Dossier Header) */}
         <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-[10px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-serif text-xl flex items-center justify-center shrink-0 border border-[#0F3D33] dark:border-[#4FB89A] shadow-xs">
+            <div className="w-14 h-14 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white font-heading font-bold text-xl flex items-center justify-center shrink-0 border border-[#FFC21A]/30 shadow-xs">
               {lead.studentName.slice(0, 2).toUpperCase()}
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="font-serif text-2xl sm:text-3xl font-normal text-foreground tracking-tight">
+                <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
                   {lead.studentName}
                 </h1>
                 <span className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium">
                   <span className={`w-2 h-2 rounded-full ${statusInfo.dot}`} />
                   <span>{STATUS_LABELS[lead.status as LeadStatus] || lead.status}</span>
                 </span>
-                <span className="px-2 py-0.5 rounded-[4px] bg-[#EDE6DA] dark:bg-[#1F2723] text-muted-foreground text-[10px] font-mono uppercase border border-border">
+                <span className="px-2 py-0.5 rounded-[4px] bg-[#F8F2E6] dark:bg-[#1B1114] text-muted-foreground text-[10px] font-mono uppercase border border-border">
                   via {lead.leadSource}
                 </span>
               </div>
@@ -439,7 +439,7 @@ export default function LeadDetailPage() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] bg-[#16A34A] text-white hover:bg-[#15803D] font-semibold text-xs shadow-xs transition-colors"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
@@ -448,7 +448,7 @@ export default function LeadDetailPage() {
             {/* Log Call */}
             <button
               onClick={() => setCallModalOpen(true)}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-xs transition-colors"
             >
               <PhoneCall className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Log Call</span>
@@ -460,7 +460,7 @@ export default function LeadDetailPage() {
                 if (templates.length > 0) handleSelectTemplate(templates[0].id);
                 setEmailModalOpen(true);
               }}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-xs transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Email</span>
@@ -469,7 +469,7 @@ export default function LeadDetailPage() {
             {/* Schedule Task */}
             <button
               onClick={() => setFollowUpModalOpen(true)}
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-xs transition-colors"
             >
               <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Task</span>
@@ -497,15 +497,15 @@ export default function LeadDetailPage() {
                   onClick={() => handleStatusChange(st)}
                   className={`p-3 rounded-[8px] text-left border transition-all text-xs flex flex-col justify-between h-20 ${
                     isCurrent
-                      ? "bg-[#0F3D33] text-[#F6F2EA] border-[#0F3D33] dark:bg-[#4FB89A] dark:text-[#0F1412] dark:border-[#4FB89A] shadow-xs"
+                      ? "bg-[#D62828] text-white border-[#D62828] dark:bg-[#FF5A5F] dark:text-[#120A0C] dark:border-[#FF5A5F] font-bold shadow-xs"
                       : isPast
-                      ? "bg-[#EDE6DA]/40 dark:bg-[#1F2723]/50 border-border text-foreground"
-                      : "bg-card border-border text-muted-foreground hover:border-[#0F3D33]/40"
+                      ? "bg-[#FFF9EE]/80 dark:bg-[#1B1114]/80 border-border text-foreground"
+                      : "bg-card border-border text-muted-foreground hover:border-[#FFC21A]/50"
                   }`}
                 >
                   <span className="font-mono text-[10px] uppercase opacity-75">Step 0{idx + 1}</span>
                   <span className="font-medium truncate">{STATUS_LABELS[st]}</span>
-                  {isPast && <CheckCircle2 className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A] self-end" />}
+                  {isPast && <CheckCircle2 className="w-3.5 h-3.5 text-[#D62828] dark:text-[#FF5A5F] self-end" />}
                   {isCurrent && <span className="font-mono text-[9px] uppercase tracking-widest self-end">Current</span>}
                 </button>
               );
@@ -524,7 +524,7 @@ export default function LeadDetailPage() {
               </span>
               <button
                 onClick={() => setScoreModalOpen(true)}
-                className="text-xs text-[#0F3D33] dark:text-[#4FB89A] hover:underline flex items-center gap-1 font-medium"
+                className="text-xs text-[#D62828] dark:text-[#FF5A5F] hover:underline flex items-center gap-1 font-medium"
               >
                 <span>Scoring logic</span>
                 <HelpCircle className="w-3.5 h-3.5" />
@@ -532,8 +532,8 @@ export default function LeadDetailPage() {
             </div>
 
             <div className="my-5 flex items-center justify-around gap-4">
-              {/* Prominent Lead Score Stamp */}
-              <LeadScoreStamp score={lead.score} category={lead.scoreCategory} />
+              {/* Score Dial & Dossier Stamp */}
+              <ScoreDial score={lead.score} size={100} strokeWidth={8} label="Intent Score" />
 
               <div className="space-y-2 text-xs">
                 <div>
@@ -557,15 +557,15 @@ export default function LeadDetailPage() {
               </div>
             </div>
 
-            <div className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-[11px] text-muted-foreground leading-relaxed">
+            <div className="p-3 rounded-[8px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border text-[11px] text-muted-foreground leading-relaxed">
               Synthesized from inbound channel reputation, student inquiries, academic preferences, and counselor touchpoints.
             </div>
           </div>
 
           {/* Next Best Action Card (Institutional Academic Brief) */}
-          <div className="lg:col-span-2 p-6 sm:p-7 rounded-[12px] bg-[#0F3D33] dark:bg-[#171D1A] text-[#F6F2EA] dark:text-[#ECE8DF] border border-[#26302B] shadow-academic-floating flex flex-col justify-between">
+          <div className="lg:col-span-2 p-6 sm:p-7 rounded-[12px] bg-gradient-to-br from-[#8F1218] via-[#D62828] to-[#B81E1E] text-white border border-[#FFC21A]/30 shadow-card flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] bg-[#E0A030]/20 text-accent text-[11px] font-mono uppercase tracking-wider border border-[#E0A030]/30">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] bg-white/15 text-[#FFC21A] text-[11px] font-mono uppercase tracking-wider border border-white/20 font-bold">
                 <Sparkles className="w-3 h-3 text-accent" />
                 <span>Admissions Copilot Advisory</span>
               </div>
@@ -581,7 +581,7 @@ export default function LeadDetailPage() {
               <span>Counselor Turnaround Target: 4 hrs</span>
               <button
                 onClick={() => setCallModalOpen(true)}
-                className="px-4 py-2 rounded-[8px] bg-[#E0A030] text-[#1B1A17] font-medium text-xs hover:bg-[#C98B22] transition-colors shadow-xs"
+                className="px-4 py-2 rounded-[8px] bg-[#FFC21A] text-[#17141A] font-bold text-xs hover:bg-[#E5A100] transition-colors shadow-xs"
               >
                 Execute Consultation →
               </button>
@@ -632,7 +632,7 @@ export default function LeadDetailPage() {
                 {lead.message && (
                   <div>
                     <span className="text-muted-foreground text-[10px] uppercase font-mono">Initial Enquiry Message</span>
-                    <p className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-foreground mt-1 text-xs leading-relaxed">
+                    <p className="p-3 rounded-[8px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border text-foreground mt-1 text-xs leading-relaxed">
                       {lead.message}
                     </p>
                   </div>
@@ -649,7 +649,7 @@ export default function LeadDetailPage() {
                 </div>
                 <button
                   onClick={() => setDocModalOpen(true)}
-                  className="text-xs text-[#0F3D33] dark:text-[#4FB89A] font-medium hover:underline flex items-center gap-1"
+                  className="text-xs text-[#D62828] dark:text-[#FF5A5F] font-medium hover:underline flex items-center gap-1"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Attach</span>
@@ -665,7 +665,7 @@ export default function LeadDetailPage() {
                   lead.documents.map((doc: any) => (
                     <div
                       key={doc.id}
-                      className="p-3 rounded-[8px] bg-[#EDE6DA]/20 dark:bg-[#1F2723]/20 border border-border flex items-center justify-between text-xs"
+                      className="p-3 rounded-[8px] bg-[#F8F2E6]/40 dark:bg-[#1B1114]/40 border border-border flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center gap-2.5 truncate">
                         <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -696,7 +696,7 @@ export default function LeadDetailPage() {
                   placeholder="Record consultation takeaways, scholarship eligibility, parent concerns, or candidate interests..."
                   value={noteContent}
                   onChange={(e) => setNoteContent(e.target.value)}
-                  className="w-full p-3.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground text-xs outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
+                  className="w-full p-3.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground text-xs outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 resize-none"
                 />
 
                 <div className="flex items-center justify-between">
@@ -705,7 +705,7 @@ export default function LeadDetailPage() {
                       type="checkbox"
                       checked={noteIsPinned}
                       onChange={(e) => setNoteIsPinned(e.target.checked)}
-                      className="rounded-[4px] border-border text-[#0F3D33] focus:ring-[#0F3D33]"
+                      className="rounded-[4px] border-border text-[#D62828] focus:ring-[#D62828]"
                     />
                     <span>Pin observation to top</span>
                   </label>
@@ -713,7 +713,7 @@ export default function LeadDetailPage() {
                   <button
                     type="submit"
                     disabled={submittingNote || !noteContent.trim()}
-                    className="px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs hover:bg-[#165447] dark:hover:bg-[#63C7AA] transition-colors disabled:opacity-50 shadow-xs"
+                    className="px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs transition-colors disabled:opacity-50 shadow-xs"
                   >
                     {submittingNote ? "Saving..." : "Record Note"}
                   </button>
@@ -732,7 +732,7 @@ export default function LeadDetailPage() {
                       key={note.id}
                       className={`p-4 rounded-[8px] text-xs space-y-2 border ${
                         note.isPinned
-                          ? "bg-[#EDE6DA]/40 dark:bg-[#1F2723]/60 border-[#E0A030]/50"
+                          ? "bg-[#FFF9EE]/80 dark:bg-[#1B1114]/80 border-[#FFC21A]/50"
                           : "bg-background/40 border-border"
                       }`}
                     >
@@ -768,7 +768,7 @@ export default function LeadDetailPage() {
               <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-border">
                 {(lead.activities || []).map((act: any) => (
                   <div key={act.id} className="relative space-y-1">
-                    <span className="absolute -left-6 top-1.5 w-2.5 h-2.5 rounded-full bg-[#0F3D33] dark:bg-[#4FB89A] ring-4 ring-card" />
+                    <span className="absolute -left-6 top-1.5 w-2.5 h-2.5 rounded-full bg-[#D62828] dark:bg-[#FF5A5F] ring-4 ring-card shadow-xs" />
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-medium text-foreground">{act.title}</span>
                       <span className="text-[10px] font-mono tabular-nums text-muted-foreground">{timeAgo(act.createdAt)}</span>
@@ -788,7 +788,7 @@ export default function LeadDetailPage() {
         {/* Modal: Why This Score? Breakdown */}
         {scoreModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-8 shadow-floating border border-border space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-accent" />
@@ -803,11 +803,11 @@ export default function LeadDetailPage() {
                 {Object.entries(scoreBreakdown).map(([key, factor]: [string, any]) => (
                   <div
                     key={key}
-                    className="p-3 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-1"
+                    className="p-3 rounded-[8px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1"
                   >
                     <div className="flex items-center justify-between font-medium">
                       <span className="capitalize text-foreground">{key.replace(/([A-Z])/g, " $1")}</span>
-                      <span className="font-mono text-[#0F3D33] dark:text-[#4FB89A]">
+                      <span className="font-mono text-[#D62828] dark:text-[#FF5A5F]">
                         {factor.score !== undefined ? `${factor.score} / ${factor.max} pts` : factor}
                       </span>
                     </div>
@@ -819,7 +819,7 @@ export default function LeadDetailPage() {
               <div className="pt-2 text-right">
                 <button
                   onClick={() => setScoreModalOpen(false)}
-                  className="px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] text-xs font-medium"
+                  className="px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] text-xs font-semibold shadow-xs"
                 >
                   Close Analysis
                 </button>
@@ -831,7 +831,7 @@ export default function LeadDetailPage() {
         {/* Modal: Log Outbound Call */}
         {callModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-floating border border-border space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-border">
                 <h3 className="font-serif text-base font-normal text-foreground">
                   Consultation Call with {lead.studentName}
@@ -847,7 +847,7 @@ export default function LeadDetailPage() {
                   <select
                     value={callOutcome}
                     onChange={(e) => setCallOutcome(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   >
                     <option value="Connected - Expressed Keen Interest">Connected - Expressed Keen Interest</option>
                     <option value="Connected - Campus Visit Booked">Connected - Campus Visit Booked</option>
@@ -865,7 +865,7 @@ export default function LeadDetailPage() {
                     placeholder="Brief summary of candidate queries, concerns, or next commitments..."
                     value={callNotes}
                     onChange={(e) => setCallNotes(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 resize-none"
                   />
                 </div>
 
@@ -873,13 +873,13 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setCallModalOpen(false)}
-                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
+                    className="px-5 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold shadow-xs"
                   >
                     Save Call Record
                   </button>
@@ -892,7 +892,7 @@ export default function LeadDetailPage() {
         {/* Modal: Send Email */}
         {emailModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 shadow-floating border border-border space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-border">
                 <h3 className="font-serif text-base font-normal text-foreground">
                   Dispatch Email to {lead.studentName}
@@ -908,7 +908,7 @@ export default function LeadDetailPage() {
                   <select
                     value={selectedTemplateId}
                     onChange={(e) => handleSelectTemplate(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   >
                     <option value="">Custom Message</option>
                     {templates.map((t) => (
@@ -926,7 +926,7 @@ export default function LeadDetailPage() {
                     required
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   />
                 </div>
 
@@ -945,13 +945,13 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setEmailModalOpen(false)}
-                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
+                    className="px-5 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold shadow-xs"
                   >
                     Send Message
                   </button>
@@ -964,7 +964,7 @@ export default function LeadDetailPage() {
         {/* Modal: Schedule Follow-Up */}
         {followUpModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-md bg-card rounded-[12px] p-6 shadow-floating border border-border space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-border">
                 <h3 className="font-serif text-base font-normal text-foreground">Schedule Task</h3>
                 <button onClick={() => setFollowUpModalOpen(false)} className="text-muted-foreground hover:text-foreground">
@@ -980,7 +980,7 @@ export default function LeadDetailPage() {
                     required
                     value={fuDate}
                     onChange={(e) => setFuDate(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   />
                 </div>
 
@@ -990,7 +990,7 @@ export default function LeadDetailPage() {
                     <select
                       value={fuType}
                       onChange={(e) => setFuType(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="CALL">Phone Call</option>
                       <option value="WHATSAPP">WhatsApp</option>
@@ -1005,7 +1005,7 @@ export default function LeadDetailPage() {
                     <select
                       value={fuPriority}
                       onChange={(e) => setFuPriority(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="LOW">Low</option>
                       <option value="MEDIUM">Medium</option>
@@ -1022,7 +1022,7 @@ export default function LeadDetailPage() {
                     placeholder="e.g. Inquire about entrance exam verification and scholarship documents..."
                     value={fuNotes}
                     onChange={(e) => setFuNotes(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 resize-none"
                   />
                 </div>
 
@@ -1030,13 +1030,13 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setFollowUpModalOpen(false)}
-                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
+                    className="px-5 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold shadow-xs"
                   >
                     Save Task
                   </button>
@@ -1049,7 +1049,7 @@ export default function LeadDetailPage() {
         {/* Modal: Document Attachment */}
         {docModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-academic-floating border border-border space-y-4">
+            <div className="w-full max-w-sm bg-card rounded-[12px] p-6 shadow-floating border border-border space-y-4">
               <h3 className="font-serif text-base font-normal text-foreground">Register Academic Record</h3>
               <form onSubmit={handleUploadDoc} className="space-y-3 text-xs">
                 <div className="space-y-1.5">
@@ -1060,7 +1060,7 @@ export default function LeadDetailPage() {
                     placeholder="e.g. Higher Secondary Certificate"
                     value={docName}
                     onChange={(e) => setDocName(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -1068,7 +1068,7 @@ export default function LeadDetailPage() {
                   <select
                     value={docType}
                     onChange={(e) => setDocType(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   >
                     <option value="12th Marksheet PDF">12th Marksheet PDF</option>
                     <option value="Entrance Score Card">Entrance Score Card</option>
@@ -1081,13 +1081,13 @@ export default function LeadDetailPage() {
                   <button
                     type="button"
                     onClick={() => setDocModalOpen(false)}
-                    className="px-3 py-1.5 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                    className="px-3 py-1.5 rounded-[8px] border border-border text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium shadow-xs"
+                    className="px-4 py-1.5 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold shadow-xs"
                   >
                     Register Document
                   </button>
@@ -1100,9 +1100,9 @@ export default function LeadDetailPage() {
         {/* Modal: Merge Duplicate Leads */}
         {duplicateModalOpen && duplicateLead && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border space-y-5">
+            <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-8 shadow-floating border border-border space-y-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[8px] bg-[#E0A030]/15 text-accent flex items-center justify-center shrink-0 border border-[#E0A030]/30">
+                <div className="w-10 h-10 rounded-[8px] bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] flex items-center justify-center shrink-0 border border-[#FFC21A]/35">
                   <GitMerge className="w-5 h-5" />
                 </div>
                 <div>
@@ -1111,7 +1111,7 @@ export default function LeadDetailPage() {
                 </div>
               </div>
 
-              <div className="p-4 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-xs space-y-2">
+              <div className="p-4 rounded-[8px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border text-xs space-y-2">
                 <p className="font-medium text-foreground">
                   Target (Preserve): {lead.studentName} ({lead.email})
                 </p>
@@ -1127,14 +1127,14 @@ export default function LeadDetailPage() {
                 <button
                   type="button"
                   onClick={() => setDuplicateModalOpen(false)}
-                  className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium"
+                  className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleMerge}
-                  className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs shadow-xs"
+                  className="px-5 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs"
                 >
                   Confirm &amp; Merge
                 </button>

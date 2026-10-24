@@ -113,56 +113,56 @@ export default function GuidePage() {
     <DashboardLayout>
       <div className="space-y-12 pb-16 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="border-b border-[#E4DDD0] dark:border-[#26302B] pb-8 text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[11px] font-mono uppercase tracking-wider text-[#0F3D33] dark:text-[#4FB89A]">
-            <BookOpen className="w-3.5 h-3.5 text-[#E0A030]" />
+        <div className="border-b border-border pb-8 text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#D62828]/10 border border-[#D62828]/25 text-[11px] font-mono uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold">
+            <BookOpen className="w-3.5 h-3.5 text-[#FFC21A]" />
             <span>Admissions Operations Manual • Standard Operating Procedures</span>
           </div>
 
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#1B1A17] dark:text-[#ECE8DF]">
+          <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
             The Admissions Lifecycle Handbook
           </h1>
-          <p className="text-xs sm:text-sm text-[#6B665C] dark:text-[#959187] max-w-xl mx-auto leading-relaxed font-sans">
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed font-sans">
             A comprehensive operational blueprint covering the 7-stage student recruitment lifecycle from initial enquiry to confirmed matriculation.
           </p>
         </div>
 
         {/* 7-Stage Admissions Lifecycle */}
         <div className="space-y-6">
-          <div className="flex items-center justify-between border-b border-[#E4DDD0] dark:border-[#26302B] pb-3">
-            <h2 className="font-serif text-lg font-bold text-[#1B1A17] dark:text-[#ECE8DF] flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#0F3D33] dark:text-[#4FB89A]" />
+          <div className="flex items-center justify-between border-b border-border pb-3">
+            <h2 className="font-heading text-lg font-bold text-foreground flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#D62828] dark:text-[#FF5A5F]" />
               <span>Standard 7-Stage Trajectory</span>
             </h2>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-[#6B665C] dark:text-[#959187]">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
               Admissions Protocol
             </span>
           </div>
 
-          <div className="relative border-l border-[#E4DDD0] dark:border-[#26302B] ml-3.5 sm:ml-5 pl-6 sm:pl-8 space-y-6">
+          <div className="relative border-l border-border ml-3.5 sm:ml-5 pl-6 sm:pl-8 space-y-6">
             {lifecycleSteps.map((step) => {
               const Icon = step.icon;
               return (
                 <div key={step.step} className="relative group">
                   {/* Step Dot Number */}
-                  <div className="absolute -left-[37px] sm:-left-[45px] top-1.5 w-7 h-7 rounded-lg bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#0F3D33] dark:text-[#4FB89A] font-mono font-bold text-[11px] flex items-center justify-center shadow-2xs">
+                  <div className="absolute -left-[37px] sm:-left-[45px] top-1.5 w-7 h-7 rounded-lg bg-card border border-[#FFC21A]/40 text-[#8A5A00] dark:text-[#FFD25A] font-mono font-bold text-[11px] shadow-xs flex items-center justify-center shadow-2xs">
                     {step.step}
                   </div>
 
-                  <div className="p-5 sm:p-6 rounded-xl bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] shadow-xs hover:border-[#0F3D33]/40 dark:hover:border-[#4FB89A]/40 transition-colors space-y-3">
+                  <div className="p-5 sm:p-6 rounded-xl bg-card border border-border shadow-xs hover:border-[#FFC21A]/50 transition-colors space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#FAF7F0] dark:bg-[#131916] text-[#0F3D33] dark:text-[#4FB89A] border border-[#E4DDD0] dark:border-[#26302B] uppercase tracking-wider">
+                        <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] font-bold border border-border uppercase tracking-wider">
                           {step.badge}
                         </span>
-                        <h3 className="font-serif font-bold text-base text-[#1B1A17] dark:text-[#ECE8DF]">
+                        <h3 className="font-heading font-bold text-base text-foreground">
                           {step.title}
                         </h3>
                       </div>
-                      <Icon className="w-4 h-4 text-[#6B665C] dark:text-[#959187] hidden sm:block" />
+                      <Icon className="w-4 h-4 text-muted-foreground hidden sm:block" />
                     </div>
 
-                    <p className="text-xs sm:text-sm text-[#6B665C] dark:text-[#959187] leading-relaxed font-sans">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-sans">
                       {step.desc}
                     </p>
 
@@ -172,7 +172,7 @@ export default function GuidePage() {
                           key={i}
                           href={act.href}
                           target={act.external ? "_blank" : undefined}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF7F0] dark:bg-[#131916] hover:bg-[#E4DDD0]/60 dark:hover:bg-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] font-medium text-xs border border-[#E4DDD0] dark:border-[#26302B] transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F8F2E6] dark:bg-[#1B1114] hover:bg-[#F0E6D6] dark:hover:bg-[#27191E] text-foreground font-semibold font-medium text-xs border border-border transition-colors"
                         >
                           <span>{act.label}</span>
                           {act.external ? <ExternalLink className="w-3 h-3 text-[#6B665C]" /> : <ArrowRight className="w-3 h-3 text-[#6B665C]" />}
@@ -187,12 +187,12 @@ export default function GuidePage() {
         </div>
 
         {/* FAQ Section */}
-        <div className="space-y-6 pt-6 border-t border-[#E4DDD0] dark:border-[#26302B]">
+        <div className="space-y-6 pt-6 border-t border-border">
           <div className="text-center space-y-1">
-            <h2 className="font-serif text-xl font-bold text-[#1B1A17] dark:text-[#ECE8DF]">
+            <h2 className="font-heading text-xl font-bold text-foreground">
               Frequently Consulted Guidance
             </h2>
-            <p className="text-xs text-[#6B665C] dark:text-[#959187] font-sans">
+            <p className="text-xs text-muted-foreground font-sans">
               Operational clarification for faculty advisors, deans, and admissions administrators
             </p>
           </div>
@@ -201,21 +201,21 @@ export default function GuidePage() {
             {faqs.map((faq, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] overflow-hidden shadow-2xs"
+                className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs"
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full flex items-center justify-between p-4 text-left text-xs sm:text-sm font-semibold text-[#1B1A17] dark:text-[#ECE8DF] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors font-serif"
+                  className="w-full flex items-center justify-between p-4 text-left text-xs sm:text-sm font-semibold text-foreground hover:text-[#D62828] dark:hover:text-[#FF5A5F] transition-colors font-heading"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#6B665C] transition-transform duration-200 shrink-0 ml-2 ${
-                      activeFaq === idx ? "rotate-180 text-[#0F3D33] dark:text-[#4FB89A]" : ""
+                      activeFaq === idx ? "rotate-180 text-[#D62828] dark:text-[#FF5A5F]" : ""
                     }`}
                   />
                 </button>
                 {activeFaq === idx && (
-                  <div className="px-4 pb-4 text-xs text-[#6B665C] dark:text-[#959187] leading-relaxed border-t border-[#E4DDD0]/60 dark:border-[#26302B] pt-3 font-sans">
+                  <div className="px-4 pb-4 text-xs text-muted-foreground leading-relaxed border-t border-border/70 pt-3 font-sans">
                     {faq.a}
                   </div>
                 )}

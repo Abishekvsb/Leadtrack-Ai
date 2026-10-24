@@ -149,7 +149,7 @@ export default function AutomationPage() {
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
               Automated Operations
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
               SLA &amp; Workflow Recipes
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -161,7 +161,7 @@ export default function AutomationPage() {
             <button
               onClick={handleRunEngine}
               disabled={triggering}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white font-semibold text-xs shadow-xs transition-colors disabled:opacity-50"
             >
               {triggering ? (
                 <>
@@ -178,7 +178,7 @@ export default function AutomationPage() {
 
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] font-medium text-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-xs transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Create Recipe</span>
@@ -189,7 +189,7 @@ export default function AutomationPage() {
         {/* Active Rules Grid */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-base font-normal text-foreground">
+            <h3 className="font-heading text-base font-normal text-foreground">
               Configured Recipes ({automations.length})
             </h3>
             <span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">
@@ -198,7 +198,7 @@ export default function AutomationPage() {
           </div>
 
           {loading ? (
-            <div className="py-16 text-center text-xs text-muted-foreground font-serif italic">Loading automated recipes...</div>
+            <div className="py-16 text-center text-xs text-muted-foreground font-heading italic">Loading automated recipes...</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {automations.map((auto) => (
@@ -207,7 +207,7 @@ export default function AutomationPage() {
                   className={`p-6 rounded-[12px] border transition-all space-y-4 flex flex-col justify-between ${
                     auto.isActive
                       ? "bg-card border-border shadow-xs"
-                      : "bg-[#EDE6DA]/20 dark:bg-[#171D1A]/40 border-border opacity-70"
+                      : "bg-[#F8F2E6]/40 dark:bg-[#1B1114]/40 border-border opacity-70"
                   }`}
                 >
                   <div className="space-y-2.5">
@@ -216,20 +216,20 @@ export default function AutomationPage() {
                         <div
                           className={`w-8 h-8 rounded-[6px] flex items-center justify-center border ${
                             auto.isActive
-                              ? "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border-[#0F3D33]/20"
-                              : "bg-[#EDE6DA] text-muted-foreground border-border"
+                              ? "bg-[#16A34A]/10 text-[#16A34A] dark:text-[#4ADE80] border-[#16A34A]/30 font-bold"
+                              : "bg-muted text-muted-foreground border-border"
                           }`}
                         >
                           <Zap className="w-4 h-4 stroke-[1.5]" />
                         </div>
-                        <h4 className="font-serif text-base font-normal text-foreground">{auto.name}</h4>
+                        <h4 className="font-heading text-base font-normal text-foreground">{auto.name}</h4>
                       </div>
 
                       {/* Active Toggle Switch */}
                       <button
                         onClick={() => handleToggle(auto.id, auto.isActive)}
                         className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                          auto.isActive ? "bg-[#0F3D33] dark:bg-[#4FB89A]" : "bg-[#EDE6DA] dark:bg-[#26302B] border border-border"
+                          auto.isActive ? "bg-[#D62828] dark:bg-[#FF5A5F]" : "bg-muted border border-border"
                         }`}
                         title="Toggle rule active state"
                       >
@@ -248,7 +248,7 @@ export default function AutomationPage() {
 
                   <div className="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground font-mono">
                     <span className="flex items-center gap-1.5 font-medium text-foreground tabular-nums">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0F3D33] dark:text-[#4FB89A]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#D62828] dark:text-[#FF5A5F]" />
                       {auto.executionCount} executions
                     </span>
                     <span className="tabular-nums">Last evaluated: {auto.lastRunAt ? timeAgo(auto.lastRunAt) : "Never"}</span>
@@ -262,7 +262,7 @@ export default function AutomationPage() {
         {/* Execution Audit Log Table */}
         <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border">
-            <h3 className="font-serif text-base font-normal text-foreground">Automation Execution Audit Log</h3>
+            <h3 className="font-heading text-base font-normal text-foreground">Automation Execution Audit Log</h3>
             <span className="font-mono text-xs text-muted-foreground">Recent {logs.length} executions</span>
           </div>
 
@@ -280,13 +280,13 @@ export default function AutomationPage() {
               <tbody className="divide-y divide-border">
                 {logs.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-muted-foreground font-serif italic">
+                    <td colSpan={5} className="py-8 text-center text-muted-foreground font-heading italic">
                       No automated executions logged yet. Click &quot;Execute Engine Now&quot; to test.
                     </td>
                   </tr>
                 ) : (
                   logs.map((log) => (
-                    <tr key={log.id} className="hover:bg-[#EDE6DA]/30 dark:hover:bg-[#1F2723]/30 transition-colors">
+                    <tr key={log.id} className="hover:bg-[#FFF9EE]/70 dark:hover:bg-[#27191E]/60 transition-colors">
                       <td className="py-3 font-medium text-foreground">
                         {log.automation?.name || "System Recipe"}
                       </td>
@@ -294,7 +294,7 @@ export default function AutomationPage() {
                         {log.lead?.studentName || "Multiple Candidates"}
                       </td>
                       <td className="py-3">
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border border-[#0F3D33]/20">
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#16A34A]/10 text-[#16A34A] dark:text-[#4ADE80] border border-[#16A34A]/30 font-bold">
                           {log.status}
                         </span>
                       </td>
@@ -317,7 +317,7 @@ export default function AutomationPage() {
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
                   <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Workflow Configuration</div>
-                  <h3 className="font-serif text-lg font-normal text-foreground">Register New Recipe</h3>
+                  <h3 className="font-heading text-lg font-normal text-foreground">Register New Recipe</h3>
                 </div>
                 <button onClick={() => setCreateModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
@@ -333,7 +333,7 @@ export default function AutomationPage() {
                     placeholder="e.g. High Intent Candidate Priority Outreach"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   />
                 </div>
 
@@ -344,7 +344,7 @@ export default function AutomationPage() {
                     placeholder="Describe the institutional goal and trigger scenario..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] resize-none"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground placeholder:text-muted-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 resize-none"
                   />
                 </div>
 
@@ -353,7 +353,7 @@ export default function AutomationPage() {
                   <select
                     value={triggerEvent}
                     onChange={(e) => setTriggerEvent(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   >
                     <option value="SCORE_ABOVE">AI Readiness score crosses threshold</option>
                     <option value="NO_RESPONSE_X_DAYS">No counselor consultation recorded in X days</option>
@@ -371,7 +371,7 @@ export default function AutomationPage() {
                       max={100}
                       value={threshold}
                       onChange={(e) => setThreshold(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 )}
@@ -385,7 +385,7 @@ export default function AutomationPage() {
                       max={30}
                       value={days}
                       onChange={(e) => setDays(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 )}
@@ -396,7 +396,7 @@ export default function AutomationPage() {
                     <select
                       value={targetStatus}
                       onChange={(e) => setTargetStatus(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="CAMPUS_VISIT">Campus Visit</option>
                       <option value="APPLICATION_SUBMITTED">Application Submitted</option>
@@ -410,7 +410,7 @@ export default function AutomationPage() {
                   <select
                     value={actionType}
                     onChange={(e) => setActionType(e.target.value)}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   >
                     <option value="NOTIFY_COUNSELOR">Notify assigned counselor with urgent task</option>
                     <option value="SEND_EMAIL">Dispatch automated email template</option>
@@ -423,13 +423,13 @@ export default function AutomationPage() {
                   <button
                     type="button"
                     onClick={() => setCreateModalOpen(false)}
-                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] text-xs font-medium shadow-xs"
+                    className="px-5 py-2 rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white text-xs font-semibold shadow-xs"
                   >
                     Save &amp; Activate
                   </button>

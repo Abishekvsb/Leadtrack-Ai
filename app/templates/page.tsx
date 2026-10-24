@@ -138,7 +138,7 @@ export default function TemplatesPage() {
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
               Institutional Communications
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
               Correspondence Templates
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -155,7 +155,7 @@ export default function TemplatesPage() {
                   onClick={() => setFilterType(t)}
                   className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-all ${
                     filterType === t
-                      ? "bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#4FB89A] dark:text-[#0F1412]"
+                      ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -166,7 +166,7 @@ export default function TemplatesPage() {
 
             <button
               onClick={() => openEditor()}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white font-semibold text-xs shadow-xs transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Create Template</span>
@@ -177,11 +177,11 @@ export default function TemplatesPage() {
         {/* Templates Grid */}
         {loading ? (
           <div className="py-24 text-center space-y-3">
-            <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
-            <p className="font-serif italic text-xs text-muted-foreground">Loading correspondence templates...</p>
+            <Loader2 className="w-6 h-6 animate-spin text-[#D62828] dark:text-[#FF5A5F] mx-auto" />
+            <p className="font-heading italic text-xs text-muted-foreground">Loading correspondence templates...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-xs text-muted-foreground font-serif italic border border-dashed border-border rounded-[12px]">
+          <div className="p-12 text-center text-xs text-muted-foreground font-heading italic border border-dashed border-border rounded-[12px]">
             No communication templates found in this channel.
           </div>
         ) : (
@@ -189,7 +189,7 @@ export default function TemplatesPage() {
             {filtered.map((t) => (
               <div
                 key={t.id}
-                className="p-6 rounded-[12px] bg-card border border-border shadow-xs hover:border-[#0F3D33]/40 dark:hover:border-[#4FB89A]/40 transition-all flex flex-col justify-between space-y-4"
+                className="p-6 rounded-[12px] bg-card border border-border shadow-xs hover:border-[#FFC21A]/50 transition-all flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -197,7 +197,7 @@ export default function TemplatesPage() {
                       className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase border ${
                         t.type === "EMAIL"
                           ? "bg-[#5B7083]/10 text-[#5B7083] dark:text-[#8CA0B2] border-[#5B7083]/20"
-                          : "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border-[#0F3D33]/20"
+                          : "bg-[#D62828]/10 text-[#D62828] dark:text-[#FF5A5F] border-[#D62828]/25 font-bold"
                       }`}
                     >
                       {t.type === "EMAIL" ? <Mail className="w-3 h-3" /> : <MessageSquare className="w-3 h-3" />}
@@ -207,7 +207,7 @@ export default function TemplatesPage() {
                   </div>
 
                   <div>
-                    <h3 className="font-serif text-base font-normal text-foreground">{t.name}</h3>
+                    <h3 className="font-heading text-base font-normal text-foreground">{t.name}</h3>
                     {t.subject && (
                       <p className="text-xs text-muted-foreground truncate mt-0.5">
                         Subject: {t.subject}
@@ -215,7 +215,7 @@ export default function TemplatesPage() {
                     )}
                   </div>
 
-                  <p className="p-3.5 rounded-[8px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border text-[11px] text-foreground line-clamp-4 leading-relaxed font-mono whitespace-pre-wrap">
+                  <p className="p-3.5 rounded-[8px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border text-[11px] text-foreground line-clamp-4 leading-relaxed font-mono whitespace-pre-wrap">
                     {t.body}
                   </p>
                 </div>
@@ -224,7 +224,7 @@ export default function TemplatesPage() {
                   <div className="flex gap-1">
                     <button
                       onClick={() => openEditor(t)}
-                      className="p-1.5 rounded-[6px] hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-muted-foreground hover:text-foreground"
+                      className="p-1.5 rounded-[6px] hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-muted-foreground hover:text-foreground"
                       title="Edit"
                     >
                       <Edit className="w-3.5 h-3.5" />
@@ -240,7 +240,7 @@ export default function TemplatesPage() {
 
                   <button
                     onClick={() => openEditor(t)}
-                    className="text-xs font-medium text-[#0F3D33] dark:text-[#4FB89A] hover:underline"
+                    className="text-xs font-medium text-[#D62828] dark:text-[#FF5A5F] hover:underline"
                   >
                     View Parchment →
                   </button>
@@ -253,11 +253,11 @@ export default function TemplatesPage() {
         {/* Modal: Template Editor & Live Preview */}
         {modalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-            <div className="w-full max-w-4xl bg-card rounded-[12px] p-6 sm:p-8 shadow-academic-floating border border-border max-h-[92vh] overflow-y-auto space-y-4">
+            <div className="w-full max-w-4xl bg-card rounded-[12px] p-6 sm:p-8 shadow-floating border border-border max-h-[92vh] overflow-y-auto space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
                   <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Template Authoring</div>
-                  <h3 className="font-serif text-lg font-normal text-foreground">
+                  <h3 className="font-heading text-lg font-normal text-foreground">
                     {editingId ? "Revise Institutional Template" : "Draft New Template"}
                   </h3>
                 </div>
@@ -277,7 +277,7 @@ export default function TemplatesPage() {
                       placeholder="e.g. Merit Scholarship Award Notice"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
 
@@ -287,7 +287,7 @@ export default function TemplatesPage() {
                       <select
                         value={type}
                         onChange={(e) => setType(e.target.value as any)}
-                        className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                        className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                       >
                         <option value="EMAIL">Email</option>
                         <option value="WHATSAPP">WhatsApp</option>
@@ -299,7 +299,7 @@ export default function TemplatesPage() {
                       <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                        className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                       >
                         <option value="WELCOME">Welcome &amp; Prospectus</option>
                         <option value="FOLLOW_UP">Counselor Follow-up</option>
@@ -318,7 +318,7 @@ export default function TemplatesPage() {
                         placeholder="e.g. Welcome to {{institution}} – Admissions Information Pack"
                         value={subject}
                         onChange={(e) => setSubject(e.target.value)}
-                        className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                        className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                       />
                     </div>
                   )}
@@ -334,7 +334,7 @@ export default function TemplatesPage() {
                       placeholder="Dear {{name}}, we are pleased to discuss..."
                       value={body}
                       onChange={(e) => setBody(e.target.value)}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A] font-mono text-[11px] resize-none"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 font-mono text-[11px] resize-none"
                     />
                   </div>
 
@@ -345,7 +345,7 @@ export default function TemplatesPage() {
                         key={chip}
                         type="button"
                         onClick={() => setBody((prev) => prev + " " + chip)}
-                        className="px-2 py-1 rounded-[6px] bg-card border border-border hover:border-[#0F3D33] dark:hover:border-[#4FB89A] text-foreground font-mono text-[10px] transition-colors"
+                        className="px-2.5 py-1 rounded-[6px] bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] border border-[#FFC21A]/35 hover:bg-[#FFC21A]/25 font-mono text-[11px] font-bold transition-colors"
                       >
                         + {chip}
                       </button>
@@ -356,13 +356,13 @@ export default function TemplatesPage() {
                     <button
                       type="button"
                       onClick={() => setModalOpen(false)}
-                      className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium"
+                      className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] text-xs font-medium shadow-xs"
+                      className="px-5 py-2 rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white text-xs font-semibold shadow-xs"
                     >
                       Save Template
                     </button>
@@ -374,18 +374,18 @@ export default function TemplatesPage() {
                   <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground block">
                     Parchment Preview (Interpolated):
                   </span>
-                  <div className="p-6 sm:p-7 rounded-[12px] bg-[#EDE6DA]/40 dark:bg-[#171D1A] border border-border space-y-4 shadow-academic-floating">
+                  <div className="p-6 sm:p-7 rounded-[12px] bg-card border border-[#FFC21A]/30 space-y-4 shadow-floating">
                     {type === "EMAIL" && (
                       <div className="pb-3 border-b border-border space-y-1">
                         <p className="text-muted-foreground text-[11px] font-mono">
                           Recipient: <span className="text-foreground">aarav.sharma@example.edu</span>
                         </p>
-                        <p className="font-serif text-sm font-normal text-foreground">
+                        <p className="font-heading text-sm font-normal text-foreground">
                           {renderPreview(subject) || "(No Subject)"}
                         </p>
                       </div>
                     )}
-                    <p className="font-serif text-sm leading-relaxed whitespace-pre-wrap text-foreground">
+                    <p className="font-heading text-sm leading-relaxed whitespace-pre-wrap text-foreground">
                       {renderPreview(body) || "Type content on the left to observe real-time variable interpolation..."}
                     </p>
                   </div>

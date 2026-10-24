@@ -162,7 +162,7 @@ function SettingsContent() {
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
             System Administration
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+          <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
             Institutional Settings
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -186,8 +186,8 @@ function SettingsContent() {
                 onClick={() => setActiveTab(tab.key as any)}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-[8px] text-xs font-medium whitespace-nowrap transition-all border ${
                   isActive
-                    ? "bg-[#0F3D33] text-[#F6F2EA] border-[#0F3D33] dark:bg-[#4FB89A] dark:text-[#0F1412] dark:border-[#4FB89A] shadow-xs"
-                    : "bg-card border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723]"
+                    ? "bg-[#D62828] text-white border-[#D62828] dark:bg-[#FF5A5F] dark:text-[#120A0C] dark:border-[#FF5A5F] font-bold shadow-xs"
+                    : "bg-card border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -206,12 +206,12 @@ function SettingsContent() {
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div>
                 <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Charter Details</div>
-                <h3 className="font-serif text-lg font-normal text-foreground">Campus Profile &amp; Accreditations</h3>
+                <h3 className="font-heading text-lg font-normal text-foreground">Campus Profile &amp; Accreditations</h3>
               </div>
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs transition-colors disabled:opacity-50"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>{saving ? "Saving..." : "Save Charter"}</span>
@@ -226,7 +226,7 @@ function SettingsContent() {
                   required
                   value={institution.name || ""}
                   onChange={(e) => setInstitution({ ...institution, name: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
 
@@ -237,7 +237,7 @@ function SettingsContent() {
                   placeholder="e.g. AITM-BLR"
                   value={institution.code || ""}
                   onChange={(e) => setInstitution({ ...institution, code: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
 
@@ -247,7 +247,7 @@ function SettingsContent() {
                   type="tel"
                   value={institution.phone || ""}
                   onChange={(e) => setInstitution({ ...institution, phone: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
 
@@ -257,7 +257,7 @@ function SettingsContent() {
                   type="email"
                   value={institution.email || ""}
                   onChange={(e) => setInstitution({ ...institution, email: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
 
@@ -268,7 +268,7 @@ function SettingsContent() {
                   placeholder="https://apex-tech.edu.in"
                   value={institution.website || ""}
                   onChange={(e) => setInstitution({ ...institution, website: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
 
@@ -279,7 +279,7 @@ function SettingsContent() {
                   placeholder="09:00 - 18:00 (Mon - Sat)"
                   value={institution.workingHours || ""}
                   onChange={(e) => setInstitution({ ...institution, workingHours: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
 
@@ -290,7 +290,7 @@ function SettingsContent() {
                   placeholder="Campus Park, Electronic City Phase 1, Bangalore"
                   value={institution.address || ""}
                   onChange={(e) => setInstitution({ ...institution, address: e.target.value })}
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
             </div>
@@ -303,12 +303,12 @@ function SettingsContent() {
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div>
                 <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Academic Portfolio</div>
-                <h3 className="font-serif text-lg font-normal text-foreground">Active Degree Programs ({courses.length})</h3>
+                <h3 className="font-heading text-lg font-normal text-foreground">Active Degree Programs ({courses.length})</h3>
                 <p className="text-xs text-muted-foreground">Offered programs visible on public enquiry and admissions workflow</p>
               </div>
               <button
                 onClick={() => setCourseModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] hover:bg-[#165447] dark:hover:bg-[#63C7AA] font-medium text-xs shadow-xs"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Program</span>
@@ -320,8 +320,8 @@ function SettingsContent() {
                 <div key={course.id} className="py-4 flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-serif text-base font-normal text-foreground">{course.name}</span>
-                      <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#EDE6DA] dark:bg-[#1F2723] text-foreground border border-border">
+                      <span className="font-heading text-base font-normal text-foreground">{course.name}</span>
+                      <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#F8F2E6] dark:bg-[#1B1114] text-foreground border border-border">
                         {course.code}
                       </span>
                     </div>
@@ -349,24 +349,24 @@ function SettingsContent() {
           <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs space-y-6 text-xs">
             <div className="pb-3 border-b border-border">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Scoring Algorithm</div>
-              <h3 className="font-serif text-lg font-normal text-foreground">AI Readiness Model Weights (Sum = 100%)</h3>
+              <h3 className="font-heading text-lg font-normal text-foreground">AI Readiness Model Weights (Sum = 100%)</h3>
               <p className="text-muted-foreground">Governs the mathematical formula generating the 0 - 100 student intent index</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-[10px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-1">
+              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
                 <span className="font-mono font-medium text-foreground">Channel Authority (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Direct campus walk-ins &amp; alumni referrals receive highest baseline weight.</p>
               </div>
-              <div className="p-4 rounded-[10px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-1">
+              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
                 <span className="font-mono font-medium text-foreground">Consultation Engagement (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Outbound calls connected, WhatsApp correspondence, and campus tours.</p>
               </div>
-              <div className="p-4 rounded-[10px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-1">
+              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
                 <span className="font-mono font-medium text-foreground">Dossier Completeness (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Verified student contact, parent mobile number, and preliminary marksheets.</p>
               </div>
-              <div className="p-4 rounded-[10px] bg-[#EDE6DA]/30 dark:bg-[#1F2723]/30 border border-border space-y-1">
+              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
                 <span className="font-mono font-medium text-foreground">Program Demand Index (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Flagship high-placement academic programs (Computer Science, Data Science).</p>
               </div>
@@ -379,7 +379,7 @@ function SettingsContent() {
           <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs space-y-4 max-w-md">
             <div className="pb-2 border-b border-border">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Account Protection</div>
-              <h3 className="font-serif text-lg font-normal text-foreground">Update Password</h3>
+              <h3 className="font-heading text-lg font-normal text-foreground">Update Password</h3>
             </div>
             <div className="space-y-3 text-xs">
               <div className="space-y-1.5">
@@ -387,7 +387,7 @@ function SettingsContent() {
                 <input
                   type="password"
                   placeholder="At least 8 characters"
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
               <div className="space-y-1.5">
@@ -395,13 +395,13 @@ function SettingsContent() {
                 <input
                   type="password"
                   placeholder="Re-enter updated password"
-                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                  className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                 />
               </div>
               <button
                 type="button"
                 onClick={() => success("Password updated securely")}
-                className="w-full py-2.5 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium text-xs mt-2 shadow-xs"
+                className="w-full py-2.5 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs mt-2 shadow-xs"
               >
                 Change Password
               </button>
@@ -416,7 +416,7 @@ function SettingsContent() {
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
                   <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Degree Registry</div>
-                  <h3 className="font-serif text-lg font-normal text-foreground">Add Academic Program</h3>
+                  <h3 className="font-heading text-lg font-normal text-foreground">Add Academic Program</h3>
                 </div>
                 <button onClick={() => setCourseModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
@@ -432,7 +432,7 @@ function SettingsContent() {
                     placeholder="e.g. B.Tech in Artificial Intelligence"
                     value={newCourse.name}
                     onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
-                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                    className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                   />
                 </div>
 
@@ -445,7 +445,7 @@ function SettingsContent() {
                       placeholder="e.g. BTECH-AI"
                       value={newCourse.code}
                       onChange={(e) => setNewCourse({ ...newCourse, code: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
 
@@ -457,7 +457,7 @@ function SettingsContent() {
                       placeholder="Computer Science"
                       value={newCourse.department}
                       onChange={(e) => setNewCourse({ ...newCourse, department: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 </div>
@@ -471,7 +471,7 @@ function SettingsContent() {
                       placeholder="B.Tech / Undergraduate"
                       value={newCourse.degree}
                       onChange={(e) => setNewCourse({ ...newCourse, degree: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
 
@@ -483,7 +483,7 @@ function SettingsContent() {
                       placeholder="4 Years"
                       value={newCourse.duration}
                       onChange={(e) => setNewCourse({ ...newCourse, duration: e.target.value })}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 </div>
@@ -496,7 +496,7 @@ function SettingsContent() {
                       required
                       value={newCourse.fee}
                       onChange={(e) => setNewCourse({ ...newCourse, fee: Number(e.target.value) })}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
 
@@ -507,7 +507,7 @@ function SettingsContent() {
                       required
                       value={newCourse.seats}
                       onChange={(e) => setNewCourse({ ...newCourse, seats: Number(e.target.value) })}
-                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#0F3D33] dark:focus:border-[#4FB89A]"
+                      className="w-full p-2.5 rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     />
                   </div>
                 </div>
@@ -516,13 +516,13 @@ function SettingsContent() {
                   <button
                     type="button"
                     onClick={() => setCourseModalOpen(false)}
-                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium"
+                    className="px-4 py-2 rounded-[8px] border border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] text-xs font-medium shadow-xs"
+                    className="px-5 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs"
                   >
                     Register Program
                   </button>
@@ -541,7 +541,7 @@ export default function SettingsPage() {
     <Suspense
       fallback={
         <DashboardLayout>
-          <div className="py-24 text-center font-serif italic text-xs text-muted-foreground">Loading institutional settings...</div>
+          <div className="py-24 text-center font-heading italic text-xs text-muted-foreground">Loading institutional settings...</div>
         </DashboardLayout>
       }
     >

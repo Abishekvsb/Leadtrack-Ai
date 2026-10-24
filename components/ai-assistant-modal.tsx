@@ -12,6 +12,7 @@ import {
   User,
   Compass,
   GraduationCap,
+  Bot,
 } from "lucide-react";
 
 interface AiAssistantModalProps {
@@ -91,32 +92,44 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
       }
 
       if (res.body) {
-        // Stream reading
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let assistantReply = "";
 
-        // Push initial assistant slot
         setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          assistantReply += chunk;
 
-          setMessages((prev) => {
-            const copy = [...prev];
-            copy[copy.length - 1] = { role: "assistant", content: assistantReply };
-            return copy;
-          });
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.replace("data: ", "").trim();
+              if (data === "[DONE]") {
+                break;
+              }
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.text) {
+                  assistantReply += parsed.text;
+                  setMessages((prev) => {
+                    const copy = [...prev];
+                    copy[copy.length - 1] = {
+                      role: "assistant",
+                      content: assistantReply,
+                    };
+                    return copy;
+                  });
+                }
+              } catch {
+                // partial chunk
+              }
+            }
+          }
         }
-      } else {
-        const json = await res.json();
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: json.data?.response || "I could not analyze that request." },
-        ]);
       }
     } catch (err: any) {
       if (err.name !== "AbortError") {
@@ -124,7 +137,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           ...prev,
           {
             role: "assistant",
-            content: "A network exception occurred while querying the intelligence engine. Please retry.",
+            content: "Apologies, I encountered a temporary operational exception. Please retry.",
           },
         ]);
       }
@@ -134,7 +147,6 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
     }
   };
 
-  // Render markdown-like links and bolding safely
   const renderMessageContent = (text: string) => {
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     const parts = [];
@@ -152,7 +164,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           key={match.index}
           href={url}
           onClick={onClose}
-          className="text-[#0F3D33] dark:text-[#4FB89A] font-semibold underline underline-offset-2 hover:opacity-80"
+          className="text-[#D62828] dark:text-[#FF5A5F] font-bold underline underline-offset-2 hover:opacity-85"
         >
           {label}
         </Link>
@@ -178,49 +190,51 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
 
   const formatInlineMarkdown = (str: string) => {
     return str
-      .replace(/\*\*([^*]+)\*\*/g, "<strong class='font-semibold'>$1</strong>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong class='font-bold text-foreground'>$1</strong>")
       .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-      .replace(/`([^`]+)`/g, "<code class='bg-[#FAF7F0] dark:bg-[#1E2622] px-1 py-0.5 rounded font-mono text-[11px] border border-[#E4DDD0] dark:border-[#26302B]'>$1</code>");
+      .replace(/`([^`]+)`/g, "<code class='bg-[#F8F2E6] dark:bg-[#1B1114] px-1 py-0.5 rounded-[4px] font-mono text-[11px] border border-border text-[#8A5A00] dark:text-[#FFD25A]'>$1</code>");
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-stretch sm:justify-end bg-black/40 backdrop-blur-2xs animate-in fade-in">
-      {/* Side panel styled as an academic notebook docket */}
-      <div className="w-full sm:max-w-md md:max-w-lg bg-[#FAF7F0] dark:bg-[#0F1412] h-[92vh] sm:h-full rounded-t-2xl sm:rounded-none shadow-2xl flex flex-col border-t sm:border-t-0 sm:border-l border-[#E4DDD0] dark:border-[#26302B] animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 overflow-hidden font-sans">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] shrink-0">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-stretch sm:justify-end bg-black/50 backdrop-blur-xs animate-in fade-in">
+      {/* Side panel styled as a royal crimson & gold advisory docket */}
+      <div className="w-full sm:max-w-md md:max-w-lg bg-[#FFF9EE] dark:bg-[#120A0C] h-[92vh] sm:h-full rounded-t-[20px] sm:rounded-none shadow-2xl flex flex-col border-t sm:border-t-0 sm:border-l border-border animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 overflow-hidden font-sans">
+        {/* Header with Radiant Gold Orb */}
+        <div className="flex items-center justify-between p-4 border-b border-border bg-card shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#0F3D33] dark:bg-[#4FB89A] flex items-center justify-center text-[#F6F2EA] dark:text-[#0F1412] shadow-2xs">
-              <Compass className="w-5 h-5" />
+            {/* Radiant Gold Orb */}
+            <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-[#FFC21A] to-[#E5A100] flex items-center justify-center text-[#17141A] shadow-md border border-[#FFD25A] shrink-0 animate-gold-pulse">
+              <Sparkles className="w-4 h-4 text-[#17141A]" />
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#16A34A] ring-2 ring-card" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-serif font-bold text-sm text-[#1B1A17] dark:text-[#ECE8DF]">Admissions Copilot</h3>
-                <span className="text-[9px] px-1.5 py-0.2 rounded font-mono uppercase bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] border border-[#0F3D33]/25 dark:border-[#4FB89A]/30 font-medium">
+                <h3 className="font-heading font-bold text-sm text-foreground">Admissions Copilot</h3>
+                <span className="text-[9px] px-1.5 py-0.5 rounded-[4px] font-mono uppercase bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] border border-[#FFC21A]/35 font-bold">
                   Live DB
                 </span>
               </div>
-              <p className="text-[11px] text-[#6B665C] dark:text-[#959187] font-sans">
+              <p className="text-[11px] text-muted-foreground font-sans">
                 Synchronized with institutional recruitment pipeline
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-lg text-[#6B665C] hover:text-[#1B1A17] dark:text-[#959187] dark:hover:text-[#ECE8DF] hover:bg-[#FAF7F0] dark:hover:bg-[#1E2622] transition-colors"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Suggested Question Chips */}
-        <div className="p-2.5 border-b border-[#E4DDD0] dark:border-[#26302B] bg-white/70 dark:bg-[#131916] flex gap-2 overflow-x-auto no-scrollbar shrink-0">
+        <div className="p-2.5 border-b border-border bg-card/70 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
           {SUGGESTED_CHIPS.map((chip) => (
             <button
               key={chip}
               disabled={loading}
               onClick={() => handleSend(chip)}
-              className="text-[11px] min-h-[34px] px-3 py-1 rounded-lg bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] hover:border-[#0F3D33] dark:hover:border-[#4FB89A] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] transition-colors whitespace-nowrap shrink-0 font-medium disabled:opacity-50 inline-flex items-center"
+              className="text-[11px] min-h-[32px] px-3 py-1 rounded-[8px] bg-surface border border-border text-foreground hover:border-[#FFC21A] hover:text-[#D62828] dark:hover:text-[#FF5A5F] transition-colors whitespace-nowrap shrink-0 font-medium disabled:opacity-50 inline-flex items-center shadow-xs"
             >
               {chip}
             </button>
@@ -235,74 +249,41 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
               className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               {msg.role === "assistant" && (
-                <div className="w-6 h-6 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center shrink-0 mt-0.5">
-                  <GraduationCap className="w-3.5 h-3.5" />
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FFC21A] to-[#E5A100] text-[#17141A] flex items-center justify-center shrink-0 mt-0.5 shadow-xs border border-[#FFD25A]">
+                  <GraduationCap className="w-4 h-4" />
                 </div>
               )}
 
               <div
-                className={`max-w-[85%] rounded-xl p-3.5 shadow-xs ${
+                className={`max-w-[85%] rounded-[14px] p-3.5 shadow-xs ${
                   msg.role === "user"
-                    ? "bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] font-medium"
-                    : "bg-white dark:bg-[#171D1A] text-[#1B1A17] dark:text-[#ECE8DF] border border-[#E4DDD0] dark:border-[#26302B]"
+                    ? "btn-crimson-gradient text-white font-medium rounded-br-[2px]"
+                    : "bg-card text-foreground border border-border rounded-bl-[2px]"
                 }`}
               >
                 {renderMessageContent(msg.content)}
-
-                {/* Quick Action Chips when assistant provides actionable links */}
-                {msg.role === "assistant" && (
-                  <div className="mt-3 pt-2 border-t border-[#E4DDD0]/60 dark:border-[#26302B] flex flex-wrap gap-2 text-[11px]">
-                    <Link
-                      href="/follow-ups"
-                      onClick={onClose}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] font-medium transition-colors"
-                    >
-                      <PhoneCall className="w-3 h-3 text-[#E0A030]" />
-                      <span>Today&apos;s Calls</span>
-                    </Link>
-                    <Link
-                      href="/leads"
-                      onClick={onClose}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] hover:text-[#0F3D33] dark:hover:text-[#4FB89A] font-medium transition-colors"
-                    >
-                      <User className="w-3 h-3 text-[#0F3D33] dark:text-[#4FB89A]" />
-                      <span>Admissions Queue</span>
-                    </Link>
-                  </div>
-                )}
               </div>
             </div>
           ))}
 
           {loading && (
-            <div className="flex gap-2.5 justify-start items-center">
-              <div className="w-6 h-6 rounded-md bg-[#FAF7F0] dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] text-[#0F3D33] dark:text-[#4FB89A] flex items-center justify-center shrink-0">
-                <GraduationCap className="w-3.5 h-3.5" />
-              </div>
-              <div className="p-2.5 rounded-lg bg-white dark:bg-[#171D1A] border border-[#E4DDD0] dark:border-[#26302B] flex items-center gap-2 text-xs text-[#6B665C] dark:text-[#959187]">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0F3D33] dark:text-[#4FB89A]" />
-                <span className="font-mono text-[11px]">Consulting repository indices...</span>
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input & Stop Button */}
-        <div className="p-3.5 border-t border-[#E4DDD0] dark:border-[#26302B] bg-white dark:bg-[#171D1A] shrink-0 space-y-2">
-          {loading && (
-            <div className="flex justify-center">
+            <div className="flex items-center gap-2 text-muted-foreground text-xs py-2">
+              <Loader2 className="w-4 h-4 animate-spin text-[#FFC21A]" />
+              <span className="font-heading italic">Copilot querying admissions database...</span>
               <button
                 onClick={handleStop}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#1E2622] hover:bg-[#C4552F]/10 text-[#C4552F] text-xs font-mono border border-[#E4DDD0] dark:border-[#26302B] transition-colors"
+                className="ml-auto inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-[6px] border border-border text-muted-foreground hover:text-foreground"
               >
-                <Square className="w-3 h-3 fill-current" />
-                <span>Halt Generation</span>
+                <Square className="w-3 h-3 text-[#D62828]" />
+                <span>Stop</span>
               </button>
             </div>
           )}
+          <div ref={messagesEndRef} />
+        </div>
 
+        {/* Query Input Bar */}
+        <div className="p-3 border-t border-border bg-card shrink-0">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -312,18 +293,18 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           >
             <input
               type="text"
+              placeholder="Ask Copilot regarding callbacks, intake, drop-offs..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Inquire regarding cohort yield, candidate logs, or app SOP..."
-              className="flex-1 min-h-[42px] px-3.5 py-2 text-xs sm:text-sm rounded-lg bg-[#FAF7F0] dark:bg-[#0F1412] border border-[#E4DDD0] dark:border-[#26302B] text-[#1B1A17] dark:text-[#ECE8DF] placeholder-[#6B665C]/60 dark:placeholder-[#959187]/60 focus:border-[#0F3D33] dark:focus:border-[#4FB89A] outline-none transition-colors"
+              className="flex-1 px-3.5 py-2.5 rounded-[10px] bg-background/50 border border-border text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 transition-colors"
             />
             <button
               type="submit"
-              disabled={loading || !input.trim()}
-              className="min-h-[42px] min-w-[42px] flex items-center justify-center p-2.5 rounded-lg bg-[#0F3D33] hover:bg-[#165447] dark:bg-[#4FB89A] dark:hover:bg-[#3ea688] text-[#F6F2EA] dark:text-[#0F1412] shadow-xs transition-colors disabled:opacity-40 shrink-0"
-              title="Send question"
+              disabled={!input.trim() || loading}
+              className="btn-crimson-gradient btn-shimmer p-2.5 sm:px-4 rounded-[10px] text-white disabled:opacity-40 transition-all shadow-xs flex items-center justify-center shrink-0"
+              title="Send prompt"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 text-[#FFC21A]" />
             </button>
           </form>
         </div>

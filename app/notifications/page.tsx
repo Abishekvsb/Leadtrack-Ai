@@ -81,7 +81,7 @@ export default function NotificationsPage() {
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
               Admissions Dispatch
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
               Institutional Alerts &amp; Notices
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -95,7 +95,7 @@ export default function NotificationsPage() {
                 onClick={() => setFilter("ALL")}
                 className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors ${
                   filter === "ALL"
-                    ? "bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#4FB89A] dark:text-[#0F1412]"
+                    ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -105,7 +105,7 @@ export default function NotificationsPage() {
                 onClick={() => setFilter("UNREAD")}
                 className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors ${
                   filter === "UNREAD"
-                    ? "bg-[#0F3D33] text-[#F6F2EA] dark:bg-[#4FB89A] dark:text-[#0F1412]"
+                    ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
 
             <button
               onClick={handleMarkAllRead}
-              className="px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] text-xs font-medium transition-colors shadow-xs"
+              className="px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors shadow-xs"
             >
               Mark All Read
             </button>
@@ -125,13 +125,13 @@ export default function NotificationsPage() {
         {/* Notifications List */}
         {loading ? (
           <div className="py-24 text-center space-y-3">
-            <Loader2 className="w-6 h-6 animate-spin text-[#0F3D33] dark:text-[#4FB89A] mx-auto" />
-            <p className="font-serif italic text-xs text-muted-foreground">Checking institutional dispatch...</p>
+            <Loader2 className="w-6 h-6 animate-spin text-[#D62828] dark:text-[#FF5A5F] mx-auto" />
+            <p className="font-heading italic text-xs text-muted-foreground">Checking institutional dispatch...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 rounded-[12px] bg-card border border-border text-center space-y-3">
-            <CheckCircle2 className="w-10 h-10 text-[#0F3D33] dark:text-[#4FB89A] mx-auto stroke-[1.5]" />
-            <h3 className="font-serif text-lg font-normal text-foreground">You are all caught up</h3>
+            <CheckCircle2 className="w-10 h-10 text-[#D62828] dark:text-[#FF5A5F] mx-auto stroke-[1.5]" />
+            <h3 className="font-heading text-lg font-normal text-foreground">You are all caught up</h3>
             <p className="text-xs text-muted-foreground">No unread notices or pending alerts in your dispatch queue.</p>
           </div>
         ) : (
@@ -140,8 +140,8 @@ export default function NotificationsPage() {
               <div
                 key={item.id}
                 onClick={() => handleMarkRead(item.id)}
-                className={`p-5 flex items-start justify-between gap-4 hover:bg-[#EDE6DA]/30 dark:hover:bg-[#1F2723]/30 transition-colors cursor-pointer ${
-                  !item.isRead ? "bg-[#EDE6DA]/20 dark:bg-[#1F2723]/25" : ""
+                className={`p-5 flex items-start justify-between gap-4 hover:bg-[#FFF9EE]/70 dark:hover:bg-[#27191E]/60 transition-colors cursor-pointer ${
+                  !item.isRead ? "bg-[#FFF9EE] dark:bg-[#1B1114] border-l-4 border-l-[#D62828]" : ""
                 }`}
               >
                 <div className="flex items-start gap-4">
@@ -150,8 +150,8 @@ export default function NotificationsPage() {
                       item.type === "HIGH_SCORE"
                         ? "bg-[#C4552F]/10 text-[#C4552F] border-[#C4552F]/20"
                         : item.type === "FOLLOW_UP"
-                        ? "bg-[#E0A030]/15 text-[#9E6C16] dark:text-[#E0A030] border-[#E0A030]/25"
-                        : "bg-[#0F3D33]/10 text-[#0F3D33] dark:bg-[#4FB89A]/15 dark:text-[#4FB89A] border-[#0F3D33]/20"
+                        ? "bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] border-[#FFC21A]/35 font-bold"
+                        : "bg-[#D62828]/10 text-[#D62828] dark:text-[#FF5A5F] border-[#D62828]/25 font-bold"
                     }`}
                   >
                     {item.type === "HIGH_SCORE" ? (
@@ -165,7 +165,7 @@ export default function NotificationsPage() {
 
                   <div className="space-y-1 text-xs">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-serif text-base font-normal text-foreground">{item.title}</h4>
+                      <h4 className="font-heading text-base font-normal text-foreground">{item.title}</h4>
                       {!item.isRead && (
                         <span className="w-2 h-2 rounded-full bg-accent shrink-0" title="Unread notice" />
                       )}
@@ -182,7 +182,7 @@ export default function NotificationsPage() {
                 {item.link && (
                   <Link
                     href={item.link}
-                    className="p-2 rounded-[8px] border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-[#EDE6DA]/50 dark:hover:bg-[#1F2723] transition-colors shrink-0"
+                    className="p-2 rounded-[8px] border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] transition-colors shrink-0"
                     title="Open related record"
                   >
                     <ChevronRight className="w-4 h-4" />

@@ -81,11 +81,11 @@ export function ProductTourModal() {
   const Icon = current.icon;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-fade-up">
-      <div className="w-full max-w-lg bg-card rounded-[12px] p-6 sm:p-7 shadow-academic-floating border border-border space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-up">
+      <div className="w-full max-w-lg bg-card rounded-[14px] p-6 sm:p-7 shadow-floating border border-border space-y-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-[6px] bg-[#0F3D33]/10 dark:bg-[#4FB89A]/15 text-[#0F3D33] dark:text-[#4FB89A] border border-[#0F3D33]/20 dark:border-[#4FB89A]/30 uppercase tracking-wider">
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-[6px] bg-[#D62828]/10 text-[#D62828] dark:text-[#FF5A5F] border border-[#D62828]/25 uppercase tracking-wider">
               {current.badge}
             </span>
             <span className="text-[11px] font-mono text-muted-foreground">
@@ -103,12 +103,12 @@ export function ProductTourModal() {
         </div>
 
         {/* Step Visual */}
-        <div className="p-5 rounded-[10px] bg-background border border-border flex items-start gap-4">
-          <div className="w-10 h-10 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] text-[#F6F2EA] dark:text-[#0F1412] flex items-center justify-center shrink-0 shadow-xs">
-            <Icon className="w-5 h-5 stroke-[1.5]" />
+        <div className="p-5 rounded-[12px] bg-background/50 border border-border flex items-start gap-4">
+          <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white flex items-center justify-center shrink-0 shadow-xs border border-[#FFC21A]/30">
+            <Icon className="w-5 h-5 text-[#FFC21A] stroke-[1.75]" />
           </div>
           <div>
-            <h3 className="font-serif text-base font-normal text-foreground tracking-tight">{current.title}</h3>
+            <h3 className="font-heading text-base font-bold text-foreground tracking-tight">{current.title}</h3>
             <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
               {current.content}
             </p>
@@ -123,7 +123,7 @@ export function ProductTourModal() {
               <div
                 key={i}
                 className={`h-1.5 rounded-full transition-all ${
-                  step === i ? "w-6 bg-[#0F3D33] dark:bg-[#4FB89A]" : "w-1.5 bg-border"
+                  step === i ? "w-6 bg-[#FFC21A]" : "w-1.5 bg-border"
                 }`}
               />
             ))}
@@ -140,7 +140,7 @@ export function ProductTourModal() {
             {step > 0 && (
               <button
                 onClick={handlePrev}
-                className="px-3 py-1.5 rounded-[8px] border border-border hover:bg-muted/70 text-xs font-medium flex items-center gap-1 text-foreground"
+                className="px-3 py-1.5 rounded-[8px] border border-border hover:bg-muted text-xs font-semibold flex items-center gap-1 text-foreground transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5 stroke-[1.5]" />
                 <span>Back</span>
@@ -149,10 +149,10 @@ export function ProductTourModal() {
 
             <button
               onClick={handleNext}
-              className="px-4 py-1.5 rounded-[8px] bg-[#0F3D33] dark:bg-[#4FB89A] hover:bg-[#165447] dark:hover:bg-[#63C7AA] text-[#F6F2EA] dark:text-[#0F1412] text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="btn-crimson-gradient btn-shimmer px-4 py-1.5 rounded-[10px] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
             >
               <span>{step === TOUR_STEPS.length - 1 ? "Get Started" : "Next"}</span>
-              <ArrowRight className="w-3.5 h-3.5 stroke-[1.5]" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#FFC21A]" />
             </button>
           </div>
         </div>
@@ -160,4 +160,3 @@ export function ProductTourModal() {
     </div>
   );
 }
-
