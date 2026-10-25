@@ -7,6 +7,10 @@ export async function GET() {
     const session = await getSession();
     if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 
+    if (session.role === "COUNSELOR") {
+      return NextResponse.json({ success: false, error: "Counselors are not permitted to access Team management" }, { status: 403 });
+    }
+
     const users = await prisma.user.findMany({
       orderBy: { createdAt: "asc" },
       select: {

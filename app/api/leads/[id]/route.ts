@@ -45,6 +45,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
+export async function PUT(req: NextRequest, ctx: { params: { id: string } }) {
+  return PATCH(req, ctx);
+}
+
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await getSession();

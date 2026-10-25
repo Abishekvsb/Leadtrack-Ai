@@ -1,9 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { publicEnquirySchema } from "@/lib/validations";
 import { createLead, checkDuplicate } from "@/server/services/leadService";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
+    const clientIp = getClientIp(req);
+    const rl = checkRateLimit("enquiry", clientIp, 15, 60 * 1000);
+    if (!rl.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Too many enquiry submissions. Please wait a moment before trying again.",
+          retryAfter: rl.retryAfterSeconds,
+        },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSeconds || 60) } }
+      );
+    }
+
     const body = await req.json();
     const parsed = publicEnquirySchema.safeParse(body);
 

@@ -28,3 +28,12 @@ Thumbs.db
 
 # Scratch and test files
 scratch/
+
+# Report and assets
+report/
+report
+report-assets/
+report-assets
+.env.screenshots
+.env.prod.backup
+*.tsbuildinfo
