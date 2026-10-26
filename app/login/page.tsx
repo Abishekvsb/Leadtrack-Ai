@@ -101,25 +101,35 @@ export default function LoginPage() {
             LeadTrack AI unifies inquiry response cadences, scores student engagement through transparent indicators, and empowers counselors with dignity and precision.
           </p>
 
-          {/* Floating Glass Stat Chips */}
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center gap-3">
-              <div className="w-9 h-9 rounded-[8px] bg-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold shrink-0">
-                <Award className="w-5 h-5 stroke-[2]" />
+          {/* Three Floating Glass Stat Chips */}
+          <div className="grid grid-cols-3 gap-3 pt-2">
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex flex-col justify-between">
+              <div className="w-8 h-8 rounded-[8px] bg-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold mb-2 shadow-xs">
+                <Award className="w-4 h-4 stroke-[2]" />
               </div>
               <div>
-                <p className="font-heading text-lg font-bold leading-tight text-white">99.4%</p>
-                <p className="text-[10px] text-white/70 uppercase tracking-wider font-semibold">SLA Adherence</p>
+                <p className="font-heading text-base sm:text-lg font-extrabold leading-tight text-white tabular-nums">99.4%</p>
+                <p className="text-[9px] sm:text-[10px] text-white/75 uppercase tracking-wider font-semibold mt-0.5">SLA Speed</p>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center gap-3">
-              <div className="w-9 h-9 rounded-[8px] bg-white text-[#D62828] flex items-center justify-center font-bold shrink-0">
-                <Users2 className="w-5 h-5 stroke-[2]" />
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex flex-col justify-between">
+              <div className="w-8 h-8 rounded-[8px] bg-white text-[#D62828] flex items-center justify-center font-bold mb-2 shadow-xs">
+                <Users2 className="w-4 h-4 stroke-[2]" />
               </div>
               <div>
-                <p className="font-heading text-lg font-bold leading-tight text-white">3.4x</p>
-                <p className="text-[10px] text-white/70 uppercase tracking-wider font-semibold">Conversion Lift</p>
+                <p className="font-heading text-base sm:text-lg font-extrabold leading-tight text-white tabular-nums">3.4x</p>
+                <p className="text-[9px] sm:text-[10px] text-white/75 uppercase tracking-wider font-semibold mt-0.5">Conversion</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex flex-col justify-between">
+              <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-[#FFE08A] to-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold mb-2 shadow-xs">
+                <Sparkles className="w-4 h-4 stroke-[2]" />
+              </div>
+              <div>
+                <p className="font-heading text-base sm:text-lg font-extrabold leading-tight text-white tabular-nums">&lt;12m</p>
+                <p className="text-[9px] sm:text-[10px] text-white/75 uppercase tracking-wider font-semibold mt-0.5">AI Response</p>
               </div>
             </div>
           </div>
@@ -128,7 +138,7 @@ export default function LoginPage() {
         {/* UN SDG 4 Mark */}
         <div className="pt-8 border-t border-white/15 flex items-center justify-between text-xs text-white/80 relative z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-[6px] bg-[#FFC21A] text-[#17141A] font-extrabold text-[11px] flex items-center justify-center font-mono">
+            <div className="w-6 h-6 rounded-[6px] bg-[#FFC21A] text-[#17141A] font-extrabold text-[11px] flex items-center justify-center font-mono shadow-xs">
               4
             </div>
             <span className="tracking-tight font-medium">UN Sustainable Development Goal 4: Quality Education</span>

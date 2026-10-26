@@ -145,155 +145,147 @@ export default function DashboardPage() {
         {/* Onboarding Setup Wizard */}
         {data?.onboarding && <OnboardingWizard onboarding={data.onboarding} />}
 
-        {/* Asymmetric Hero + Ruled KPI Strip */}
+        {/* Hero Card + Three KPI Cards */}
         <div className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Hero Card: Confirmed Admissions */}
-            <div className="lg:col-span-4 p-6 rounded-[14px] bg-card border border-border royal-card royal-card-interactive shadow-card flex flex-col justify-between relative overflow-hidden">
-              <div className="flex items-start justify-between">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            {/* Hero Card: Confirmed Admissions (Crimson-Gold Gradient with Gold Trendline) */}
+            <div className="lg:col-span-4 p-6 sm:p-7 rounded-[14px] bg-gradient-to-br from-[#E63946] via-[#D62828] to-[#8F1218] text-white border border-[#FFC21A]/35 shadow-crimson-glow flex flex-col justify-between relative overflow-hidden group">
+              {/* Subtle ambient gold radial glow */}
+              <div className="absolute top-0 right-0 w-36 h-36 bg-[#FFC21A]/20 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="flex items-start justify-between relative z-10">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#8A5A00] dark:text-[#FFD25A] block">
-                    Cycle Milestone
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/20 text-[#FFE08A] border border-[#FFC21A]/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFC21A] animate-pulse" />
+                    Admissions Milestone
                   </span>
-                  <h3 className="font-heading text-lg font-bold text-foreground mt-0.5">
+                  <h3 className="font-heading text-xl font-extrabold text-white mt-1.5 tracking-tight">
                     Confirmed Admissions
                   </h3>
                 </div>
-                <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-[#FFC21A] flex items-center justify-center shadow-xs">
+                <div className="w-10 h-10 rounded-[12px] bg-white/15 backdrop-blur-md text-[#FFC21A] flex items-center justify-center border border-white/20 shadow-xs">
                   <Award className="w-5 h-5 stroke-[2]" />
                 </div>
               </div>
 
-              <div className="my-6">
+              <div className="my-6 relative z-10">
                 <div className="flex items-baseline gap-3">
-                  <p className="font-heading text-5xl font-extrabold tracking-tight text-foreground tabular-nums">
+                  <p className="font-heading text-5xl sm:text-6xl font-extrabold tracking-tight text-white tabular-nums">
                     {loading ? "..." : kpis?.admissionsConfirmed?.value ?? 0}
                   </p>
-                  <span className="inline-flex items-center text-xs font-bold text-[#D62828] dark:text-[#FF5A5F] bg-[#D62828]/10 dark:bg-[#FF5A5F]/20 px-2.5 py-1 rounded-full border border-[#D62828]/25">
+                  <span className="inline-flex items-center text-xs font-bold text-[#17141A] bg-[#FFC21A] px-2.5 py-1 rounded-full shadow-xs">
                     {kpis?.admissionsConfirmed?.trend || "+12% vs last cycle"}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                  Registered candidates with validated deposit or fee commitments this active admissions window.
+                <p className="text-xs text-white/80 mt-2.5 leading-relaxed font-sans max-w-sm">
+                  Scholars enrolled with verified fee deposit in active admissions cycle 2026/27.
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-border flex items-center justify-between text-xs">
-                <span className="text-muted-foreground font-medium">Historical trajectory</span>
-                <div className="w-28">
+              <div className="pt-4 border-t border-white/20 flex items-center justify-between text-xs relative z-10">
+                <span className="text-white/80 font-medium">Trajectory &amp; Velocity</span>
+                <div className="w-32">
                   <StatSparkline
                     data={kpis?.admissionsConfirmed?.sparkline || [0, 0, 0, 0, 0, 0, 0]}
-                    color="#D62828"
+                    color="#FFC21A"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Ruled strip with thin dividers for remaining 5 KPIs */}
-            <div className="lg:col-span-8 rounded-[14px] bg-card border border-border royal-card shadow-card divide-y sm:divide-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-5 sm:divide-x divide-border">
-              {/* 1. Total Leads */}
-              <div className="p-5 flex flex-col justify-between hover:bg-[#FFF9EE]/50 dark:hover:bg-[#1B1114]/60 transition-colors">
+            {/* Three White KPI Cards with Sparklines */}
+            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {/* KPI 1: Total Inquiries */}
+              <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] royal-card shadow-card flex flex-col justify-between hover:border-[#D62828]/30 transition-all">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Total Leads
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground font-heading">
+                    Total Inquiries
                   </span>
-                  <div className="w-7 h-7 rounded-full bg-[#D62828]/10 flex items-center justify-center">
-                    <Users2 className="w-3.5 h-3.5 text-[#D62828] dark:text-[#FF5A5F]" />
+                  <div className="w-8 h-8 rounded-[10px] bg-[#D62828]/10 text-[#D62828] dark:text-[#FF5A5F] flex items-center justify-center border border-[#D62828]/20">
+                    <Users2 className="w-4 h-4 stroke-[1.75]" />
                   </div>
                 </div>
-                <div className="my-3">
-                  <p className="font-heading text-2xl font-extrabold text-foreground tabular-nums">
+
+                <div className="my-4">
+                  <p className="font-heading text-3xl font-extrabold text-foreground tabular-nums">
                     {loading ? "..." : kpis?.totalLeads?.value ?? 0}
                   </p>
-                  <span className="text-[10px] font-bold text-[#D62828] dark:text-[#FF5A5F]">
-                    {kpis?.totalLeads?.trend}
-                  </span>
-                </div>
-                <StatSparkline data={kpis?.totalLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#D62828" />
-              </div>
-
-              {/* 2. New Today */}
-              <div className="p-5 flex flex-col justify-between hover:bg-[#FFF9EE]/50 dark:hover:bg-[#1B1114]/60 transition-colors">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    New Today
-                  </span>
-                  <div className="w-7 h-7 rounded-full bg-[#FFC21A]/15 flex items-center justify-center">
-                    <Clock className="w-3.5 h-3.5 text-[#8A5A00] dark:text-[#FFD25A]" />
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-xs font-bold text-[#D62828] dark:text-[#FF5A5F]">
+                      {kpis?.totalLeads?.trend}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">vs last cycle</span>
                   </div>
                 </div>
-                <div className="my-3">
-                  <p className="font-heading text-2xl font-extrabold text-foreground tabular-nums">
-                    {loading ? "..." : kpis?.newToday?.value ?? 0}
-                  </p>
-                  <span className="text-[10px] font-bold text-[#8A5A00] dark:text-[#FFD25A]">
-                    {kpis?.newToday?.trend}
-                  </span>
-                </div>
-                <StatSparkline data={kpis?.newToday?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#FFC21A" />
-              </div>
 
-              {/* 3. Hot Leads */}
-              <div className="p-5 flex flex-col justify-between hover:bg-[#FFF9EE]/50 dark:hover:bg-[#1B1114]/60 transition-colors">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Hot Leads
-                  </span>
-                  <div className="w-7 h-7 rounded-full bg-[#D62828]/15 flex items-center justify-center shadow-xs">
-                    <Flame className="w-3.5 h-3.5 text-[#D62828] dark:text-[#FF5A5F]" />
+                <div className="pt-3 border-t border-border/70 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground">Enquiry velocity</span>
+                  <div className="w-24">
+                    <StatSparkline data={kpis?.totalLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#D62828" />
                   </div>
                 </div>
-                <div className="my-3">
-                  <p className="font-heading text-2xl font-extrabold text-[#D62828] dark:text-[#FF5A5F] tabular-nums">
+              </div>
+
+              {/* KPI 2: High-Intent Hot Leads */}
+              <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] royal-card shadow-card flex flex-col justify-between hover:border-[#FFC21A]/40 transition-all">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground font-heading">
+                    Hot Leads (≥75)
+                  </span>
+                  <div className="w-8 h-8 rounded-[10px] bg-[#FFC21A]/20 text-[#8A5A00] dark:text-[#FFD25A] flex items-center justify-center border border-[#FFC21A]/35">
+                    <Flame className="w-4 h-4 stroke-[1.75]" />
+                  </div>
+                </div>
+
+                <div className="my-4">
+                  <p className="font-heading text-3xl font-extrabold text-[#D62828] dark:text-[#FF5A5F] tabular-nums">
                     {loading ? "..." : kpis?.hotLeads?.value ?? 0}
                   </p>
-                  <span className="text-[10px] font-semibold text-muted-foreground">
-                    Score &ge; 75/100
-                  </span>
-                </div>
-                <StatSparkline data={kpis?.hotLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#D62828" />
-              </div>
-
-              {/* 4. Due Follow-ups */}
-              <div className="p-5 flex flex-col justify-between hover:bg-[#FFF9EE]/50 dark:hover:bg-[#1B1114]/60 transition-colors">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Pending Calls
-                  </span>
-                  <div className="w-7 h-7 rounded-full bg-[#FFC21A]/15 flex items-center justify-center">
-                    <PhoneCall className="w-3.5 h-3.5 text-[#8A5A00] dark:text-[#FFD25A]" />
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-xs font-bold text-[#8A5A00] dark:text-[#FFD25A]">
+                      AI Score 75–100
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">priority queue</span>
                   </div>
                 </div>
-                <div className="my-3">
-                  <p className="font-heading text-2xl font-extrabold text-[#8A5A00] dark:text-[#FFD25A] tabular-nums">
-                    {loading ? "..." : kpis?.followUpsDue?.value ?? 0}
-                  </p>
-                  <span className="text-[10px] font-medium text-muted-foreground">
-                    Scheduled today
-                  </span>
-                </div>
-                <StatSparkline data={kpis?.followUpsDue?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#E5A100" />
-              </div>
 
-              {/* 5. Conversion Rate */}
-              <div className="p-5 flex flex-col justify-between hover:bg-[#FFF9EE]/50 dark:hover:bg-[#1B1114]/60 transition-colors">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Conversion
-                  </span>
-                  <div className="w-7 h-7 rounded-full bg-[#16A34A]/10 flex items-center justify-center">
-                    <TrendingUp className="w-3.5 h-3.5 text-[#16A34A] dark:text-[#4ADE80]" />
+                <div className="pt-3 border-t border-border/70 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground">Daily trend</span>
+                  <div className="w-24">
+                    <StatSparkline data={kpis?.hotLeads?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#FFC21A" />
                   </div>
                 </div>
-                <div className="my-3">
-                  <p className="font-heading text-2xl font-extrabold text-foreground tabular-nums">
+              </div>
+
+              {/* KPI 3: Conversion Rate */}
+              <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] royal-card shadow-card flex flex-col justify-between hover:border-[#16A34A]/40 transition-all">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground font-heading">
+                    Conversion Rate
+                  </span>
+                  <div className="w-8 h-8 rounded-[10px] bg-[#16A34A]/10 text-[#16A34A] dark:text-[#4ADE80] flex items-center justify-center border border-[#16A34A]/25">
+                    <TrendingUp className="w-4 h-4 stroke-[1.75]" />
+                  </div>
+                </div>
+
+                <div className="my-4">
+                  <p className="font-heading text-3xl font-extrabold text-foreground tabular-nums">
                     {loading ? "..." : kpis?.conversionRate?.value ?? "0%"}
                   </p>
-                  <span className="text-[10px] font-bold text-[#16A34A] dark:text-[#4ADE80]">
-                    {kpis?.conversionRate?.trend}
-                  </span>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-xs font-bold text-[#16A34A] dark:text-[#4ADE80]">
+                      {kpis?.conversionRate?.trend}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">inquiry-to-admit</span>
+                  </div>
                 </div>
-                <StatSparkline data={kpis?.conversionRate?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#16A34A" />
+
+                <div className="pt-3 border-t border-border/70 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground">Conversion trend</span>
+                  <div className="w-24">
+                    <StatSparkline data={kpis?.conversionRate?.sparkline || [0, 0, 0, 0, 0, 0, 0]} color="#16A34A" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -453,32 +445,35 @@ export default function DashboardPage() {
                 <p className="text-[11px] text-muted-foreground">Prospective scholars moving through stages will populate the funnel</p>
               </div>
             ) : (
-              <div className="space-y-3.5">
+              <div className="space-y-4">
                 {(data?.funnelData || []).map((item: any, idx: number) => {
-                  const barColor =
-                    idx === data.funnelData.length - 1
-                      ? "#16A34A" // Admitted = green
-                      : idx === 0
-                      ? "#D62828" // New = Crimson
-                      : idx % 2 === 1
-                      ? "#FFC21A" // Gold
-                      : "#8F1218"; // Deep Crimson
+                  const gradientStyles = [
+                    "from-[#E63946] to-[#D62828]",
+                    "from-[#D62828] to-[#8F1218]",
+                    "from-[#8F1218] to-[#E5A100]",
+                    "from-[#FFC21A] to-[#E5A100]",
+                    "from-[#16A34A] to-[#22C55E]",
+                  ];
+                  const barGradient = gradientStyles[idx % gradientStyles.length];
 
                   return (
                     <div key={idx} className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-foreground">{item.stage}</span>
-                        <span className="font-mono font-bold text-foreground tabular-nums">
-                          {item.count} leads{" "}
-                          <span className="text-muted-foreground font-sans font-normal">({item.percentage}%)</span>
-                        </span>
+                        <span className="font-bold text-foreground font-heading">{item.stage}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-foreground tabular-nums">
+                            {item.count} leads
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-[4px] bg-[#FFF9EE] dark:bg-[#1B1114] border border-border text-muted-foreground font-mono">
+                            {item.percentage}%
+                          </span>
+                        </div>
                       </div>
-                      <div className="w-full h-2.5 rounded-full bg-muted overflow-hidden">
+                      <div className="w-full h-3 rounded-full bg-[#FFF9EE] dark:bg-[#1B1114] p-0.5 border border-border/80 overflow-hidden">
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className={`h-full rounded-full bg-gradient-to-r ${barGradient} transition-all duration-700 shadow-xs`}
                           style={{
-                            width: `${Math.max(4, item.percentage)}%`,
-                            backgroundColor: barColor,
+                            width: `${Math.max(5, item.percentage)}%`,
                           }}
                         />
                       </div>
@@ -650,12 +645,24 @@ export default function DashboardPage() {
                           {lead.course?.name || "General"}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <span className="font-mono font-bold text-[#D62828] dark:text-[#FF5A5F] tabular-nums">
-                          {lead.score}{" "}
-                          <span className="text-[10px] text-muted-foreground font-sans font-normal">/ 100</span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono border ${
+                            lead.score >= 75
+                              ? "bg-[#D62828]/10 text-[#D62828] dark:text-[#FF5A5F] border-[#D62828]/30 shadow-xs"
+                              : "bg-[#FFC21A]/20 text-[#8A5A00] dark:text-[#FFD25A] border-[#FFC21A]/40"
+                          }`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              lead.score >= 75 ? "bg-[#D62828] animate-pulse" : "bg-[#FFC21A]"
+                            }`}
+                          />
+                          {lead.score} {lead.score >= 75 ? "HOT" : "WARM"}
                         </span>
-                        <p className="text-[10px] text-muted-foreground">{lead.assignedTo?.name || "Unassigned"}</p>
+                        <p className="text-[10px] text-muted-foreground truncate max-w-[100px]">
+                          {lead.assignedTo?.name || "Unassigned"}
+                        </p>
                       </div>
                     </div>
                   ))

@@ -40,9 +40,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [tickerStats, setTickerStats] = useState<Array<{ label: string; value: string | number }>>([
-    { label: "Admissions Window", value: "Active Cycle 2026/27" },
-    { label: "UN SDG 4", value: "Quality Education" },
-    { label: "AI Lead Scoring", value: "Realtime" },
+    { label: "Today's Enquiries", value: "—" },
+    { label: "Hot Leads Qualified", value: "—" },
+    { label: "Follow-ups Due Today", value: "—" },
+    { label: "Confirmed Admissions", value: "—" },
+    { label: "UN SDG 4", value: "Quality Higher Education" },
   ]);
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     loadUser();
   }, [router]);
 
-  // Load ticker live indicators
+  // Load ticker live indicators with real counts
   useEffect(() => {
     async function loadTickerData() {
       try {
@@ -82,6 +84,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               { label: "Hot Leads Qualified", value: k.hotLeads?.value ?? 0 },
               { label: "Follow-ups Due Today", value: k.followUpsDue?.value ?? 0 },
               { label: "Confirmed Admissions", value: k.admissionsConfirmed?.value ?? 0 },
+              { label: "Total Active Leads", value: k.totalLeads?.value ?? 0 },
+              { label: "Conversion Rate", value: k.conversionRate?.value ?? "0%" },
               { label: "UN SDG 4", value: "Quality Higher Education" },
             ];
             setTickerStats(items);
@@ -101,7 +105,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-[12px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-[#FFC21A] shadow-crimson-glow animate-pulse">
+          <div className="w-12 h-12 rounded-[12px] bg-gradient-to-br from-[#E63946] via-[#D62828] to-[#8F1218] flex items-center justify-center text-[#FFC21A] shadow-crimson-glow animate-pulse">
             <GraduationCap className="w-6 h-6 stroke-[1.75]" />
           </div>
           <p className="text-xs font-heading font-bold text-muted-foreground tracking-tight">
@@ -128,9 +132,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Desktop Sidebar (Hidden on mobile) */}
         <Sidebar
           userRole={user?.role}
+          userName={user?.name}
+          userEmail={user?.email}
+          userAvatar={user?.avatar}
           institutionName={user?.institution?.name || "LeadTrack AI"}
           institutionLogo={user?.institution?.logo}
           onOpenAiChat={() => setAiModalOpen(true)}
+          onLogout={handleLogout}
         />
 
         {/* Main Content Area */}
@@ -167,16 +175,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           );
         })}
 
-        {/* Mobile AI Quick Trigger */}
+        {/* Mobile AI Quick Trigger - Gold Orb */}
         <button
           onClick={() => setAiModalOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[8px] text-[10px] font-medium text-[#D62828] dark:text-[#FF5A5F]"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 px-2 rounded-[8px] text-[10px] font-medium text-[#17141A] dark:text-[#FFD25A]"
           title="Open AI Copilot"
         >
-          <div className="w-6 h-6 rounded-[8px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-[#FFC21A] flex items-center justify-center shadow-xs">
-            <Bot className="w-3.5 h-3.5 stroke-[1.75]" />
+          <div className="w-7 h-7 rounded-full gold-copilot-orb flex items-center justify-center shadow-gold-glow">
+            <Sparkles className="w-3.5 h-3.5 stroke-[2] text-[#17141A]" />
           </div>
-          <span className="mt-1 font-bold">Copilot</span>
+          <span className="mt-1 font-bold text-[#8A5A00] dark:text-[#FFD25A]">Copilot</span>
         </button>
 
         {/* More Menu Drawer Trigger */}
@@ -303,17 +311,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       )}
 
-      {/* Desktop Floating AI Copilot Orb Trigger */}
+      {/* Desktop Floating Gold Copilot Orb Trigger */}
       <button
         onClick={() => setAiModalOpen(true)}
-        className="hidden md:flex fixed bottom-6 right-6 z-40 items-center gap-2.5 px-4 py-2.5 rounded-[12px] btn-crimson-gradient font-bold text-xs shadow-crimson-glow hover:-translate-y-1 transition-all group"
-        title="Open AI Counselor Copilot"
+        className="hidden md:flex fixed bottom-7 right-7 z-40 items-center gap-3 px-4 py-2.5 rounded-full gold-copilot-orb font-heading font-extrabold text-xs shadow-gold-glow animate-gold-pulse group cursor-pointer border border-[#FFE08A]/70 select-none"
+        title="Open AI Admissions Copilot"
       >
-        <div className="w-5 h-5 rounded-full bg-[#FFC21A] text-[#17141A] flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-          <Bot className="w-3.5 h-3.5 stroke-[2]" />
+        <div className="w-7 h-7 rounded-full bg-[#17141A] text-[#FFC21A] flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
+          <Sparkles className="w-4 h-4 stroke-[2.2]" />
         </div>
-        <span>Counselor Copilot</span>
-        <span className="w-2 h-2 rounded-full bg-[#FFC21A] animate-ping" />
+        <span className="tracking-tight text-[#17141A]">Counselor Copilot</span>
+        <span className="flex h-2 w-2 relative">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#17141A] opacity-60"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D62828]"></span>
+        </span>
       </button>
 
       {/* AI Assistant Modal */}
