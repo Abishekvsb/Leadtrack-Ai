@@ -4,7 +4,17 @@ import { cookies } from "next/headers";
 import { Role, UserSession } from "./types";
 import { prisma } from "./prisma";
 
-const JWT_SECRET = process.env.JWT_SECRET || "leadtrack-default-jwt-secret-key-32chars";
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
+  if (!secret) {
+    const errorMsg =
+      "[FATAL CONFIG ERROR] JWT_SECRET environment variable is missing. Authentication cannot function without a cryptographically secure secret.";
+    console.error(errorMsg);
+    throw new Error(errorMsg);
+  }
+  return secret;
+}
+
 const COOKIE_NAME = "leadtrack_session";
 
 export async function hashPassword(password: string): Promise<string> {
@@ -16,6 +26,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function signToken(user: UserSession): string {
+  const secret = getJwtSecret();
   return jwt.sign(
     {
       id: user.id,
@@ -26,14 +37,15 @@ export function signToken(user: UserSession): string {
       institutionName: user.institutionName,
       avatar: user.avatar,
     },
-    JWT_SECRET,
+    secret,
     { expiresIn: "7d" }
   );
 }
 
 export function verifyToken(token: string): UserSession | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as UserSession;
+    const secret = getJwtSecret();
+    const decoded = jwt.verify(token, secret) as UserSession;
     return decoded;
   } catch {
     return null;

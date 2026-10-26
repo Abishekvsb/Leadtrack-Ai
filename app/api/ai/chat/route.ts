@@ -4,6 +4,15 @@ import { executeRuleBasedCopilot } from "@/server/services/copilotService";
 
 export const dynamic = "force-dynamic";
 
+// AI Copilot Model Configuration: Ordered by speed and efficiency (fastest first).
+// If any model is retired, returns an error, or times out, it gracefully falls through
+// to the next model in the array, and ultimately to the grounded rule-based engine.
+const COPILOT_MODELS: readonly string[] = [
+  "gemini-3.5-flash-lite", // Fast sub-second primary model
+  "gemini-3.5-flash",      // Standard flash fallback
+  "gemini-3.8-flash",      // Extended reasoning fallback
+];
+
 // In-memory rate limiting map: userId -> timestamps array
 const rateLimitMap = new Map<string, number[]>();
 
@@ -79,40 +88,42 @@ USER QUESTION: ${query}
 
 Provide a concise, helpful response using ONLY the verified context:`;
 
-        // Try primary model (gemini-3.6-flash) with fallback to gemini-3.5-flash and gemini-3.5-flash-lite
-        const models = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
-        for (const model of models) {
-          const geminiRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: {
-                  temperature: 0.1,
-                  maxOutputTokens: 800,
-                },
-              }),
-              signal: AbortSignal.timeout(8000), // 8 sec timeout
-            }
-          );
+        for (const model of COPILOT_MODELS) {
+          try {
+            const geminiRes = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  contents: [{ parts: [{ text: prompt }] }],
+                  generationConfig: {
+                    temperature: 0.1,
+                    maxOutputTokens: 800,
+                  },
+                }),
+                signal: AbortSignal.timeout(6000), // 6 sec timeout per model
+              }
+            );
 
-          if (geminiRes.ok) {
-            const geminiData = await geminiRes.json();
-            const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
-            if (text) {
-              replyText = text;
-              answeredByGemini = true;
-              break;
+            if (geminiRes.ok) {
+              const geminiData = await geminiRes.json();
+              const text = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+              if (text) {
+                replyText = text;
+                answeredByGemini = true;
+                break;
+              }
+            } else {
+              fallbackReason = `${model}: HTTP ${geminiRes.status}`;
             }
-          } else {
-            fallbackReason = `HTTP ${geminiRes.status}`;
+          } catch (modelErr: any) {
+            const isTimeout = modelErr?.name === "TimeoutError" || modelErr?.name === "AbortError";
+            fallbackReason = `${model}: ${isTimeout ? "timeout" : "network error"}`;
           }
         }
       } catch (e: any) {
-        const isTimeout = e?.name === "TimeoutError" || e?.name === "AbortError";
-        fallbackReason = isTimeout ? "timeout" : "network error";
+        fallbackReason = "context generation error";
       }
     } else {
       fallbackReason = "no GEMINI_API_KEY";
@@ -139,18 +150,21 @@ Provide a concise, helpful response using ONLY the verified context:`;
           // Split into words / chunks for smooth token streaming
           const chunks = replyText.split(/(\s+)/);
           for (const chunk of chunks) {
-            controller.enqueue(encoder.encode(chunk));
-            await new Promise((r) => setTimeout(r, 18));
+            if (chunk) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
+              await new Promise((r) => setTimeout(r, 12));
+            }
           }
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
         },
       });
 
       return new Response(stream, {
         headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Transfer-Encoding": "chunked",
-          "Cache-Control": "no-cache",
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "Cache-Control": "no-cache, no-transform",
+          "Connection": "keep-alive",
         },
       });
     }

@@ -125,8 +125,30 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
                   });
                 }
               } catch {
-                // partial chunk
+                // partial JSON chunk or raw text
+                if (data && data !== "[DONE]") {
+                  assistantReply += data;
+                  setMessages((prev) => {
+                    const copy = [...prev];
+                    copy[copy.length - 1] = {
+                      role: "assistant",
+                      content: assistantReply,
+                    };
+                    return copy;
+                  });
+                }
               }
+            } else if (line.trim() && !line.startsWith("event:") && !line.startsWith(":")) {
+              // Direct fallback for non-SSE raw streaming
+              assistantReply += line;
+              setMessages((prev) => {
+                const copy = [...prev];
+                copy[copy.length - 1] = {
+                  role: "assistant",
+                  content: assistantReply,
+                };
+                return copy;
+              });
             }
           }
         }
