@@ -395,14 +395,14 @@ export default function LeadDetailPage() {
         </div>
 
         {/* Lead Header Profile & Quick Action Bar (Student Card Dossier Header) */}
-        <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div className="p-6 sm:p-8 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-14 h-14 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white font-heading font-bold text-xl flex items-center justify-center shrink-0 border border-[#FFC21A]/30 shadow-xs">
               {lead.studentName.slice(0, 2).toUpperCase()}
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight title-gold-accent pb-1">
                   {lead.studentName}
                 </h1>
                 <span className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium">
@@ -478,7 +478,7 @@ export default function LeadDetailPage() {
         </div>
 
         {/* Status Stepper Progression */}
-        <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-3">
+        <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-3">
           <div className="flex items-center justify-between text-xs">
             <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
               Admission Pipeline Progression
@@ -516,7 +516,7 @@ export default function LeadDetailPage() {
         {/* AI Lead Intelligence & Next Best Action Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* AI Score Official Stamp Card */}
-          <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs flex flex-col justify-between">
+          <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-accent" />

@@ -189,7 +189,7 @@ The built-in Copilot is strictly scoped to institutional admissions intelligence
 - Stacked card view for leads on screens `< 768px` with direct `tel:` actions.
 - Touch sensor support on Kanban pipeline (`@dnd-kit/core` with touch delay and snap scrolling).
 - Accessible "Move to" stage menu for quick stage transitions without dragging.
-- PWA `manifest.json` configured with mobile theme color `#4f46e5`.
+- PWA `manifest.json` configured with mobile theme color `#D62828`.
 
 ---
 

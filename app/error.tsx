@@ -16,15 +16,15 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F6F2EA] dark:bg-[#0F1412] px-6 py-12 text-foreground">
-      <div className="max-w-md w-full bg-card border border-border rounded-[16px] p-8 sm:p-10 shadow-card text-center space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#FFF9EE] dark:bg-[#120A0C] px-6 py-12 text-foreground">
+      <div className="max-w-md w-full bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] rounded-[16px] p-8 sm:p-10 shadow-card text-center space-y-6">
         <div className="w-14 h-14 rounded-lg bg-[#C4552F]/10 border border-[#C4552F]/25 text-[#C4552F] flex items-center justify-center mx-auto shadow-2xs">
           <AlertTriangle className="w-7 h-7" />
         </div>
 
         <div className="space-y-2">
           <span className="font-mono text-4xl sm:text-5xl font-bold text-[#C4552F] tracking-tight">500</span>
-          <h1 className="font-heading text-2xl font-bold text-foreground">Execution Disruption</h1>
+          <h1 className="font-heading text-2xl font-extrabold text-foreground title-gold-accent pb-1">Execution Disruption</h1>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto font-sans">
             An unexpected error occurred during request processing. This incident has been logged into the institutional audit ledger.
           </p>

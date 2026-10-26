@@ -76,12 +76,12 @@ export default function NotificationsPage() {
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Admissions Dispatch
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Institutional Alerts &amp; Notices
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -90,12 +90,12 @@ export default function NotificationsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center p-1 rounded-[8px] bg-card border border-border shadow-xs">
+            <div className="flex items-center p-1 rounded-[10px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs">
               <button
                 onClick={() => setFilter("ALL")}
-                className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-[6px] text-xs font-semibold transition-colors ${
                   filter === "ALL"
-                    ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
+                    ? "btn-crimson-gradient text-white font-bold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -103,9 +103,9 @@ export default function NotificationsPage() {
               </button>
               <button
                 onClick={() => setFilter("UNREAD")}
-                className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-[6px] text-xs font-semibold transition-colors ${
                   filter === "UNREAD"
-                    ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
+                    ? "btn-crimson-gradient text-white font-bold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -115,7 +115,7 @@ export default function NotificationsPage() {
 
             <button
               onClick={handleMarkAllRead}
-              className="px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors shadow-xs"
+              className="px-3.5 py-2 min-h-[40px] rounded-[10px] border border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B] text-xs font-semibold transition-colors shadow-xs"
             >
               Mark All Read
             </button>
@@ -129,13 +129,13 @@ export default function NotificationsPage() {
             <p className="font-heading italic text-xs text-muted-foreground">Checking institutional dispatch...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 rounded-[12px] bg-card border border-border text-center space-y-3">
+          <div className="p-12 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] text-center space-y-3 shadow-xs">
             <CheckCircle2 className="w-10 h-10 text-[#D62828] dark:text-[#FF5A5F] mx-auto stroke-[1.5]" />
-            <h3 className="font-heading text-lg font-normal text-foreground">You are all caught up</h3>
+            <h3 className="font-heading text-lg font-bold text-foreground">You are all caught up</h3>
             <p className="text-xs text-muted-foreground">No unread notices or pending alerts in your dispatch queue.</p>
           </div>
         ) : (
-          <div className="rounded-[12px] bg-card border border-border shadow-xs divide-y divide-border">
+          <div className="rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs divide-y divide-[#F0E6D6] dark:divide-[#2E1D21]">
             {filtered.map((item) => (
               <div
                 key={item.id}

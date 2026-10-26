@@ -55,17 +55,17 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="max-w-md w-full bg-card rounded-[12px] p-7 sm:p-8 border border-border shadow-academic-floating space-y-6">
+    <div className="max-w-md w-full bg-white dark:bg-[#1B1114] rounded-[16px] p-7 sm:p-8 border border-[#F0E6D6] dark:border-[#2E1D21] shadow-card space-y-6">
       <div className="text-center space-y-2">
         <Link href="/" className="inline-flex items-center gap-2.5 mb-1">
-          <div className="w-9 h-9 rounded-[8px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-white shadow-xs border border-[#FFC21A]/30">
-            <GraduationCap className="w-5 h-5 stroke-[1.5]" />
+          <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-white shadow-xs border border-[#FFC21A]/30">
+            <GraduationCap className="w-5 h-5 text-[#FFC21A] stroke-[1.75]" />
           </div>
-          <span className="font-heading text-xl font-normal tracking-tight text-foreground">
+          <span className="font-heading text-xl font-bold tracking-tight text-foreground">
             LeadTrack AI
           </span>
         </Link>
-        <h1 className="font-heading text-2xl font-normal text-foreground tracking-tight">Set New Password</h1>
+        <h1 className="font-heading text-2xl font-extrabold text-foreground tracking-tight title-gold-accent pb-1">Set New Password</h1>
         <p className="text-xs text-muted-foreground leading-relaxed">
           Enter your updated institutional password below.
         </p>

@@ -101,35 +101,35 @@ export default function LoginPage() {
             LeadTrack AI unifies inquiry response cadences, scores student engagement through transparent indicators, and empowers counselors with dignity and precision.
           </p>
 
-          {/* Three Floating Glass Stat Chips */}
-          <div className="grid grid-cols-3 gap-3 pt-2">
-            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex flex-col justify-between">
-              <div className="w-8 h-8 rounded-[8px] bg-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold mb-2 shadow-xs">
-                <Award className="w-4 h-4 stroke-[2]" />
-              </div>
-              <div>
-                <p className="font-heading text-base sm:text-lg font-extrabold leading-tight text-white tabular-nums">99.4%</p>
-                <p className="text-[9px] sm:text-[10px] text-white/75 uppercase tracking-wider font-semibold mt-0.5">SLA Speed</p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex flex-col justify-between">
-              <div className="w-8 h-8 rounded-[8px] bg-white text-[#D62828] flex items-center justify-center font-bold mb-2 shadow-xs">
-                <Users2 className="w-4 h-4 stroke-[2]" />
-              </div>
-              <div>
-                <p className="font-heading text-base sm:text-lg font-extrabold leading-tight text-white tabular-nums">3.4x</p>
-                <p className="text-[9px] sm:text-[10px] text-white/75 uppercase tracking-wider font-semibold mt-0.5">Conversion</p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex flex-col justify-between">
-              <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-[#FFE08A] to-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold mb-2 shadow-xs">
+          {/* Three Truthful Feature Chips */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center sm:flex-col sm:items-start justify-start gap-3 sm:gap-2">
+              <div className="w-8 h-8 rounded-[8px] bg-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold shrink-0 shadow-xs">
                 <Sparkles className="w-4 h-4 stroke-[2]" />
               </div>
               <div>
-                <p className="font-heading text-base sm:text-lg font-extrabold leading-tight text-white tabular-nums">&lt;12m</p>
-                <p className="text-[9px] sm:text-[10px] text-white/75 uppercase tracking-wider font-semibold mt-0.5">AI Response</p>
+                <p className="font-heading text-xs sm:text-sm font-bold leading-snug text-white">Explainable lead score</p>
+                <p className="text-[10px] text-white/70 font-medium mt-0.5">Transparent 4-pillar math</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center sm:flex-col sm:items-start justify-start gap-3 sm:gap-2">
+              <div className="w-8 h-8 rounded-[8px] bg-white text-[#D62828] flex items-center justify-center font-bold shrink-0 shadow-xs">
+                <Award className="w-4 h-4 stroke-[2]" />
+              </div>
+              <div>
+                <p className="font-heading text-xs sm:text-sm font-bold leading-snug text-white">7-stage admission pipeline</p>
+                <p className="text-[10px] text-white/70 font-medium mt-0.5">Enquiry to confirmed admit</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-[12px] bg-white/10 backdrop-blur-md border border-white/20 shadow-xs flex items-center sm:flex-col sm:items-start justify-start gap-3 sm:gap-2">
+              <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-[#FFE08A] to-[#FFC21A] text-[#17141A] flex items-center justify-center font-bold shrink-0 shadow-xs">
+                <Users2 className="w-4 h-4 stroke-[2]" />
+              </div>
+              <div>
+                <p className="font-heading text-xs sm:text-sm font-bold leading-snug text-white">Automated follow-ups</p>
+                <p className="text-[10px] text-white/70 font-medium mt-0.5">Counselor call &amp; SMS queues</p>
               </div>
             </div>
           </div>

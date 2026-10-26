@@ -6,8 +6,8 @@ import { GraduationCap, Home, Search } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F6F2EA] dark:bg-[#0F1412] px-6 py-12 text-foreground">
-      <div className="max-w-md w-full bg-card border border-border rounded-[16px] p-8 sm:p-10 shadow-card text-center space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#FFF9EE] dark:bg-[#120A0C] px-6 py-12 text-foreground">
+      <div className="max-w-md w-full bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] rounded-[16px] p-8 sm:p-10 shadow-card text-center space-y-6">
         <div className="w-14 h-14 rounded-lg bg-[#D62828]/10 border border-[#D62828]/25 text-[#D62828] dark:text-[#FF5A5F] flex items-center justify-center mx-auto shadow-2xs">
           <GraduationCap className="w-7 h-7" />
         </div>
@@ -16,7 +16,7 @@ export default function NotFound() {
           <span className="font-mono text-4xl sm:text-5xl font-bold text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
             404
           </span>
-          <h1 className="font-heading text-2xl font-bold text-foreground">
+          <h1 className="font-heading text-2xl font-extrabold text-foreground title-gold-accent pb-1">
             Document Not Found
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto font-sans">

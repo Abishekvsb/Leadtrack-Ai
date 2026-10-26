@@ -128,12 +128,12 @@ export async function getDashboardStats(params: DashboardStatsParams, user?: Use
 
   // 4. Conversion Funnel
   const funnelStages = [
-    { stage: "New Enquiry", status: "NEW", count: 0, fill: "#6366f1" },
-    { stage: "Contacted", status: "CONTACTED", count: 0, fill: "#0ea5e9" },
-    { stage: "Interested", status: "INTERESTED", count: 0, fill: "#f59e0b" },
-    { stage: "Campus Visit", status: "CAMPUS_VISIT", count: 0, fill: "#a855f7" },
-    { stage: "Application", status: "APPLICATION_SUBMITTED", count: 0, fill: "#3b82f6" },
-    { stage: "Admitted", status: "ADMITTED", count: 0, fill: "#10b981" },
+    { stage: "New Enquiry", status: "NEW", count: 0, fill: "#D62828" },
+    { stage: "Contacted", status: "CONTACTED", count: 0, fill: "#E63946" },
+    { stage: "Interested", status: "INTERESTED", count: 0, fill: "#F77F00" },
+    { stage: "Campus Visit", status: "CAMPUS_VISIT", count: 0, fill: "#FFC21A" },
+    { stage: "Application", status: "APPLICATION_SUBMITTED", count: 0, fill: "#D4A017" },
+    { stage: "Admitted", status: "ADMITTED", count: 0, fill: "#10B981" },
   ];
 
   funnelStages.forEach((item) => {

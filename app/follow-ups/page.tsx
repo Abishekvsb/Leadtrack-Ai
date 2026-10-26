@@ -164,12 +164,12 @@ export default function FollowUpsPage() {
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Admissions Outreach
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Counselor Tasks &amp; Schedule
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -179,12 +179,12 @@ export default function FollowUpsPage() {
 
           <div className="flex items-center gap-3">
             {/* View Mode Switcher */}
-            <div className="flex items-center p-1 rounded-[8px] bg-card border border-border shadow-xs">
+            <div className="flex items-center p-1 rounded-[10px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs">
               <button
                 onClick={() => setViewMode("list")}
                 className={`p-1.5 rounded-[6px] text-xs font-medium transition-colors ${
                   viewMode === "list"
-                    ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
+                    ? "btn-crimson-gradient text-white font-bold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="List View"
@@ -195,7 +195,7 @@ export default function FollowUpsPage() {
                 onClick={() => setViewMode("calendar")}
                 className={`p-1.5 rounded-[6px] text-xs font-medium transition-colors ${
                   viewMode === "calendar"
-                    ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
+                    ? "btn-crimson-gradient text-white font-bold shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Calendar Timeline"
@@ -206,7 +206,7 @@ export default function FollowUpsPage() {
 
             <button
               onClick={() => setModalMode("create")}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Schedule Outreach</span>
@@ -226,18 +226,18 @@ export default function FollowUpsPage() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-[8px] text-xs font-medium whitespace-nowrap transition-all border ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-xs font-semibold whitespace-nowrap transition-all border ${
                 activeTab === tab.key
-                  ? "bg-[#D62828] text-white border-[#D62828] dark:bg-[#FF5A5F] dark:text-[#120A0C] dark:border-[#FF5A5F] font-bold shadow-xs"
-                  : "bg-card border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
+                  ? "btn-crimson-gradient text-white border-[#8F1218] font-bold shadow-xs"
+                  : "bg-white dark:bg-[#1B1114] border-[#F0E6D6] dark:border-[#2E1D21] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B]"
               }`}
             >
               <span>{tab.label}</span>
               <span
-                className={`px-1.5 py-0.5 rounded-[4px] font-mono text-[10px] tabular-nums ${
+                className={`px-1.5 py-0.5 rounded-[4px] font-mono text-[10px] tabular-nums font-bold ${
                   activeTab === tab.key
-                    ? "bg-white/20 text-white dark:bg-black/20 dark:text-[#0F1412]"
-                    : "bg-[#F8F2E6] dark:bg-[#1B1114] text-muted-foreground border border-border"
+                    ? "bg-white/20 text-white"
+                    : "bg-[#F8F2E6] dark:bg-[#27191E] text-muted-foreground border border-border"
                 }`}
               >
                 {tab.count}
@@ -253,15 +253,15 @@ export default function FollowUpsPage() {
             <p className="font-heading italic text-xs text-muted-foreground">Accessing outreach calendar...</p>
           </div>
         ) : followUps.length === 0 ? (
-          <div className="p-12 rounded-[12px] bg-card border border-border text-center space-y-3">
+          <div className="p-12 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] text-center space-y-3 shadow-xs">
             <CheckCircle2 className="w-10 h-10 text-[#D62828] dark:text-[#FF5A5F] mx-auto stroke-[1.5]" />
-            <h3 className="font-heading text-lg font-normal text-foreground">No tasks scheduled in this filter</h3>
+            <h3 className="font-heading text-lg font-bold text-foreground">No tasks scheduled in this filter</h3>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto">
               Your admissions queue is up to date. Schedule a consultation call or campus visit using the action above.
             </p>
           </div>
         ) : viewMode === "list" ? (
-          <div className="rounded-[12px] bg-card border border-border shadow-xs divide-y divide-border">
+          <div className="rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs divide-y divide-[#F0E6D6] dark:divide-[#2E1D21]">
             {followUps.map((task) => {
               const isOverdue = new Date(task.scheduledAt) < new Date() && task.status === "PENDING";
 

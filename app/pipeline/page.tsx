@@ -58,14 +58,21 @@ function KanbanCard({
   const [showMoveMenu, setShowMoveMenu] = useState(false);
   const scoreInfo = SCORE_COLORS[lead.scoreCategory as ScoreCategory] || SCORE_COLORS.WARM;
 
+  const priorityBorder =
+    lead.priority === "HIGH" || lead.scoreCategory === "HOT"
+      ? "border-l-[3.5px] border-l-[#D62828]"
+      : lead.priority === "MEDIUM" || lead.scoreCategory === "WARM"
+      ? "border-l-[3.5px] border-l-[#FFC21A]"
+      : "border-l-[3.5px] border-l-[#64748B]";
+
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className={`p-3.5 rounded-[12px] bg-card border border-border shadow-xs hover:border-[#FFC21A]/50 transition-all cursor-grab active:cursor-grabbing space-y-2.5 text-xs relative select-none ${
+      className={`p-3.5 rounded-[12px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs hover:border-[#FFC21A]/60 transition-all cursor-grab active:cursor-grabbing space-y-2.5 text-xs relative select-none ${priorityBorder} ${
         isDragging ? "opacity-30 border-2 border-dashed border-[#FFC21A]" : ""
-      } ${isOverlay ? "shadow-floating ring-2 ring-[#FFC21A] border-[#FFC21A] scale-[1.03] bg-card z-50" : ""}`}
+      } ${isOverlay ? "shadow-floating ring-2 ring-[#FFC21A] border-[#FFC21A] scale-[1.03] bg-white dark:bg-[#1B1114] z-50" : ""}`}
     >
       <div className="flex items-start justify-between gap-2">
         <Link
@@ -133,7 +140,7 @@ function KanbanCard({
   );
 }
 
-// Droppable Kanban Column Component
+// Droppable Kanban Column Component with Gold Drop Indicator
 function KanbanColumn({
   status,
   leads,
@@ -153,10 +160,10 @@ function KanbanColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col rounded-[14px] p-3.5 bg-surface/80 border w-[84vw] sm:w-72 shrink-0 max-h-[80vh] transition-all duration-150 snap-start relative ${
+      className={`flex flex-col rounded-[14px] p-3.5 bg-white/90 dark:bg-[#1B1114]/90 border w-[84vw] sm:w-72 shrink-0 max-h-[80vh] transition-all duration-150 snap-start relative ${
         isOver
-          ? "border-2 border-dashed border-[#FFC21A] bg-[#FFC21A]/10 ring-4 ring-[#FFC21A]/20 scale-[1.01]"
-          : "border-border"
+          ? "border-2 border-dashed border-[#FFC21A] bg-[#FFC21A]/10 ring-4 ring-[#FFC21A]/30 shadow-gold-glow scale-[1.01]"
+          : "border-[#F0E6D6] dark:border-[#2E1D21]"
       }`}
     >
       {/* Column Header */}
@@ -168,10 +175,15 @@ function KanbanColumn({
           </h3>
           {isAdmitted && <Award className="w-3.5 h-3.5 text-[#FFC21A]" />}
         </div>
-        <span className="px-2 py-0.5 rounded-[6px] bg-card border border-border text-[10px] font-mono tabular-nums font-bold text-muted-foreground">
+        <span className="px-2 py-0.5 rounded-[6px] bg-surface border border-border text-[10px] font-mono tabular-nums font-bold text-muted-foreground">
           {leads.length}
         </span>
       </div>
+
+      {/* Gold drop indicator bar when dragging over column */}
+      {isOver && (
+        <div className="h-1.5 w-full rounded-full bg-gradient-to-r from-[#FFD25A] via-[#FFC21A] to-[#E5A100] shadow-gold-glow animate-pulse mb-2" />
+      )}
 
       {/* Leads Cards Container */}
       <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 no-scrollbar">
@@ -335,7 +347,7 @@ export default function PipelinePage() {
             <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Admissions Workflow
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Kanban Pipeline
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">

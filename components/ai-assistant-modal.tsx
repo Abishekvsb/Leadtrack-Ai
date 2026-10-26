@@ -200,7 +200,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
       {/* Side panel styled as a royal crimson & gold advisory docket */}
       <div className="w-full sm:max-w-md md:max-w-lg bg-[#FFF9EE] dark:bg-[#120A0C] h-[92vh] sm:h-full rounded-t-[20px] sm:rounded-none shadow-2xl flex flex-col border-t sm:border-t-0 sm:border-l border-border animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 overflow-hidden font-sans">
         {/* Header with Radiant Gold Orb */}
-        <div className="flex items-center justify-between p-4 border-b border-border bg-card shrink-0">
+        <div className="flex items-center justify-between p-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] shrink-0">
           <div className="flex items-center gap-3">
             {/* Radiant Gold Orb */}
             <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-[#FFC21A] to-[#E5A100] flex items-center justify-center text-[#17141A] shadow-md border border-[#FFD25A] shrink-0 animate-gold-pulse">
@@ -221,14 +221,14 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] transition-colors"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center p-2 rounded-[8px] text-muted-foreground hover:text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Suggested Question Chips */}
-        <div className="p-2.5 border-b border-border bg-card/70 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
+        <div className="p-2.5 border-b border-[#F0E6D6] dark:border-[#2E1D21] bg-white/70 dark:bg-[#1B1114]/70 flex gap-2 overflow-x-auto no-scrollbar shrink-0">
           {SUGGESTED_CHIPS.map((chip) => (
             <button
               key={chip}
@@ -258,7 +258,7 @@ export function AiAssistantModal({ isOpen, onClose }: AiAssistantModalProps) {
                 className={`max-w-[85%] rounded-[14px] p-3.5 shadow-xs ${
                   msg.role === "user"
                     ? "btn-crimson-gradient text-white font-medium rounded-br-[2px]"
-                    : "bg-card text-foreground border border-border rounded-bl-[2px]"
+                    : "bg-white dark:bg-[#1B1114] text-foreground border border-[#F0E6D6] dark:border-[#2E1D21] rounded-bl-[2px]"
                 }`}
               >
                 {renderMessageContent(msg.content)}

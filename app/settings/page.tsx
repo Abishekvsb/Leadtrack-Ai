@@ -158,11 +158,11 @@ function SettingsContent() {
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-5xl mx-auto">
         {/* Header */}
-        <div className="border-b border-border pb-5">
-          <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+        <div className="border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
+          <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
             System Administration
           </div>
-          <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+          <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
             Institutional Settings
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -171,7 +171,7 @@ function SettingsContent() {
         </div>
 
         {/* Settings Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-border pb-2 overflow-x-auto">
+        <div className="flex items-center gap-2 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-2 overflow-x-auto">
           {[
             { key: "institution", label: "Campus Profile", icon: Building },
             { key: "courses", label: "Degree Programs", icon: BookOpen },
@@ -184,10 +184,10 @@ function SettingsContent() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-[8px] text-xs font-medium whitespace-nowrap transition-all border ${
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-xs font-semibold whitespace-nowrap transition-all border ${
                   isActive
-                    ? "bg-[#D62828] text-white border-[#D62828] dark:bg-[#FF5A5F] dark:text-[#120A0C] dark:border-[#FF5A5F] font-bold shadow-xs"
-                    : "bg-card border-border text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114]"
+                    ? "btn-crimson-gradient text-white border-[#8F1218] font-bold shadow-xs"
+                    : "bg-white dark:bg-[#1B1114] border-[#F0E6D6] dark:border-[#2E1D21] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B]"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -201,17 +201,17 @@ function SettingsContent() {
         {activeTab === "institution" && (
           <form
             onSubmit={handleSaveInstitution}
-            className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs space-y-6"
+            className="p-6 sm:p-8 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-6"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
               <div>
                 <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Charter Details</div>
-                <h3 className="font-heading text-lg font-normal text-foreground">Campus Profile &amp; Accreditations</h3>
+                <h3 className="font-heading text-lg font-bold text-foreground">Campus Profile &amp; Accreditations</h3>
               </div>
               <button
                 type="submit"
                 disabled={saving}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>{saving ? "Saving..." : "Save Charter"}</span>
@@ -299,28 +299,28 @@ function SettingsContent() {
 
         {/* Tab 2: Courses Management */}
         {activeTab === "courses" && (
-          <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-border">
+          <div className="p-6 sm:p-8 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
               <div>
                 <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Academic Portfolio</div>
-                <h3 className="font-heading text-lg font-normal text-foreground">Active Degree Programs ({courses.length})</h3>
+                <h3 className="font-heading text-lg font-bold text-foreground">Active Degree Programs ({courses.length})</h3>
                 <p className="text-xs text-muted-foreground">Offered programs visible on public enquiry and admissions workflow</p>
               </div>
               <button
                 onClick={() => setCourseModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Program</span>
               </button>
             </div>
 
-            <div className="divide-y divide-border text-xs">
+            <div className="divide-y divide-[#F0E6D6] dark:divide-[#2E1D21] text-xs">
               {courses.map((course) => (
                 <div key={course.id} className="py-4 flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-heading text-base font-normal text-foreground">{course.name}</span>
+                      <span className="font-heading text-base font-bold text-foreground">{course.name}</span>
                       <span className="px-1.5 py-0.5 rounded-[4px] text-[10px] font-mono uppercase bg-[#F8F2E6] dark:bg-[#1B1114] text-foreground border border-border">
                         {course.code}
                       </span>
@@ -346,28 +346,28 @@ function SettingsContent() {
 
         {/* Tab 3: Lead Sources & Weights */}
         {activeTab === "scoring" && (
-          <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs space-y-6 text-xs">
-            <div className="pb-3 border-b border-border">
+          <div className="p-6 sm:p-8 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-6 text-xs">
+            <div className="pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Scoring Algorithm</div>
-              <h3 className="font-heading text-lg font-normal text-foreground">AI Readiness Model Weights (Sum = 100%)</h3>
+              <h3 className="font-heading text-lg font-bold text-foreground">AI Readiness Model Weights (Sum = 100%)</h3>
               <p className="text-muted-foreground">Governs the mathematical formula generating the 0 - 100 student intent index</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
-                <span className="font-mono font-medium text-foreground">Channel Authority (25%)</span>
+              <div className="p-4 rounded-[12px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] space-y-1 shadow-xs">
+                <span className="font-mono font-bold text-foreground">Channel Authority (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Direct campus walk-ins &amp; alumni referrals receive highest baseline weight.</p>
               </div>
-              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
-                <span className="font-mono font-medium text-foreground">Consultation Engagement (25%)</span>
+              <div className="p-4 rounded-[12px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] space-y-1 shadow-xs">
+                <span className="font-mono font-bold text-foreground">Consultation Engagement (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Outbound calls connected, WhatsApp correspondence, and campus tours.</p>
               </div>
-              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
-                <span className="font-mono font-medium text-foreground">Dossier Completeness (25%)</span>
+              <div className="p-4 rounded-[12px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] space-y-1 shadow-xs">
+                <span className="font-mono font-bold text-foreground">Dossier Completeness (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Verified student contact, parent mobile number, and preliminary marksheets.</p>
               </div>
-              <div className="p-4 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-1">
-                <span className="font-mono font-medium text-foreground">Program Demand Index (25%)</span>
+              <div className="p-4 rounded-[12px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] space-y-1 shadow-xs">
+                <span className="font-mono font-bold text-foreground">Program Demand Index (25%)</span>
                 <p className="text-muted-foreground text-[11px]">Flagship high-placement academic programs (Computer Science, Data Science).</p>
               </div>
             </div>
@@ -376,10 +376,10 @@ function SettingsContent() {
 
         {/* Tab 4: Password & Security */}
         {activeTab === "security" && (
-          <div className="p-6 sm:p-8 rounded-[12px] bg-card border border-border shadow-xs space-y-4 max-w-md">
-            <div className="pb-2 border-b border-border">
+          <div className="p-6 sm:p-8 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4 max-w-md">
+            <div className="pb-2 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Account Protection</div>
-              <h3 className="font-heading text-lg font-normal text-foreground">Update Password</h3>
+              <h3 className="font-heading text-lg font-bold text-foreground">Update Password</h3>
             </div>
             <div className="space-y-3 text-xs">
               <div className="space-y-1.5">
@@ -401,7 +401,7 @@ function SettingsContent() {
               <button
                 type="button"
                 onClick={() => success("Password updated securely")}
-                className="w-full py-2.5 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs mt-2 shadow-xs"
+                className="w-full py-2.5 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs mt-2 shadow-xs cursor-pointer"
               >
                 Change Password
               </button>

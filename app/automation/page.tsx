@@ -144,12 +144,12 @@ export default function AutomationPage() {
     <DashboardLayout>
       <div className="space-y-8 pb-12 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Automated Operations
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               SLA &amp; Workflow Recipes
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -161,7 +161,7 @@ export default function AutomationPage() {
             <button
               onClick={handleRunEngine}
               disabled={triggering}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white font-semibold text-xs shadow-xs transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
             >
               {triggering ? (
                 <>
@@ -178,7 +178,7 @@ export default function AutomationPage() {
 
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] font-medium text-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[10px] border border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B] font-semibold text-xs transition-colors shadow-xs"
             >
               <Plus className="w-4 h-4" />
               <span>Create Recipe</span>
@@ -189,7 +189,7 @@ export default function AutomationPage() {
         {/* Active Rules Grid */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-heading text-base font-normal text-foreground">
+            <h3 className="font-heading text-base font-bold text-foreground">
               Configured Recipes ({automations.length})
             </h3>
             <span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wider">
@@ -204,9 +204,9 @@ export default function AutomationPage() {
               {automations.map((auto) => (
                 <div
                   key={auto.id}
-                  className={`p-6 rounded-[12px] border transition-all space-y-4 flex flex-col justify-between ${
+                  className={`p-6 rounded-[14px] border transition-all space-y-4 flex flex-col justify-between ${
                     auto.isActive
-                      ? "bg-card border-border shadow-xs"
+                      ? "bg-white dark:bg-[#1B1114] border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs"
                       : "bg-[#F8F2E6]/40 dark:bg-[#1B1114]/40 border-border opacity-70"
                   }`}
                 >
@@ -260,16 +260,16 @@ export default function AutomationPage() {
         </div>
 
         {/* Execution Audit Log Table */}
-        <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
-            <h3 className="font-heading text-base font-normal text-foreground">Automation Execution Audit Log</h3>
+        <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
+            <h3 className="font-heading text-base font-bold text-foreground">Automation Execution Audit Log</h3>
             <span className="font-mono text-xs text-muted-foreground">Recent {logs.length} executions</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="text-[11px] uppercase text-muted-foreground font-mono tracking-wider border-b border-border">
+                <tr className="text-[10px] uppercase text-muted-foreground font-mono font-bold tracking-wider border-b border-[#F0E6D6] dark:border-[#2E1D21]">
                   <th className="py-2.5">Recipe</th>
                   <th className="py-2.5">Candidate Dossier</th>
                   <th className="py-2.5">Outcome</th>

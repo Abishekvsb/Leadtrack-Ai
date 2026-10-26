@@ -161,12 +161,12 @@ export default function TeamPage() {
     <DashboardLayout>
       <div className="space-y-8 pb-12 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Faculty &amp; Admissions Personnel
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Admissions Staff Roster
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -180,7 +180,7 @@ export default function TeamPage() {
               setEmail("");
               setInviteModalOpen(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs transition-colors self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
             <span>Accredit Faculty</span>
@@ -194,19 +194,19 @@ export default function TeamPage() {
             <p className="font-heading italic text-xs text-muted-foreground">Loading admissions faculty roster...</p>
           </div>
         ) : users.length === 0 ? (
-          <div className="p-12 text-center rounded-[12px] border border-dashed border-border bg-card space-y-4">
+          <div className="p-12 text-center rounded-[14px] border border-dashed border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] space-y-4">
             <div className="w-12 h-12 rounded-[10px] bg-[#D62828]/10 text-[#D62828] dark:bg-[#FF5A5F]/15 dark:text-[#FF5A5F] border border-[#D62828]/25 flex items-center justify-center mx-auto shadow-xs">
               <Users className="w-6 h-6 stroke-[1.5]" />
             </div>
             <div>
-              <h3 className="font-heading text-lg font-normal text-foreground">No faculty members registered</h3>
+              <h3 className="font-heading text-lg font-bold text-foreground">No faculty members registered</h3>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
                 Accredit admissions counselors and coordinators. They will receive a credentialing link to set up their profile.
               </p>
             </div>
             <button
               onClick={() => setInviteModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[#D62828] text-white hover:bg-[#B81E1E] font-semibold text-xs shadow-xs"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               <span>Issue First Invitation</span>
@@ -215,7 +215,7 @@ export default function TeamPage() {
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+              <h2 className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-bold">
                 Active Faculty &amp; Staff ({users.length})
               </h2>
             </div>
@@ -223,7 +223,7 @@ export default function TeamPage() {
               {users.map((u) => (
                 <div
                   key={u.id}
-                  className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4 flex flex-col justify-between"
+                  className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">

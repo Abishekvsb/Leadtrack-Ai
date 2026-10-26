@@ -29,10 +29,10 @@ export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const stats = [
-    { label: "Admissions Conversion Lift", value: "3.4×", sub: "measured against legacy spreadsheets" },
-    { label: "Prospective Enquiries Processed", value: "250K+", sub: "across colleges & degree faculties" },
-    { label: "Counselor Response SLA", value: "< 2 Hrs", sub: "automated instant WhatsApp & email dispatch" },
-    { label: "Aligned with UN SDG 4", value: "100%", sub: "Quality Education & Equal Access mandate" },
+    { label: "Predictive Scoring", value: "AI Math", sub: "Transparent 4-pillar qualification" },
+    { label: "Admission Pipeline", value: "7 Stages", sub: "From initial enquiry to matriculation" },
+    { label: "Counselor Automations", value: "SLA Rules", sub: "Instant follow-up queue dispatch" },
+    { label: "Equitable Access", value: "SDG 4", sub: "Non-discriminatory institutional admissions" },
   ];
 
   const features = [

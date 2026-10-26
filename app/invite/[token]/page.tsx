@@ -106,8 +106,8 @@ export default function AcceptInvitePage() {
   if (errorMessage || !inviteData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
-        <div className="max-w-md w-full bg-card rounded-academic p-8 border border-border shadow-academic-floating text-center space-y-6">
-          <div className="w-12 h-12 rounded-academic bg-[#C4552F]/10 border border-[#C4552F]/20 text-[#C4552F] flex items-center justify-center mx-auto">
+        <div className="max-w-md w-full bg-white dark:bg-[#1B1114] rounded-[16px] p-8 border border-[#F0E6D6] dark:border-[#2E1D21] shadow-card text-center space-y-6">
+          <div className="w-12 h-12 rounded-[12px] bg-[#C4552F]/10 border border-[#C4552F]/20 text-[#C4552F] flex items-center justify-center mx-auto">
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
@@ -121,7 +121,7 @@ export default function AcceptInvitePage() {
           <div className="pt-2">
             <Link
               href="/login"
-              className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
+              className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
             >
               <span>Go to Sign In</span>
               <ArrowRight className="w-4 h-4" />
@@ -134,11 +134,11 @@ export default function AcceptInvitePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12 text-foreground">
-      <div className="max-w-md w-full bg-card rounded-academic p-8 border border-border shadow-academic-floating space-y-6">
+      <div className="max-w-md w-full bg-white dark:bg-[#1B1114] rounded-[16px] p-8 border border-[#F0E6D6] dark:border-[#2E1D21] shadow-card space-y-6">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 mb-2">
             <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-[#D62828] to-[#8F1218] flex items-center justify-center text-white shadow-xs border border-[#FFC21A]/30">
-              <GraduationCap className="w-5 h-5" />
+              <GraduationCap className="w-5 h-5 text-[#FFC21A]" />
             </div>
             <span className="font-heading font-bold text-xl tracking-tight text-foreground">
               LeadTrack AI
@@ -146,11 +146,11 @@ export default function AcceptInvitePage() {
           </Link>
 
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFC21A]/15 border border-[#FFC21A]/35 text-[11px] font-bold text-[#8A5A00] dark:text-[#FFD25A]">
-            <Sparkles className="w-3 h-3" />
+            <Sparkles className="w-3 h-3 text-[#FFC21A]" />
             <span>Official Team Invitation</span>
           </div>
 
-          <h2 className="font-heading text-2xl font-bold text-foreground">Complete Your Account Setup</h2>
+          <h2 className="font-heading text-2xl font-extrabold text-foreground title-gold-accent pb-1">Complete Your Account Setup</h2>
           <p className="text-xs text-muted-foreground">
             You&apos;ve been invited by <span className="font-semibold text-foreground">{inviteData.invitedByName}</span> to join{" "}
             <span className="font-semibold text-[#D62828] dark:text-[#FF5A5F]">{inviteData.institutionName}</span> as an{" "}

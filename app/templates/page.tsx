@@ -133,12 +133,12 @@ export default function TemplatesPage() {
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Institutional Communications
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Correspondence Templates
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -148,14 +148,14 @@ export default function TemplatesPage() {
 
           <div className="flex items-center gap-3">
             {/* Filter buttons */}
-            <div className="flex items-center p-1 rounded-[8px] bg-card border border-border shadow-xs">
+            <div className="flex items-center p-1 rounded-[10px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs">
               {(["ALL", "EMAIL", "WHATSAPP"] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setFilterType(t)}
-                  className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-[6px] text-xs font-semibold transition-all ${
                     filterType === t
-                      ? "bg-[#D62828] text-white dark:bg-[#FF5A5F] dark:text-[#120A0C] font-bold shadow-xs"
+                      ? "btn-crimson-gradient text-white font-bold shadow-xs"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -166,7 +166,7 @@ export default function TemplatesPage() {
 
             <button
               onClick={() => openEditor()}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white font-semibold text-xs shadow-xs transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Create Template</span>
@@ -181,7 +181,7 @@ export default function TemplatesPage() {
             <p className="font-heading italic text-xs text-muted-foreground">Loading correspondence templates...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-xs text-muted-foreground font-heading italic border border-dashed border-border rounded-[12px]">
+          <div className="p-12 text-center text-xs text-muted-foreground font-heading italic border border-dashed border-[#F0E6D6] dark:border-[#2E1D21] rounded-[14px]">
             No communication templates found in this channel.
           </div>
         ) : (
@@ -189,7 +189,7 @@ export default function TemplatesPage() {
             {filtered.map((t) => (
               <div
                 key={t.id}
-                className="p-6 rounded-[12px] bg-card border border-border shadow-xs hover:border-[#FFC21A]/50 transition-all flex flex-col justify-between space-y-4"
+                className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs hover:border-[#FFC21A]/60 transition-all flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">

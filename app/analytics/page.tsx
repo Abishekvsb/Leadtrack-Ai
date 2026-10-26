@@ -61,12 +61,12 @@ export default function AnalyticsPage() {
     <DashboardLayout>
       <div className="space-y-8 pb-16 print:p-0 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Institutional Intelligence
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Admissions Analytics &amp; Yield Report
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -77,14 +77,14 @@ export default function AnalyticsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrintPDF}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[10px] border border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B] text-xs font-semibold transition-colors shadow-xs"
             >
               <Printer className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Print Dossier</span>
             </button>
             <button
               onClick={handleExportCSV}
-              className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white font-semibold text-xs shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[40px] rounded-[10px] btn-crimson-gradient btn-shimmer text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export CSV Yield</span>
@@ -94,33 +94,33 @@ export default function AnalyticsPage() {
 
         {/* High-Level Overview Metrics (Academic Prospectus Style Strip) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
+          <div className="p-5 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Total Inquiries</span>
-            <p className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
               {loading ? "..." : data?.totalLeads}
             </p>
-            <p className="text-[11px] text-[#D62828] dark:text-[#FF5A5F] font-medium">+18% intake growth</p>
+            <p className="text-[11px] text-[#D62828] dark:text-[#FF5A5F] font-bold">+18% intake growth</p>
           </div>
 
-          <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
+          <div className="p-5 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Confirmed Admissions</span>
-            <p className="font-heading text-3xl sm:text-4xl font-normal text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-extrabold text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
               {loading ? "..." : data?.admittedTotal}
             </p>
             <p className="text-[11px] text-muted-foreground font-mono">10.3% Conversion Rate</p>
           </div>
 
-          <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
+          <div className="p-5 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Average Intake Cycle</span>
-            <p className="font-heading text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
               {loading ? "..." : `${data?.avgDaysToConvert} Days`}
             </p>
-            <p className="text-[11px] text-accent font-medium">Reduced 4.2 days with Copilot</p>
+            <p className="text-[11px] text-[#8A5A00] dark:text-[#FFD25A] font-bold">Reduced 4.2 days with Copilot</p>
           </div>
 
-          <div className="p-5 rounded-[12px] bg-card border border-border shadow-xs space-y-1">
+          <div className="p-5 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">UN SDG 4 Compliance</span>
-            <p className="font-heading text-3xl sm:text-4xl font-normal text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
+            <p className="font-heading text-3xl sm:text-4xl font-extrabold text-[#D62828] dark:text-[#FF5A5F] tracking-tight">
               100%
             </p>
             <p className="text-[11px] text-muted-foreground font-medium">Equitable access &amp; transparency</p>
@@ -128,7 +128,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* 1. Source Acquisition ROI Table */}
-        <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
+        <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div>
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Channel Performance</div>
@@ -177,11 +177,11 @@ export default function AnalyticsPage() {
         </div>
 
         {/* 2. Counselor Performance & Conversion Leaderboard */}
-        <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
+        <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
             <div>
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Faculty Leaderboard</div>
-              <h3 className="font-heading text-base font-normal text-foreground">Admissions Counselor Conversion Benchmarks</h3>
+              <h3 className="font-heading text-base font-bold text-foreground">Admissions Counselor Conversion Benchmarks</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Pipeline progression from assignment to enrolled matriculation</p>
             </div>
           </div>
@@ -190,25 +190,25 @@ export default function AnalyticsPage() {
             {(data?.counselorConversion || []).map((c: any) => (
               <div
                 key={c.id}
-                className="p-5 rounded-[10px] bg-[#F8F2E6]/60 dark:bg-[#1B1114]/60 border border-border space-y-3"
+                className="p-5 rounded-[12px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] space-y-3 shadow-xs"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-heading text-sm font-normal text-foreground">{c.name}</span>
+                  <span className="font-heading text-sm font-bold text-foreground">{c.name}</span>
                   <span className="px-2 py-0.5 rounded-[4px] bg-gradient-to-br from-[#D62828] to-[#8F1218] text-white font-mono font-bold text-xs shadow-xs">
                     {c.conversionRate}% Conv
                   </span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="p-2.5 rounded-[8px] bg-card border border-border">
+                  <div className="p-2.5 rounded-[8px] bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground font-mono uppercase block">Assigned</span>
                     <span className="font-mono font-bold text-foreground tabular-nums">{c.assigned}</span>
                   </div>
-                  <div className="p-2.5 rounded-[8px] bg-card border border-border">
+                  <div className="p-2.5 rounded-[8px] bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground font-mono uppercase block">Visits Booked</span>
-                    <span className="font-mono font-bold text-accent tabular-nums">{c.campusVisits}</span>
+                    <span className="font-mono font-bold text-[#8A5A00] dark:text-[#FFD25A] tabular-nums">{c.campusVisits}</span>
                   </div>
-                  <div className="p-2.5 rounded-[8px] bg-card border border-border">
+                  <div className="p-2.5 rounded-[8px] bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground font-mono uppercase block">Admitted</span>
                     <span className="font-mono font-bold text-[#D62828] dark:text-[#FF5A5F] tabular-nums">{c.admitted}</span>
                   </div>
@@ -221,21 +221,21 @@ export default function AnalyticsPage() {
         {/* 3. Program Seat Fulfillment & Drop-Off Diagnosis */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Program Seat Fulfillment */}
-          <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
-            <div className="pb-3 border-b border-border">
+          <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4">
+            <div className="pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Capacity Planning</div>
-              <h3 className="font-heading text-base font-normal text-foreground">Program Seat Intake &amp; Fill Rate</h3>
+              <h3 className="font-heading text-base font-bold text-foreground">Program Seat Intake &amp; Fill Rate</h3>
             </div>
             <div className="space-y-4">
               {(data?.courseDemand || []).map((c: any) => (
                 <div key={c.id} className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between font-medium">
-                    <span className="truncate max-w-[200px] text-foreground">{c.name}</span>
+                    <span className="truncate max-w-[200px] text-foreground font-bold">{c.name}</span>
                     <span className="font-mono text-muted-foreground tabular-nums">
                       {c.admitted} / {c.seats} seats ({c.occupancyRate}%)
                     </span>
                   </div>
-                  <div className="w-full h-2 rounded-[4px] bg-[#F8F2E6] dark:bg-[#1B1114] overflow-hidden">
+                  <div className="w-full h-2.5 rounded-[4px] bg-[#F8F2E6] dark:bg-[#1B1114] overflow-hidden">
                     <div
                       className="h-full rounded-[4px] bg-gradient-to-r from-[#D62828] via-[#FF5A5F] to-[#FFC21A] transition-all"
                       style={{ width: `${Math.min(100, Math.max(5, c.occupancyRate))}%` }}
@@ -247,10 +247,10 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Drop-off / Lost Causes */}
-          <div className="p-6 rounded-[12px] bg-card border border-border shadow-xs space-y-4">
-            <div className="pb-3 border-b border-border">
+          <div className="p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs space-y-4">
+            <div className="pb-3 border-b border-[#F0E6D6] dark:border-[#2E1D21]">
               <div className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Friction Diagnosis</div>
-              <h3 className="font-heading text-base font-normal text-foreground">Inquiry Drop-off Rationale</h3>
+              <h3 className="font-heading text-base font-bold text-foreground">Inquiry Drop-off Rationale</h3>
             </div>
             <div className="space-y-2.5">
               {(data?.dropOffAnalysis || []).map((item: any, idx: number) => (

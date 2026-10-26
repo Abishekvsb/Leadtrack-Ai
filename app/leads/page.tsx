@@ -368,12 +368,12 @@ function LeadsContent() {
     <DashboardLayout>
       <div className="space-y-6 pb-12 max-w-7xl mx-auto">
         {/* Top Header & Action Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            <div className="text-[11px] uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold mb-1">
               Admissions Registry
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight title-gold-accent pb-2">
               Student Candidates
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -385,7 +385,7 @@ function LeadsContent() {
             {/* Import Button */}
             <button
               onClick={() => setImportModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[10px] border border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B] text-xs font-semibold transition-colors shadow-xs"
             >
               <Upload className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Import CSV</span>
@@ -394,7 +394,7 @@ function LeadsContent() {
             {/* Export Button */}
             <button
               onClick={() => handleExport("csv")}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[8px] border border-border bg-card text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#1B1114] text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] rounded-[10px] border border-[#F0E6D6] dark:border-[#2E1D21] bg-white dark:bg-[#1B1114] text-foreground hover:bg-[#F8F2E6] dark:hover:bg-[#25171B] text-xs font-semibold transition-colors shadow-xs"
             >
               <Download className="w-3.5 h-3.5 text-muted-foreground" />
               <span>Export CSV</span>
@@ -403,7 +403,7 @@ function LeadsContent() {
             {/* Add Lead Button */}
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[8px] bg-[#D62828] hover:bg-[#B81E1E] text-white shadow-xs font-semibold text-xs font-medium transition-all shadow-xs"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[40px] rounded-[10px] btn-crimson-gradient btn-shimmer text-white shadow-xs font-bold text-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>New Candidate</span>
@@ -412,7 +412,7 @@ function LeadsContent() {
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="bg-card border border-border rounded-[12px] p-4 space-y-4">
+        <div className="bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] rounded-[14px] p-4 space-y-4 shadow-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
             {/* Search Input */}
             <div className="relative lg:col-span-2">
@@ -585,12 +585,12 @@ function LeadsContent() {
         )}
 
         {/* Data Table */}
-        <div className="rounded-[12px] bg-card border border-border shadow-xs overflow-hidden">
+        <div className="rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs overflow-hidden">
           {/* Desktop & Tablet Data Table */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto max-h-[72vh] relative">
             <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-border bg-[#FFF9EE]/80 dark:bg-[#1B1114]/80 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              <thead className="sticky top-0 z-10 shadow-xs">
+                <tr className="border-b border-[#F0E6D6] dark:border-[#2E1D21] bg-[#FFF9EE]/95 dark:bg-[#1B1114]/95 backdrop-blur-xs text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-mono">
                   <th className="p-4 w-10 text-center">
                     <button onClick={handleSelectAll} className="focus:outline-none">
                       {selectedIds.length > 0 && selectedIds.length === leads.length ? (

@@ -113,13 +113,13 @@ export default function GuidePage() {
     <DashboardLayout>
       <div className="space-y-12 pb-16 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="border-b border-border pb-8 text-center space-y-3">
+        <div className="border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-8 text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#D62828]/10 border border-[#D62828]/25 text-[11px] font-mono uppercase tracking-wider text-[#D62828] dark:text-[#FF5A5F] font-bold">
             <BookOpen className="w-3.5 h-3.5 text-[#FFC21A]" />
             <span>Admissions Operations Manual • Standard Operating Procedures</span>
           </div>
 
-          <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+          <h1 className="font-heading text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground title-gold-accent pb-2">
             The Admissions Lifecycle Handbook
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed font-sans">
@@ -129,27 +129,27 @@ export default function GuidePage() {
 
         {/* 7-Stage Admissions Lifecycle */}
         <div className="space-y-6">
-          <div className="flex items-center justify-between border-b border-border pb-3">
+          <div className="flex items-center justify-between border-b border-[#F0E6D6] dark:border-[#2E1D21] pb-3">
             <h2 className="font-heading text-lg font-bold text-foreground flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#D62828] dark:text-[#FF5A5F]" />
               <span>Standard 7-Stage Trajectory</span>
             </h2>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-bold">
               Admissions Protocol
             </span>
           </div>
 
-          <div className="relative border-l border-border ml-3.5 sm:ml-5 pl-6 sm:pl-8 space-y-6">
+          <div className="relative border-l border-[#F0E6D6] dark:border-[#2E1D21] ml-3.5 sm:ml-5 pl-6 sm:pl-8 space-y-6">
             {lifecycleSteps.map((step) => {
               const Icon = step.icon;
               return (
                 <div key={step.step} className="relative group">
                   {/* Step Dot Number */}
-                  <div className="absolute -left-[37px] sm:-left-[45px] top-1.5 w-7 h-7 rounded-lg bg-card border border-[#FFC21A]/40 text-[#8A5A00] dark:text-[#FFD25A] font-mono font-bold text-[11px] shadow-xs flex items-center justify-center shadow-2xs">
+                  <div className="absolute -left-[37px] sm:-left-[45px] top-1.5 w-7 h-7 rounded-lg bg-white dark:bg-[#1B1114] border border-[#FFC21A]/50 text-[#8A5A00] dark:text-[#FFD25A] font-mono font-bold text-[11px] shadow-xs flex items-center justify-center">
                     {step.step}
                   </div>
 
-                  <div className="p-5 sm:p-6 rounded-xl bg-card border border-border shadow-xs hover:border-[#FFC21A]/50 transition-colors space-y-3">
+                  <div className="p-5 sm:p-6 rounded-[14px] bg-white dark:bg-[#1B1114] border border-[#F0E6D6] dark:border-[#2E1D21] shadow-xs hover:border-[#FFC21A]/60 transition-colors space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
                         <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#FFC21A]/15 text-[#8A5A00] dark:text-[#FFD25A] font-bold border border-border uppercase tracking-wider">

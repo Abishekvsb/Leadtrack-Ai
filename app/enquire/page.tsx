@@ -141,9 +141,9 @@ export default function PublicEnquiryPage() {
                 {progressPercent}% Complete
               </span>
             </div>
-            <div className="w-full bg-surface h-2 rounded-full overflow-hidden border border-border/80">
+            <div className="w-full bg-surface h-2.5 rounded-full overflow-hidden border border-border/80 p-0.5">
               <div
-                className="h-full bg-gradient-to-r from-[#D62828] via-[#FF5A5F] to-[#FFC21A] transition-all duration-300 rounded-full"
+                className="h-full bg-gradient-to-r from-[#FFD25A] via-[#FFC21A] to-[#E5A100] shadow-gold-glow transition-all duration-300 rounded-full"
                 style={{ width: `${Math.max(6, progressPercent)}%` }}
               />
             </div>
