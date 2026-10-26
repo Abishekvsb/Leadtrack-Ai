@@ -117,8 +117,8 @@ function LeadsContent() {
       if (res.ok) {
         const json = await res.json();
         if (json.success) {
-          setLeads(json.data.leads);
-          setPagination(json.data.pagination);
+          setLeads(Array.isArray(json.data?.leads) ? json.data.leads : []);
+          setPagination(json.data?.pagination || { total: 0, page: 1, limit: 20, totalPages: 1 });
           setSelectedIds([]);
         }
       }
@@ -141,11 +141,15 @@ function LeadsContent() {
         const [cRes, uRes] = await Promise.all([fetch("/api/courses"), fetch("/api/team")]);
         if (cRes.ok) {
           const cData = await cRes.json();
-          if (cData.success) setCourses(cData.data);
+          if (cData.success) {
+            setCourses(Array.isArray(cData.data?.courses) ? cData.data.courses : Array.isArray(cData.data) ? cData.data : []);
+          }
         }
         if (uRes.ok) {
           const uData = await uRes.json();
-          if (uData.success) setCounselors(uData.data);
+          if (uData.success) {
+            setCounselors(Array.isArray(uData.data?.users) ? uData.data.users : Array.isArray(uData.data) ? uData.data : []);
+          }
         }
       } catch (err) {
         console.error("Failed to load courses or counselors", err);
@@ -159,7 +163,7 @@ function LeadsContent() {
     if (selectedIds.length === leads.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(leads.map((l) => l.id));
+      setSelectedIds((Array.isArray(leads) ? leads : []).map((l) => l.id));
     }
   };
 
@@ -234,7 +238,7 @@ function LeadsContent() {
 
   // Export to Excel / CSV
   const handleExport = (format: "csv" | "xlsx") => {
-    const exportData = leads.map((l) => ({
+    const exportData = (Array.isArray(leads) ? leads : []).map((l) => ({
       "Student Name": l.studentName,
       Email: l.email,
       Phone: l.phone,
@@ -475,7 +479,7 @@ function LeadsContent() {
               className="px-3 py-2 text-xs rounded-[8px] bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35 min-h-[40px]"
             >
               <option value="ALL">All Academic Programs</option>
-              {courses.map((c) => (
+              {(Array.isArray(courses) ? courses : []).map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.code || c.name}
                 </option>
@@ -662,7 +666,7 @@ function LeadsContent() {
                       </div>
                     </td>
                   </tr>
-                ) : leads.length === 0 ? (
+                ) : !Array.isArray(leads) || leads.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="py-20 text-center text-muted-foreground">
                       <div className="max-w-xs mx-auto space-y-2">
@@ -673,7 +677,7 @@ function LeadsContent() {
                     </td>
                   </tr>
                 ) : (
-                  leads.map((lead) => {
+                  (Array.isArray(leads) ? leads : []).map((lead) => {
                     const isSelected = selectedIds.includes(lead.id);
                     const statusInfo = STATUS_COLORS[lead.status as LeadStatus] || STATUS_COLORS.NEW;
                     const scoreInfo = SCORE_COLORS[lead.scoreCategory as ScoreCategory] || SCORE_COLORS.WARM;
@@ -794,14 +798,14 @@ function LeadsContent() {
                 <Loader2 className="w-5 h-5 animate-spin text-[#D62828] dark:text-[#FF5A5F] mx-auto mb-2" />
                 <span className="font-serif italic text-xs">Loading records...</span>
               </div>
-            ) : leads.length === 0 ? (
+            ) : !Array.isArray(leads) || leads.length === 0 ? (
               <div className="p-8 text-center text-muted-foreground space-y-2">
                 <Users2 className="w-8 h-8 mx-auto text-muted-foreground/60 stroke-[1.5]" />
                 <p className="font-serif text-sm text-foreground">No candidate records found</p>
                 <p className="text-[11px] text-muted-foreground">Try broadening your search filters.</p>
               </div>
             ) : (
-              leads.map((lead) => {
+              (Array.isArray(leads) ? leads : []).map((lead) => {
                 const isSelected = selectedIds.includes(lead.id);
                 const statusInfo = STATUS_COLORS[lead.status as LeadStatus] || STATUS_COLORS.NEW;
                 const scoreInfo = SCORE_COLORS[lead.scoreCategory as ScoreCategory] || SCORE_COLORS.WARM;
@@ -1006,7 +1010,7 @@ function LeadsContent() {
                       className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="">Select Degree Program</option>
-                      {courses.map((c) => (
+                      {(Array.isArray(courses) ? courses : []).map((c) => (
                         <option key={c.id} value={c.id}>
                           {c.name}
                         </option>
@@ -1042,7 +1046,7 @@ function LeadsContent() {
                       className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
                     >
                       <option value="">Auto-assign (Round Robin)</option>
-                      {counselors.map((c) => (
+                      {(Array.isArray(counselors) ? counselors : []).map((c) => (
                         <option key={c.id} value={c.id}>
                           {c.name}
                         </option>
@@ -1240,7 +1244,7 @@ function LeadsContent() {
                 className="w-full p-2.5 rounded-[8px] text-xs bg-background/50 border border-border text-foreground outline-none focus:border-[#FFC21A] dark:focus:border-[#FFD25A] focus:ring-1 focus:ring-[#FFC21A]/35"
               >
                 <option value="">Select Counselor</option>
-                {counselors.map((c) => (
+                {(Array.isArray(counselors) ? counselors : []).map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
