@@ -57,7 +57,28 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         }
         const data = await res.json();
         if (data.success && data.data?.user) {
-          setUser(data.data.user);
+          const currentUser = data.data.user;
+          setUser(currentUser);
+
+          // Route-level role enforcement
+          const adminOnlyPrefixes = ["/settings", "/automation", "/templates", "/audit-logs", "/courses"];
+          const managerOrAdminPrefixes = ["/team"];
+
+          const isAdminRoute = adminOnlyPrefixes.some(
+            (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+          );
+          if (isAdminRoute && currentUser.role !== "ADMIN") {
+            router.replace("/dashboard");
+            return;
+          }
+
+          const isManagerRoute = managerOrAdminPrefixes.some(
+            (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+          );
+          if (isManagerRoute && currentUser.role !== "ADMIN" && currentUser.role !== "MANAGER") {
+            router.replace("/dashboard");
+            return;
+          }
         } else {
           router.push("/login");
         }
@@ -68,7 +89,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       }
     }
     loadUser();
-  }, [router]);
+  }, [router, pathname]);
 
   // Load ticker live indicators with real counts
   useEffect(() => {
@@ -221,24 +242,30 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
 
               <div className="space-y-1">
-                <Link
-                  href="/automation"
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
-                >
-                  <Sparkles className="w-4 h-4 text-[#FFC21A] stroke-[1.5]" />
-                  <span>Automation Rules</span>
-                </Link>
+                {/* Admin-only features */}
+                {user?.role === "ADMIN" && (
+                  <>
+                    <Link
+                      href="/automation"
+                      onClick={() => setMobileDrawerOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                    >
+                      <Sparkles className="w-4 h-4 text-[#FFC21A] stroke-[1.5]" />
+                      <span>Automation Rules</span>
+                    </Link>
 
-                <Link
-                  href="/templates"
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
-                >
-                  <MessageSquareShare className="w-4 h-4 text-[#64748B] stroke-[1.5]" />
-                  <span>Communication Templates</span>
-                </Link>
+                    <Link
+                      href="/templates"
+                      onClick={() => setMobileDrawerOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                    >
+                      <MessageSquareShare className="w-4 h-4 text-[#64748B] stroke-[1.5]" />
+                      <span>Communication Templates</span>
+                    </Link>
+                  </>
+                )}
 
+                {/* All Roles */}
                 <Link
                   href="/analytics"
                   onClick={() => setMobileDrawerOpen(false)}
@@ -248,6 +275,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <span>Analytics &amp; ROI</span>
                 </Link>
 
+                {/* Manager & Admin */}
                 {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
                   <Link
                     href="/team"
@@ -259,14 +287,28 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   </Link>
                 )}
 
-                <Link
-                  href="/settings"
-                  onClick={() => setMobileDrawerOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
-                >
-                  <Settings className="w-4 h-4 text-muted-foreground stroke-[1.5]" />
-                  <span>Settings &amp; Courses</span>
-                </Link>
+                {/* Admin-only */}
+                {user?.role === "ADMIN" && (
+                  <>
+                    <Link
+                      href="/settings"
+                      onClick={() => setMobileDrawerOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                    >
+                      <Settings className="w-4 h-4 text-muted-foreground stroke-[1.5]" />
+                      <span>Settings &amp; Courses</span>
+                    </Link>
+
+                    <Link
+                      href="/audit-logs"
+                      onClick={() => setMobileDrawerOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-xs font-medium text-foreground hover:bg-muted/60 transition-colors min-h-[44px]"
+                    >
+                      <Sparkles className="w-4 h-4 text-[#64748B] stroke-[1.5]" />
+                      <span>Audit Trail</span>
+                    </Link>
+                  </>
+                )}
 
                 <Link
                   href="/guide"

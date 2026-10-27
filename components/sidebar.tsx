@@ -73,20 +73,29 @@ export function Sidebar({
         { name: "Analytics & ROI", href: "/analytics", icon: BarChart3 },
       ],
     },
-    {
-      label: "ADMIN",
-      items: [
-        { name: "Automations", href: "/automation", icon: Sparkles },
-        { name: "Templates", href: "/templates", icon: MessageSquareShare },
-        ...(userRole === "ADMIN" || userRole === "MANAGER"
-          ? [{ name: "Counselor Team", href: "/team", icon: Users }]
-          : []),
-        { name: "Settings", href: "/settings", icon: Settings },
-        ...(userRole === "ADMIN"
-          ? [{ name: "Audit Trail", href: "/audit-logs", icon: ShieldCheck }]
-          : []),
-      ],
-    },
+    ...(userRole === "ADMIN"
+      ? [
+          {
+            label: "ADMIN",
+            items: [
+              { name: "Automations", href: "/automation", icon: Sparkles },
+              { name: "Templates", href: "/templates", icon: MessageSquareShare },
+              { name: "Counselor Team", href: "/team", icon: Users },
+              { name: "Settings", href: "/settings", icon: Settings },
+              { name: "Audit Trail", href: "/audit-logs", icon: ShieldCheck },
+            ],
+          },
+        ]
+      : userRole === "MANAGER"
+      ? [
+          {
+            label: "MANAGEMENT",
+            items: [
+              { name: "Counselor Team", href: "/team", icon: Users },
+            ],
+          },
+        ]
+      : []),
   ];
 
   const getInitials = (nameStr: string) => {
@@ -199,7 +208,7 @@ export function Sidebar({
       <div className="p-2 border-t border-border/70 bg-[#FFF9EE]/40 dark:bg-[#170E11]/40">
         {!collapsed ? (
           <div className="flex items-center justify-between p-2 rounded-[10px] bg-white dark:bg-[#1B1114] border border-border shadow-xs">
-            <Link href="/settings" className="flex items-center gap-2.5 min-w-0 flex-1 hover:opacity-85 transition-opacity">
+            <Link href={userRole === "ADMIN" ? "/settings" : "/dashboard"} className="flex items-center gap-2.5 min-w-0 flex-1 hover:opacity-85 transition-opacity">
               {userAvatar ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
@@ -235,7 +244,7 @@ export function Sidebar({
         ) : (
           <div className="flex flex-col items-center py-1">
             <Link
-              href="/settings"
+              href={userRole === "ADMIN" ? "/settings" : "/dashboard"}
               title={`${userName} (${userRole})`}
               className="w-9 h-9 rounded-[8px] bg-gradient-to-br from-[#E63946] to-[#8F1218] text-white font-bold text-xs flex items-center justify-center border border-[#FFC21A]/35 shadow-xs hover:scale-105 transition-transform"
             >
